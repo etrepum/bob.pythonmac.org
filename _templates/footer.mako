@@ -1,9 +1,7 @@
 
 
 <p id="credits">
-Powered by <a href="http://www.blogofile.com">Blogofile</a>.<br/>
-<br/>
-RSS feeds for <a href="${bf.config.util.blog_path_helper('feed')}">Entries</a> and <a href="http://${bf.config.disqus_name}.disqus.com/latest.rss">Comments</a>.
+&copy; Bob Ippolito &lt; bob at redivi.com &gt;
 <br>
 </p>
 
