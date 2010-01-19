@@ -1,0 +1,381 @@
+---
+categories: python, macosx, debugging, iPod
+date: 2005/06/16 15:55:40
+guid: /?p=148
+permalink: http://bob.pythonmac.org/archives/2005/06/16/ipod-model-detection/
+tags: ''
+title: iPod model detection
+---
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" />
+<title></title>
+<style type="text/css">
+
+/*
+:Author: David Goodger (goodger@python.org)
+:Id: $Id: html4css1.css 5951 2009-05-18 18:03:10Z milde $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin: 0 0 0.5em 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left, .figure.align-left{
+  clear: left ;
+  float: left ;
+  margin-right: 1em }
+
+img.align-right, .figure.align-right {
+  clear: right ;
+  float: right ;
+  margin-left: 1em }
+
+.align-left {
+  text-align: left }
+
+.align-center {
+  clear: both ;
+  text-align: center }
+
+.align-right {
+  text-align: right }
+
+/* reset inner alignment in figures */
+div.align-right {
+  text-align: left }
+
+/* div.align-center * { */
+/*   text-align: left } */
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font: inherit }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+ul.auto-toc {
+  list-style-type: none }
+
+</style>
+</head>
+<body>
+<div class="document">
+
+
+<!-- -*- mode: rst -*- -->
+<p>For various reasons, I have a need to determine the version of an iPod.  Previously, I only needed to know if an iPod was &quot;firmware version 2&quot; or later (aka &quot;Dock-connector&quot;), and there's a whole slew of obvious ways to determine that (presence of a <tt class="docutils literal">Notes</tt> folder would be the most obvious).  There are also ways to grab iPod information with SPI (via COM on win32 or the private <tt class="docutils literal">iPod.framework</tt> on Mac OS X), but I like to avoid that whenever possible.</p>
+<p>So far, the most reliable method I've found was with a little parsing of the <tt class="docutils literal">SysInfo</tt> file.  This file is located at &quot;<tt class="docutils literal"><span class="pre">$(IPOD_VOLUME)/iPod_Control/Device/SysInfo</span></tt>&quot;.  The <tt class="docutils literal">iPod_Control</tt> folder is going to be hidden on either platform, so you may not have noticed it before.  Many examples of <tt class="docutils literal">SysInfo</tt> files can be found by googling for some of the keys, such as <tt class="docutils literal">buildID</tt>, <tt class="docutils literal">visibleBuildID</tt>, <tt class="docutils literal">boardHwName</tt>, etc.  The most complete resource I've found is the on the <a class="reference external" href="http://www.ipodlinux.org/forums/viewtopic.php?t=1583">iPodLinux forums</a>.</p>
+<p>As-is, the <tt class="docutils literal">SysInfo</tt> files don't make any of the useful information very obvious.  However, with a little reverse-engineering of the <a class="reference external" href="http://www.apple.com/ipod/download/">iPod Updater</a> for Mac OS X, it was relatively easy to figure out what it was using to determine the iPod model.</p>
+<p>In the <tt class="docutils literal">Resources</tt> folder of any <a class="reference external" href="http://www.apple.com/ipod/download/">iPod Updater</a>, you'll find a lot of interesting things.  The most interesting bits are <tt class="docutils literal">UpdaterVersions.plist</tt> and the <tt class="docutils literal">Updates</tt> folder.</p>
+<p><tt class="docutils literal">UpdaterVersions.plist</tt> is a typical XML property list with a single root key: <tt class="docutils literal">Versions</tt>.  Under this key you'll find a dictionary that maps <tt class="docutils literal">updaterFamily</tt> to a dictionary of information about the iPods in that <tt class="docutils literal">updaterFamily</tt>, not unlike the information you will find in a <tt class="docutils literal">SysInfo</tt>.  The dicts with a <tt class="docutils literal">displayInAbout</tt> key with a <tt class="docutils literal">true</tt> value are the most interesting, all of the other entries are simply variations on the theme (i.e. the <a class="reference external" href="http://www.apple.com/ipod/u2/">iPod U2 Special Edition</a> or the various colors of <a class="reference external" href="http://www.apple.com/ipodmini/">iPod Mini</a>).  When using this filter, you should have exactly one entry per unique <tt class="docutils literal">iPodFamily</tt> value.</p>
+<p>The <tt class="docutils literal">Updates</tt> folder is interesting because it contains icons for each iPod, as well as the firmware images.  The icons are named either <tt class="docutils literal"><span class="pre">DeviceIcon-$(iPodFamily).icns</span></tt> or <tt class="docutils literal"><span class="pre">DeviceIcon-$(iPodFamily)-$(iPodColor).icns</span></tt>.  I'm relatively certain that the color can be determined from the last three characters of the <tt class="docutils literal">pszSerialNumber</tt>, but I don't have enough iPods around to test that theory.</p>
+<p>With all of this information, it would <em>almost</em> be easy to determine the model of an iPod.  However, it's not quite that simple.  Not all <tt class="docutils literal">SysInfo</tt> files contain an <tt class="docutils literal">iPodFamily</tt> key, and some that do incorrectly report <tt class="docutils literal">0</tt>!  The only reliable identifier for an iPod family is the following (given a dict from either the <tt class="docutils literal">UpdaterVersions.plist</tt> or from a <tt class="docutils literal">SysInfo</tt> file):</p>
+<pre class="literal-block">
+def buildPair(dct):
+    buildID = dct.get('buildID', 0)
+    visibleBuildID = dct.get('visibleBuildID') or dct.get('VisibleBuildID', 0)
+    # grab these bits: 0xFF000000L
+    return (buildID &gt;&gt; 24, visibleBuildID &gt;&gt; 24)
+</pre>
+<p>What I'm doing here is pulling the &quot;major&quot; version out of the version keys.  It appears that the versioning convention is:  <tt class="docutils literal">0x0ABC8000</tt> where the firmware version is pretty-printed as &quot;A.B.C&quot;, trimming &quot;C&quot; and possibly &quot;B&quot; if they are <tt class="docutils literal">0</tt>.  This is similar to the hex-version-convention you see in <tt class="docutils literal">gestaltSystemVersion</tt> (<tt class="docutils literal">'sysv'</tt>) and other places.  It would be a little less ugly if the <tt class="docutils literal">UpdaterVersions.plist</tt> used the same case as the <tt class="docutils literal">SysInfo</tt> files for the <tt class="docutils literal">visibileBuildID</tt> key!  The reason that we need both the <tt class="docutils literal">buildID</tt> and the <tt class="docutils literal">visibleBuildID</tt> is that the <a class="reference external" href="http://www.apple.com/ipodmini/">iPod Mini</a> and &quot;3G iPod&quot; both report a <tt class="docutils literal">buildID</tt> major version of <tt class="docutils literal">2</tt>, however the <a class="reference external" href="http://www.apple.com/ipodmini/">iPod Mini</a> has a <tt class="docutils literal">visibleBuildID</tt> major version of <tt class="docutils literal">1</tt>.</p>
+<p>Parsing the <tt class="docutils literal">SysInfo</tt> file in a manner that will grab the information in the right way is pretty trivial, but perhaps not so obvious:</p>
+<pre class="literal-block">
+import os
+def infoForMountedPod(path):
+    path = os.path.join(path, u'iPod_Control', u'Device', u'SysInfo')
+    lines = file(path).read().splitlines()
+    d = {}
+    for line in lines:
+        try:
+            key, value = line.split(': ', 1)
+        except ValueError:
+            continue
+        try:
+            value = long(value.split(None, 1)[0], 0)
+        except (ValueError, IndexError):
+            pass
+        d[key] = value
+    return d
+</pre>
+<p><tt class="docutils literal">infoForMountedPod</tt> simply looks for all lines that look like a key-value pair (containing a <tt class="docutils literal">&quot;: &quot;</tt>).  For each of these lines, it will set the key-value pair in the returned dictionary.  For lines whose first &quot;word&quot; (split on whitespace) is parseable as an integer (typically as hex), it will be set as an integer.  Otherwise, it is set to the string value of that line (i.e. <tt class="docutils literal">pszSerialNumber</tt>).</p>
+<p>Parsing <tt class="docutils literal">UpdaterVersions.plist</tt> is pretty trivial too:</p>
+<pre class="literal-block">
+import plistlib
+def parseUpdaterVersions(path):
+    # this is Python 2.4 plistlib API
+    # in 2.3 you can use plistlib.Plist.fromFile
+    versions = plistlib.readPlist(path)
+    buildPairs = {}
+    families = {}
+    for k,v in versions['Versions'].iteritems():
+        # only pick out unique iPodFamily dicts
+        if v['displayInAbout']:
+            fam = v['iPodFamily']
+            # skip pre-2.x iPods and iPod Shuffle.
+            # This is specific to my use case, you may
+            # not want this filter.
+            if 1 &lt; fam &lt; 128:
+                assert fam not in families
+                families[fam] = v
+                pair = buildPair(v)
+                assert pair not in buildPairs
+                buildPairs[pair] = v
+    return buildPairs, families
+</pre>
+<p>Note that all of this code is cross-platform, but you'll need an <tt class="docutils literal">UpdaterVersions.plist</tt> or equivalent from somewhere, and you'll need to pick up <tt class="docutils literal">plistlib.py</tt> from Python's <tt class="docutils literal"><span class="pre">src/Lib/plat-mac</span></tt> dir if using it on some other platform.  Alternatively, you could use <a class="reference external" href="http://effbot.org/zone/element-index.htm">ElementTree</a> to parse the plist XML.  Its <a class="reference external" href="http://effbot.org/zone/element-iterparse.htm">iterparse documentation</a> has an excellent example of how easily it can be used to parse these files.</p>
+</div>
+</body>
+</html>

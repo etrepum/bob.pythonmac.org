@@ -1,0 +1,334 @@
+---
+categories: python, PyObjC
+date: 2004/01/23 10:57:52
+guid: /?p=38
+permalink: http://bob.pythonmac.org/archives/2004/01/23/pyobjc-windowserver-and-rasterizing-pdfs/
+tags: ''
+title: PyObjC, WindowServer, and rasterizing PDFs
+---
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" />
+<title></title>
+<style type="text/css">
+
+/*
+:Author: David Goodger (goodger@python.org)
+:Id: $Id: html4css1.css 5951 2009-05-18 18:03:10Z milde $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin: 0 0 0.5em 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left, .figure.align-left{
+  clear: left ;
+  float: left ;
+  margin-right: 1em }
+
+img.align-right, .figure.align-right {
+  clear: right ;
+  float: right ;
+  margin-left: 1em }
+
+.align-left {
+  text-align: left }
+
+.align-center {
+  clear: both ;
+  text-align: center }
+
+.align-right {
+  text-align: right }
+
+/* reset inner alignment in figures */
+div.align-right {
+  text-align: left }
+
+/* div.align-center * { */
+/*   text-align: left } */
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font: inherit }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+ul.auto-toc {
+  list-style-type: none }
+
+</style>
+</head>
+<body>
+<div class="document">
+
+
+<!-- -*- mode: rst -*- -->
+<!-- original id: P30 -->
+<p>We had a visitor to the <a class="reference external" href="http://pythonmac.org/wiki/MacPythonChannel">MacPython Channel</a> yesterday that had heard <a class="reference external" href="http://developer.apple.com/documentation/GraphicsImaging/Reference/Quartz_2D_Ref/index.html">Quartz</a> (really, CoreGraphics) was a really fast way to work with PDFs on OS X.  His specific application was quickly to generating preview jpegs of very large (10mb) dynamically generated press-ready PDFs on the OS X Server 10.2 platform (dual 1ghz Xserve).  His current solution was using <a class="reference external" href="http://www.cs.wisc.edu/~ghost/">GhostScript</a> as the rasterization engine, but the color matching was off and it was grinding his poor server to a halt.  <a class="reference external" href="http://homepages.cwi.nl/~jack/macpython/index.html">MacPython</a> to the rescue!</p>
+<p>His first attempt was to figure out the CoreGraphics SWIG wrapper <a class="footnote-reference" href="#id2" id="id1">[1]</a>.  Unfortunately, he didn't know that it only worked on 10.3, and nobody in the channel was terribly familiar with the API beyond the examples from Apple and <a class="reference external" href="http://www.shearersoftware.com/personal/weblog/2003/11/08/the-fastest-way-to-resize-images-with-panther">Andrew Shearer</a>.  That was eliminated as a potential solution.</p>
+<p>The next (final, and working) attempt was to use CoreGraphics indirectly by way of <a class="reference external" href="http://developer.apple.com/cocoa/">Cocoa</a> through <a class="reference external" href="http://pythonmac.org/wiki/PyObjC">PyObjC</a>.  Fortunately, <a class="reference external" href="http://python.net/~gherman/">Dinu Gherman</a> had already done the hard work here, and had made available an open source <a class="reference external" href="http://python.net/~gherman/pdf2tiff.html">pdf2tiff</a> command line application that did nearly everything that was required.  What was left was converting the script to output jpeg instead.</p>
+<p>Initially I had naively thought since there wasn't an explicit <a class="reference external" href="http://developer.apple.com/documentation/Cocoa/Reference/ApplicationKit/ObjC_classic/Classes/NSImageRep.html">NSImageRep</a> for JPEG, it would have to be done as a postprocess by way of PIL, ImageMagick, etc.  Then, fortunately I remembered that <a class="reference external" href="http://developer.apple.com/documentation/Cocoa/Reference/ApplicationKit/ObjC_classic/Classes/NSBitmapImageRep.html">NSBitmapImageRep</a> was the answer: it can read/write JPEG, PNG, TIFF, and more!  We quickly changed the code (it was a three or four <em>line</em> change to pdf2tiff in all) to support JPEG by using NSBitmapImageRep.  After we had that working, he wanted to tweak the quality options.  Of course, the name of the properties key (NSImageCompressionFactor) was right in the documentation, so he plugged it in and everything just worked.</p>
+<p>There is one caveat though, Cocoa requires WindowServer access.  WindowServer is the process that makes the GUI tick in OS X, and runs as the currently logged in user.  It communicates with these processes via a <a class="reference external" href="http://developer.apple.com/documentation/Darwin/Conceptual/KernelProgramming/boundaries/chapter_14_section_4.html">mach port</a>, with permissions such that only the current logged in user, or root, can access it.  So this means, that in order for his script to work on his server, it needs to be setuid root (or setuid the logged in user, and have a particular user logged in all the time).  Hopefully someday Apple will help us out here and allow us to run a WindowServer in a virtual framebuffer.. reminds me of when I had to run <a class="reference external" href="http://www.xfree86.org/4.0.1/Xvfb.1.html">Xvfb</a> on Linux in order to use Java's AWT stuff to render out images on a server, but these was some 5 years ago, so things may be different.</p>
+<p>In any case, he says the previews look better and it runs much faster.  I don't have any numbers, but in my experiences with GhostScript and OS X's PDF engine (especially in 10.3!) I would guess it's at least one order of magnitude faster ;)</p>
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td>See /Developer/Examples/Quartz/Python/ (included with Xcode on OS X 10.3)</td></tr>
+</tbody>
+</table>
+</div>
+</body>
+</html>

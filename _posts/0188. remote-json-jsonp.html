@@ -1,0 +1,380 @@
+---
+categories: javascript, MochiKit, AJAX
+date: 2005/12/05 20:21:42
+guid: http://bob.pythonmac.org/?p=188
+permalink: http://bob.pythonmac.org/archives/2005/12/05/remote-json-jsonp/
+tags: ''
+title: Remote JSON - JSONP
+---
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" />
+<title></title>
+<style type="text/css">
+
+/*
+:Author: David Goodger (goodger@python.org)
+:Id: $Id: html4css1.css 5951 2009-05-18 18:03:10Z milde $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin: 0 0 0.5em 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left, .figure.align-left{
+  clear: left ;
+  float: left ;
+  margin-right: 1em }
+
+img.align-right, .figure.align-right {
+  clear: right ;
+  float: right ;
+  margin-left: 1em }
+
+.align-left {
+  text-align: left }
+
+.align-center {
+  clear: both ;
+  text-align: center }
+
+.align-right {
+  text-align: right }
+
+/* reset inner alignment in figures */
+div.align-right {
+  text-align: left }
+
+/* div.align-center * { */
+/*   text-align: left } */
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font: inherit }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+ul.auto-toc {
+  list-style-type: none }
+
+</style>
+</head>
+<body>
+<div class="document">
+
+
+<!-- -*- mode: rst -*- -->
+<p>The browser security model dictates that XMLHttpRequest, frames, etc. must have the same domain in order to communicate.  That's not a terrible idea, for security reasons, but it sure does make distributed (service oriented, mash-up, whatever it's called this week) web development suck.</p>
+<p>There are traditionally three solutions to solving this problem.</p>
+<dl class="docutils">
+<dt>Local proxy:</dt>
+<dd>Needs infrastructure (can't run a serverless client) and you get double-taxed on bandwidth and latency (remote - proxy - client).</dd>
+<dt>Flash:</dt>
+<dd>Remote host needs to deploy a crossdomain.xml file, Flash is relatively proprietary and opaque to use, requires learning a one-off moving target programming langage.</dd>
+<dt>Script tag:</dt>
+<dd>Difficult to know when the content is available, no standard methodology, can be considered a &quot;security risk&quot;.</dd>
+</dl>
+<hr class="docutils" />
+<p>I'm proposing a new technology agnostic standard methodology for the script tag method for cross-domain data fetching: <em>JSON with Padding</em>, or simply <strong>JSONP</strong>.</p>
+<p>The way JSONP works is simple, but requires a little bit of server-side cooperation.  Basically, the idea is that you <em>let the client decide</em> on a small chunk of arbitrary text to prepend to the JSON document, and you wrap it in parentheses to create a valid JavaScript document (and possibly a valid function call).</p>
+<p>The client decides on the arbitrary prepended text by using a query argument named jsonp with the text to prepend.  Simple!  With an empty jsonp argument, the result document is simply JSON wrapped in parentheses.</p>
+<p>Let's take the <a class="reference external" href="http://del.icio.us/help/json">del.icio.us JSON API</a> as an example.  This API has a &quot;script tag&quot; variant that looks like this:</p>
+<p><tt class="docutils literal"><span class="pre">http://del.icio.us/feeds/json/bob/mochikit+interpreter</span></tt>:</p>
+<pre class="literal-block">
+if(typeof(Delicious) == 'undefined') Delicious = {};
+Delicious.posts = [{
+    &quot;u&quot;: &quot;http://mochikit.com/examples/interpreter/index.html&quot;,
+    &quot;d&quot;: &quot;Interpreter - JavaScript Interactive Interpreter&quot;,
+    &quot;t&quot;: [
+        &quot;mochikit&quot;,&quot;webdev&quot;,&quot;tool&quot;,&quot;tools&quot;,
+        &quot;javascript&quot;,&quot;interactive&quot;,&quot;interpreter&quot;,&quot;repl&quot;
+    ]
+}]
+</pre>
+<p>In terms of JSONP, a document semantically identical to this would be available at the following URL:</p>
+<p><tt class="docutils literal"><span class="pre">http://del.icio.us/feeds/json/bob/mochikit+interpreter?jsonp=if(typeof(Delicious)%3D%3D%27undefined%27)Delicious%3D%7B%7D%3BDelicious.posts%3D</span></tt></p>
+<p>That's not very interesting on its own, but let's say I wanted to be notified when the document is available.  I could come up with a little system for tracking them:</p>
+<pre class="literal-block">
+var delicious_callbacks = {};
+function getDelicious(callback, url) {
+    var uid = (new Date()).getTime();
+    delicious_callbacks[uid] = function () {
+        delete delicious_callbacks[uid];
+        callback();
+    };
+    url += &quot;?jsonp=&quot; + encodeURIComponent(&quot;delicious_callbacks[&quot; + uid + &quot;]&quot;);
+    // add the script tag to the document, cross fingers
+};
+
+getDelicious(doSomething, &quot;http://del.icio.us/feeds/json/bob/mochikit+interpreter&quot;);
+</pre>
+<p>The fetched URL from this hypothetical experiment would look something like this:</p>
+<p><tt class="docutils literal"><span class="pre">http://del.icio.us/feeds/json/bob/mochikit+interpreter?jsonp=delicious_callbacks%5B12345%5D</span></tt></p>
+<pre class="literal-block">
+delicious_callbacks[12345]([{
+    &quot;u&quot;: &quot;http://mochikit.com/examples/interpreter/index.html&quot;,
+    &quot;d&quot;: &quot;Interpreter - JavaScript Interactive Interpreter&quot;,
+    &quot;t&quot;: [
+        &quot;mochikit&quot;,&quot;webdev&quot;,&quot;tool&quot;,&quot;tools&quot;,
+        &quot;javascript&quot;,&quot;interactive&quot;,&quot;interpreter&quot;,&quot;repl&quot;
+    ]
+}])
+</pre>
+<p>See, because we're wrapping with parentheses, a JSONP request can translate into a function call or a plain old JSON literal.  All the server needs to do differently is prepend a little bit of text to the beginning and wrap the JSON in parentheses!</p>
+<p>Now, of course, you'd have libraries like <a class="reference external" href="http://mochikit.com/">MochiKit</a>, <a class="reference external" href="http://dojotoolkit.org/">Dojo</a>, etc. abstracting JSONP so that you don't have to write the ugly DOM script tag insertion yourself, etc.</p>
+<p>Of course, this just solves the standardization problem.  Your page is still toast if the remote host decides to inject malicious code instead of JSON data.  However, if implemented, it'd save a lot of developers some time and allow for generic abstractions, tutorials, and documentation to be built.</p>
+</div>
+</body>
+</html>
