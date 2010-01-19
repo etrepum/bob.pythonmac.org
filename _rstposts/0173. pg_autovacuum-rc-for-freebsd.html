@@ -1,0 +1,44 @@
+---
+categories: FreeBSD, PostgreSQL
+date: 2005/08/17 21:42:54
+guid: /?p=173
+permalink: http://bob.pythonmac.org/archives/2005/08/17/pg_autovacuum-rc-for-freebsd/
+tags: ''
+title: pg_autovacuum rc for FreeBSD
+---
+.. -*- mode: rst -*-
+
+/usr/ports/databases/postgresql-contrib comes with the very useful (until 8.1, anyway) pg_autovacuum daemon, but no rc script.  Here's one I whipped up:
+
+``/usr/local/etc/rc.d/019.pg_autovacuum.sh``
+
+.. pycode::
+
+    #!/bin/sh
+    #
+    # PROVIDE: pg_autovacuum
+    # REQUIRE: postgresql
+    # KEYWORD: FreeBSD shutdown
+
+    # Add the following line to /etc/rc.conf to enable `pg_autovacuum':
+    #
+    # pg_autovacuum_enable="YES"
+    #
+    #
+
+    . /etc/rc.subr
+
+
+    pg_autovacuum_enable=${pg_autovacuum_enable:-"NO"}
+    pg_autovacuum_flags=${pg_autovacuum_flags:-"-v 300 -V 0.5"}
+
+    name=pg_autovacuum
+    rcvar=`set_rcvar`
+    command=/usr/local/bin/pg_autovacuum
+    load_rc_config ${name}
+    command_args="-D ${pg_autovacuum_flags}"
+    pg_autovacuum_user=pgsql
+
+    run_rc_command "$1"
+
+I did submit a PR with this by way of ``send-pr``, but it doesn't seem to have ended up in the PR repository.  I'm not sure what to do about that, as it's the recommended way to submit PRs!

@@ -1,0 +1,32 @@
+---
+categories: javascript, MochiKit, AJAX
+date: 2005/09/09 09:52:16
+guid: http://bob.pythonmac.org/?p=177
+permalink: http://bob.pythonmac.org/archives/2005/09/09/mochikit-cons-or-not/
+tags: ''
+title: MochiKit cons.. or not
+---
+.. -*- mode: rst -*-
+
+I was taking a look at the `AjaxLibraries`_ section of the `OSAFoundation wiki`_, because `mochikit.com`_ has been getting a lot of referrals from there.  There's a bit of misinformation in the cons section, which I'll clarify in this post:
+
+.. _`AjaxLibraries`: http://wiki.osafoundation.org/bin/view/Projects/AjaxLibraries
+.. _`OSAFoundation wiki`: http://wiki.osafoundation.org/
+.. _`mochikit.com`: http://mochikit.com/
+
+    - Sparse visual effects library
+
+This is fair, but so what?  `MochiKit`_ is fully compatible with everything else.  If you want visual effects, pick a library that does those and use it *with MochiKit*.  It's not trying to do any visual effects right now, except rounded corners -- and that's because it was a contributed feature.  JavaScript, particularly in the browser environment, is missing so many other things that making everything blink is not really a priority for us right now.  Blinking is totally orthogonal to everything else going on.  You know, like the stuff that actually matters.
+
+    - AJAX library (called 'Deferred') has limited functionality -- no POST, no access to result in XML, no ability to access HTTP status in error handling.
+
+Wrong, wrong, wrong, and wrong.
+
+The AJAX library, called `MochiKit.Async`_ gives you full access to the ``XMLHttpRequest`` object throughout the entire process, which lets you do whatever you want.  I imagine that the confusion arises because we make GET and JSON really really ridiculously easy.  Because they are.  There's nothing it can't do, though, because you have full control.
+
+To do a POST (or any other verb), use ``getXMLHttpRequest()`` and set one up, use ``sendXMLHttpRequest(req, postData)`` to fire it out.  If you want an easy way to build the post data, use ``queryString()``.
+
+The returned ``Deferred`` object will call back with the ``XMLHttpRequest`` object upon successful completion (which means you can get XML, or whatever the hell else you want), or if there is an error, the ``XMLHttpRequestError`` object has a ``req`` object that corresponds to the failed request, and for convenience a ``number`` property that corresponds to ``req.status``.
+
+.. _`MochiKit.Async`: http://mochikit.com/doc/html/MochiKit/Async.html
+.. _`MochiKit`: http://mochikit.com/

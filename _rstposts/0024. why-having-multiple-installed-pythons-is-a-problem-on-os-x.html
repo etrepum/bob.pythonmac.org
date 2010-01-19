@@ -1,0 +1,24 @@
+---
+categories: python
+date: 2003/12/08 14:09:36
+guid: /?p=24
+permalink: http://bob.pythonmac.org/archives/2003/12/08/why-having-multiple-installed-pythons-is-a-problem-on-os-x/
+tags: ''
+title: Why having multiple installed Pythons is a problem on OS X
+---
+.. -*- mode: rst -*-
+.. original id: P16
+
+Jack nailed down the reason that extension modules fail to link properly on 10.3 if you have a separate Python installed.  The -framework search path on OS X for linking (compile and runtime) hits /System last, and the Makefile for the system Python does not override the search path with -F.  
+
+If you want to use the /System version of Python at all, you really shouldn't have another Python installed, because the extensions you build won't work.  Proposed fixes include a patch to distutils, or the Makefile, but the easiest solution is just not installing another Python.  
+
+You really don't need one unless you're staring a 2.3.0 interpreter bug in the face, or you need to build 10.2 compatible extensions and app bundles.  This may not even work reliably, it has not been thoroughly tested.  Doing it properly would at least require setting the MACOSX_DEPLOYMENT_TARGET environment variable to 10.2, but it's probably not that easy, especially for non-trivial extensions.  Personally, I just don't have enough time in my day to deal with building software for 10.2 users, especially because 10.3 has new frameworks and libraries that make development easier.
+
+**Updates:**
+
+Brian Lenihan posted a "gcc_select" flavor script [1]_ for swapping Python around, which may be of some use (but is of course not a real solution to this problem).  I can't really recommend moving Apple Python out of the way for very long, because it is used by the faxing (I believe Python is used to generate cover pages) and printing (optionally, as far as I can tell) subsystems.  Another Python will not do, because these scripts depend on the proprietary CoreGraphics wrapper that comes with OS X 10.3.
+
+Make sure to check the trackbacks, some discussion about this issue is happening elsewhere.
+
+.. [1]  http://mail.python.org/pipermail/pythonmac-sig/2003-December/009654.html

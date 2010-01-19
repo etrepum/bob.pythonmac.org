@@ -1,0 +1,26 @@
+---
+categories: perl, macosx
+date: 2005/02/27 20:01:52
+guid: /?p=112
+permalink: http://bob.pythonmac.org/archives/2005/02/27/sdl_perl-1203a/
+tags: ''
+title: SDL_perl 1.20.3a
+---
+.. -*- mode: rst -*-
+
+This is painfully old news, but it seems that `Tels`_ had forked `SDL_perl`_ and released `SDL_perl 1.20.3`_.  This distribution is a hybrid of SDL_perl 2.0b2, with a mostly compatible SDL_perl 1.19 interface.  `Thomas Tongue`_ forked this as `SDL_perl 1.20.3a`_ which integrates some of the Mac OS X build patches I had made when I ported `Frozen Bubble`_.
+
+I say mostly compatible, because it almost works unchanged with `Frozen Bubble`_ (as far as I can tell).  It seems that SDL_perl 1.19 stored ``SDL::Surface`` objects as a hash reference, where they are scalar references in SDL_perl 1.20.3a.  So, I had to change several lines of code that looked like this::
+
+    $surface_reference->{-surface}
+
+To this::
+
+    ${$surface_reference}
+
+.. _`SDL_perl 1.20.3`: http://bloodgate.com/perl/sdl/sdl_perl.html
+.. _`Tels`: http://bloodgate.com/
+.. _`SDL_perl`: http://sdl.perl.org/
+.. _`Thomas Tongue`: http://www.thomastongue.com/
+.. _`Frozen Bubble`: http://www.frozen-bubble.org/
+.. _`SDL_perl 1.20.3a`: http://www.thomastongue.com/Code/SDL_Perl_MacOSX.html

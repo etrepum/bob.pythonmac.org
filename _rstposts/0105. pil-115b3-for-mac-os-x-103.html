@@ -1,0 +1,33 @@
+---
+categories: python, py2app, pil, macosx
+date: 2005/02/08 16:14:51
+guid: /?p=105
+permalink: http://bob.pythonmac.org/archives/2005/02/08/pil-115b3-for-mac-os-x-103/
+tags: ''
+title: PIL 1.1.5b3 for Mac OS X 10.3
+---
+.. -*- mode: rst -*-
+
+I've put together a quick bdist_mpkg build of `PIL`_ 1.1.5b3:
+
+- Imaging-1.1.5b3-py2.3-macosx10.3.zip for Mac OS X 10.3 (Pre-installed Python 2.3.0)
+
+UPDATE: This is out of date.  There is a newer version and other installers available at `pythonmac packages`__.
+
+.. __: http://pythonmac.org/packages/
+
+It's statically linked against:
+
+- `jpeg`_ 6b (from `darwinports`_)
+- `tiff`_ 3.7.1 (from `darwinports`_)
+- `freetype`_ 2.1.9 revision 1 (from `darwinports`_)
+
+``_imagingtk`` is dynamically linked with the `Tcl and Tk 8.4 frameworks`_ installed to ``/Library``.
+
+.. _`freetype`: http://www.freetype.org/
+.. _`tiff`: http://www.remotesensing.org/libtiff/
+.. _`jpeg`: http://www.ijg.org/
+.. _`Tcl and Tk 8.4 frameworks`: http://tcltkaqua.sourceforge.net/
+.. _`darwinports`: http://darwinports.opendarwin.org/
+.. _`PIL`: http://www.pythonware.com/products/pil/
+.. _`Imaging-1.1.5b3-py2.3-macosx10.3.zip`: http://undefined.org/python/Imaging-1.1.5b3-py2.3-macosx10.3.zip

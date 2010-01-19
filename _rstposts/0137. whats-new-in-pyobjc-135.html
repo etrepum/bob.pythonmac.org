@@ -1,0 +1,161 @@
+---
+categories: python, PyObjC, py2app
+date: 2005/05/18 14:54:38
+guid: /?p=137
+permalink: http://bob.pythonmac.org/archives/2005/05/18/whats-new-in-pyobjc-135/
+tags: ''
+title: What's new in PyObjC 1.3.5?
+---
+.. -*- mode: rst -*-
+
+- Importing objc now ensures that Foundation is multi-threaded, previously
+  it only ensured that Python was.
+
+- New ``objc.RegisterCFSignature`` used to register ``CFTypeRef``-like
+  signatures with the runtime.
+
+- ``PyObjCTools.Conversion`` functions now support all property list
+  types with the following conversions:
+
+  - NSData <-> buffer
+  - NSDecimalNumber <-> decimal.Decimal (if present)
+  - NSDate <-> datetime.datetime
+
+  New ``toPythonDecimal``, ``fromPythonDecimal`` functions which convert
+  between NSDecimalNumber and decimal.Decimal using an intermediate string.
+
+  New ``serializePropertyList`` and ``deserializePropertyList`` functions
+  which serialize (Objective-C) property lists to and from NSData.
+
+- ``OC_PythonObject``, the proxy for Python objects that do not have
+  an Objective-C superclass and are not otherwise special-cased, now
+  act slightly more like typical Objective-C objects (supporting
+  ``-isEqual:``, ``-hash``, and ``-compare:``).  This allows them
+  to work with Key-Value Coding if they are contained by an Objective-C
+  object, among other things.
+  
+- New objc.signature decorator that allows easier specification of
+  objc.selector wrappers for functions when using Python 2.4::
+
+    @objc.signature('i@:if')
+    def methodWithX_andY_(self, x, y):
+        return 0
+
+- ``PyObjCTools.KeyValueCoding.getKeyPath`` now supports all of the
+  Array Operators supported by Mac OS X 10.4.
+
+- Key-Value Coding of Python objects (whether or not using an Objective-C
+  base class) should act like Objective-C now.  In previous versions
+  there were inconsistencies with the use of capitalization, the
+  underscore postfix in setters, and Key-Value Observing.
+
+- The formal protocol list is now complete.  A new internal function, 
+  ``objc.protocolsForProcess()`` enumerates over all mach
+  headers and returns all of the protocols defined in the expected
+  place.  This fixes the scenario where an application uses a
+  protocol but does not define any classes that
+  conform to that protocol (i.e. to check plugin conformity).
+  Previously it was not possible to reach these protocols simply by
+  walking over all of the classes.
+
+- A special value, ``objc.NULL``, may now be passed in the place
+  of 'in' and 'inout' arguments.  This tells the bridge to pass
+  a NULL pointer to the Objective-C method, instead of a pointer
+  to the value.  The return value will still be a tuple of the
+  expected size.
+
+- Some of the new Tiger frameworks now have wrappers:
+
+  - ``AppleScriptKit``
+  - ``Automator``
+  - ``CoreData``
+  - ``DiscRecording``
+  - ``DiscRecordingUI``
+  - ``OSAKit``
+  - ``Quartz``
+  - ``QTKit``
+  - ``SyncServices``
+  - ``XgridFoundation``
+
+  Documentation and tests not yet written.
+
+- New ``OutlineEditor`` example in ``Examples/CoreData``,
+  it is a Python version of the identically named Apple example.
+
+- The last argument of selectors that end with ':error:' is now
+  assumed to be 'out' if its type is an object pointer.
+
+- More conveniences for ``list``-like and ``dict``-like
+  objects: ``__reversed__``, ``reverse``, ``pop``,
+  ``remove``, ``fromkeys``.
+
+- ``OC_PythonDictionary`` and ``OC_PythonArray`` now return
+  ``NSNull`` to Objective-C callers as appropriate.
+
+- New ``WebKitInterpreter`` example in ``Examples/Plugins``.
+  Uses the new WebKit Cocoa plugin API available in Safari 1.3
+  and later to embed a PyInterpreter in the browser.
+
+- Fixed a ``CFBundleRef`` reference counting bug in
+  ``Foundation._Foundation``.  The symptom of this is usually
+  a crashing application after having loaded a PyObjC-based
+  plugin into an otherwise Objective-C app.
+
+- New ``PyObjCTools.AppHelper`` functions: ``callAfter`` and
+  ``callLater``, conveniences for calling Python functions on
+  the main thread as soon as possible, or after a delay.
+
+- Twisted examples changed to use ``threadedselectreactor``
+  instead of ``cfreactor``.  ``cfreactor`` is deprecated.
+  Needs Twisted newer than 2.0 (svn r13575 or later).
+
+- ``objc.inject`` now injects on main thread by default,
+  and takes an optional third ``useMainThread`` argument
+  to change this behavior.  This is a complete rewrite
+  which should be correct, stable, Tiger compatible,
+  and synchronized with mach_* 1.1.
+
+- Removed an ``NSAutoreleasePool`` category hack that has
+  been deprecated for quite some time.
+
+- New ``objc.removeAutoreleasePool`` function that will remove
+  PyObjC's global ``NSAutoreleasePool``, which may be useful
+  for plugins.
+
+- Fixed bug in the ``NSBundle`` hack that caused a ``NULL``
+  pointer dereference if looking up a non-existent class using
+  ``NSBundle`` API.
+
+- Added ``OC_PythonUnicode`` and ``OC_PythonString`` classes that
+  preserve the identity of ``str`` and ``unicode`` objects across
+  the bridge.  The bridge for ``str`` now uses the default
+  encoding of ``NSString``, rather than ``sys.getdefaultencoding()``
+  from Python.  For Mac OS X, this is typically MacRoman.  The reason
+  for this is that not all Python ``str`` instances could cross the
+  bridge at all previously.  ``objc.setStrBridgeEnabled(False)`` will
+  still trigger warnings, if you are attempting to track down an
+  encoding bug.  However, the symptoms of the bug will be incorrectly
+  encoded text, not an exception.
+
+- New Xcode project template "PyObjC Mixed Application" that is
+  a py2app based Python application that loads an Objective-C
+  plug-in built as a separate target.
+
+- New py2app based Xcode templates "PyObjC Application" and
+  "PyObjC Document-based Application", these replace the
+  older "Cocoa-Python Application" and 
+  "Cocoa-Python Document-based Application" respectively.
+
+- New ``InjectBrowser`` example in ``Examples/Inject`` that demonstrates
+  injection of the ``ClassBrowser`` example into another application using
+  ``objc.inject``.
+
+- ``NSData`` and ``NSMutableData`` instances now support the Python buffer
+  protocol.
+
+- ``NSData`` instances now support a convenience API that allow them to
+  act like a ``buffer`` instance for ``str()`` and slicing.
+
+- Objects that support the Python buffer protocol, such as ``buffer`` and
+  ``array.array`` (but not ``str`` or ``unicode``) are now bridged as
+  ``NSData`` subclasses.

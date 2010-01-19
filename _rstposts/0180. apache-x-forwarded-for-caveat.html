@@ -1,0 +1,29 @@
+---
+categories: python, debugging
+date: 2005/09/23 14:08:20
+guid: http://bob.pythonmac.org/?p=180
+permalink: http://bob.pythonmac.org/archives/2005/09/23/apache-x-forwarded-for-caveat/
+tags: ''
+title: Apache X-Forwarded-For caveat
+---
+.. -*- mode: rst -*-
+
+When using Apache's mod_proxy in a reverse proxying scenario, usually you'll want to take a look at the (seemingly undocumented) X-Forwarded-For header.  This header contains *whatever the client sent for X-Forwarded-For* (if anything), plus the remote IP address of the client.
+
+So, if you're trying to do anything with this header, check for commas and pick out the *last* piece, because the client can send anything they want to, and you shouldn't ever trust the client:
+
+.. pycode::
+
+    def get_request_ip(request):
+        """get the IP of a request in twisted.web-speak"""
+        host = request.transport.getPeer().host
+        # Twisted doesn't support IPv6 anyway :)
+        if host != "127.0.0.1":
+            return host
+        header = request.received_headers.get('x-forwarded-for', None)
+        if header is None:
+            return host
+        return header.split(',')[-1].strip()
+
+
+I gleaned this from reading the Apache 2.0.54 source, I couldn't find any description of the behavior of mod_proxy in Apache's docs, only how to configure it.  I was surprised that it even preserved what the client sent!

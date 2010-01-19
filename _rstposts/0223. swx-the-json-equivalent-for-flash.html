@@ -1,0 +1,23 @@
+---
+categories: flash, actionscript
+date: 2007/04/01 09:22:31
+guid: http://bob.pythonmac.org/?p=223
+permalink: http://bob.pythonmac.org/archives/2007/04/01/swx-the-json-equivalent-for-flash/
+tags: ''
+title: 'SWX: The JSON equivalent for Flash'
+---
+.. -*- mode: rst -*-
+
+`Aral Balkan`_ has recently released `SWX`_, a new data exchange format for Flash.
+
+In his current implementation it's really two standards: A JSON-ish format based on PHP (bad idea) and a particular layout of SWF bytecode on the receiving end (good idea).
+
+Creating another JSON-like format is stupid. I really don't know why he did that. There are plenty of fast parsers for JSON in PHP, which are almost certainly going to be faster and perhaps safer than scanning input with a regex and eval-ing it. Using eval in server-side code with untrusted input, no matter how good you think your input validation is, is just foolish
+
+Generating SWF bytecode for the return value is a good idea. It's fast, compact (zlib compressible even), requires no parsing on the Flash end, and can be used cross-domain (with appropriate instrumentation) since it's just a loadMovie call. We actually do something very similar to `SWX`_ for essentially these reasons (that's a lot of what `eswf`_ is used for).
+
+I'd like to see him give up on the PHP junk in exchange for JSON and add explicit hooks in the standard for cross-domain help (LocalConnection transport, System.security.allowDomain support). All said, this could be a good thing for Flash developers and I'll be paying close attention to the project over the next few months.
+
+.. _`SWX`: http://swxformat.org/
+.. _`Aral Balkan`: http://aralbalkan.com/
+.. _`eswf`: http://code.google.com/p/eswf/

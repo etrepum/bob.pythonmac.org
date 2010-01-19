@@ -1,0 +1,30 @@
+---
+categories: javascript, MochiKit, AJAX
+date: 2005/10/08 09:59:02
+guid: http://bob.pythonmac.org/archives/2005/10/08/mochikit-090-released/
+permalink: http://bob.pythonmac.org/archives/2005/10/08/mochikit-090-released/
+tags: ''
+title: MochiKit 0.90 released
+---
+.. -*- mode: rst -*-
+
+`MochiKit 0.90`_ has been released!  This release includes a new feature, some bug fixes.
+
+The new feature in 0.90 is JSON serialization and evaluation support via ``serializeJSON``, ``evalJSON`` and ``registerJSON``. 
+
+.. _`MochiKit 0.90`: http://mochikit.com/download.html
+
+2005-10-08      v0.90
+
+- Fixed ISO compliance with toISODate
+- Added missing operator.sub
+- Placated Mozilla's strict warnings a bit
+- Added JSON serialization and unserialization support to MochiKit.Base:
+  serializeJSON, evalJSON, registerJSON.  This is very similar to the repr
+  API.
+- Fixed a bug in the script loader that failed in some scenarios when a script
+  tag did not have a "src" attribute (thanks Ian!)
+- Added new MochiKit.DOM createDOMFunc aliases: H1, H2, H3, BR, HR, TEXTAREA,
+  P, FORM
+- Use encodeURIComponent / decodeURIComponent for MochiKit.Base urlEncode
+  and parseQueryString, when available.

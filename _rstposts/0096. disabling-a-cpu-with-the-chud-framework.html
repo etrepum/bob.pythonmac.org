@@ -1,0 +1,68 @@
+---
+categories: macosx, c, debugging
+date: 2005/01/30 14:14:39
+guid: /?p=96
+permalink: http://bob.pythonmac.org/archives/2005/01/30/disabling-a-cpu-with-the-chud-framework/
+tags: ''
+title: Disabling a CPU with the CHUD framework
+---
+.. -*- mode: rst -*-
+
+`Xcode Tools`_ has an optional component, `CHUD Tools`_ (Computer Hardware Understanding Development Tools), that consists of some useful performance tools and low-level hardware facilities.  My Dual 2ghz G5 has been having some serious stability problems lately, with what I believe is a dying CPU or logic board.  When I saw errant CPU messages in the system log after experiencing unexplicable kernel panics and crashes I decided to see what would happen if I toggled the second CPU off with the Hardware preference pane that ships with CHUD.  It worked!  My G5 is now usable (though I will of course still get it repaired, but it's not convenient to do so at this time).
+
+Unfortunately, when I reboot the machine, this setting is lost and all bets are off as to whether I'll be able to disable the second CPU before the machine crashes, so I decided to look into what I could do.  I opened up the Hardware preference pane nib with Interface Builder to see what message was sent to change the CPU count (unsurprisingly, ``setCPUCount:``), then I used `class-dump`_ to find the implementation address of that message.  I then did an `otool`_ disassembly of the Hardware preference pane (``otool -tVv ...``) so that I could see what the code looked like at that address.  It called an unconspicuously named function ``chudSetNumProcessors`` from the ``CHUDCore.framework`` subframework of the umbrella ``CHUD.framework``, which happens to ship with *documented headers*!
+
+At first, I tried writing a simple C program that naively called right into ``chudSetNumProcessors``, which returned an error code that I didn't expect (from the documentation): something about the kext not being loaded.  I knew the kext was indeed loaded, because the Hardware preference pane works and I've used `Shark`_ recently, so I looked at the headers for initialization functions.  Unsurprisingly, I needed to call ``chudInitialize`` before trying to talk to the CHUD kext, so I ended up with the following program:
+
+.. pycode::
+
+    /*
+    % cc -o setNumProcessors setNumProcessors.c -framework CHUD
+    */
+
+    #include <unistd.h>
+    #include <CHUD/CHUD.h>
+
+    int main(int argc, char **argv) {
+        int rval = 0;
+        int status = chudInitialize();
+        if (status != chudSuccess) {
+            fprintf(stderr, "FATAL: Could not initialize chud, error %dn", chudInitialize());
+            return -1;
+        }
+        if (argc == 2) {
+            int cpuCount;
+            int curCPUCount = chudProcessorCount();
+            int physCPUCount = chudPhysicalProcessorCount();
+            sscanf(argv[1], "%d", &cpuCount);
+            if (cpuCount < 1 || cpuCount > physCPUCount) {
+                fprintf(stderr, "CPU count of %d not acceptable, expecting between 1 and %dn", cpuCount, physCPUCount);
+                rval = -1;
+            } else {
+                int res;
+                res = chudSetNumProcessors(cpuCount);
+                if (res != chudSuccess) {
+                    fprintf(stderr, "Could not change CPU count to %d, error %dn", cpuCount, res);
+                    rval = -1;
+                }
+            }
+        } else if (argc > 2) {
+            fprintf(stderr, "Must take zero or one argumentsn");
+            rval = -1;
+        }
+        printf("CPU Count: %d of %dn", chudProcessorCount(), chudPhysicalProcessorCount());
+        chudCleanup();
+        return -1;
+    }
+
+Now I can call this setNumProcessors application early on in the boot process and increase my odds of being able to use my computer on reboot!
+
+UPDATE:  `rentzsch`_ commented with a better solution.  It's also possible to disable multiprocessing even earlier by twiddling a setting in Open Firmware (`QA1141`_).
+
+.. _`QA1141`: http://developer.apple.com/qa/qa2001/qa1141.html
+.. _`rentzsch`: http://rentzsch.com/
+.. _`CHUD Tools`: http://developer.apple.com/tools/performance/
+.. _`Xcode Tools`: http://developer.apple.com/tools/macosxtools.html
+.. _`class-dump`: http://homepage.mac.com/nygard/Projects/
+.. _`otool`: x-man-page://1/otool
+.. _`Shark`: http://developer.apple.com/tools/sharkoptimize.html

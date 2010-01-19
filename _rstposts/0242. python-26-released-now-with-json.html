@@ -1,0 +1,42 @@
+---
+categories: python, macosx, simplejson
+date: 2008/10/02 10:16:11
+guid: http://bob.pythonmac.org/?p=242
+permalink: http://bob.pythonmac.org/archives/2008/10/02/python-26-released-now-with-json/
+tags: ''
+title: Python 2.6 released, now with json! :)
+---
+.. -*- mode: rst -*-
+
+`Python 2.6`_ was released yesterday, which has tons of `cool new features`_ including a new `json`_ library and a new `multiprocessing`_ library. The `json`_ library is basically `simplejson`_ (from a few months ago) minus the Python 2.4/2.5 support and refactored to take advantage of the latest future-compatible features (such as the new `str.format`_ method instead of using % format interpolation).
+
+The only downside is that I wasn't able to get the latest `simplejson`_ 2.0.1 performance enhancements into the first release of `Python 2.6`_, but expect them for Python 2.6.1! Don't worry though, `simplejson`_ should install just fine with Python 2.6 if you need the speed. If not, you don't have any dependencies for JSON anymore, just change your imports::
+
+    # Use simplejson or Python 2.6 json, prefer simplejson.
+    try:
+        import simplejson as json
+    except ImportError:
+        import json
+
+    print repr(json.dumps({'key': 'serialize this!'}))
+    print repr(json.loads('{"key": "deserialize this!"}'))
+
+One of my favorite features in `json`_/`simplejson`_ is the shell command that will validate/pretty print JSON. Great for debugging, and it will be sweet to have it available on every box with Python 2.6+!
+
+.. ::
+
+    $ echo '{"json":"obj"}' | python-mjson.tool
+    {
+        "json": "obj"
+    }
+
+A really cool tip if you're using Mac OS X is that you can access the string version of the pasteboard from the shell with pbpaste and pbcopy. This will take the JSON from your pasteboard and replace it with a pretty-printed version! If you're using `simplejson`_ just change ``json.tool`` to ``simplejson.tool``. I'm sure this would be super handy in a text editor macro too::
+
+    $ pbpaste | python -mjson.tool | pbcopy
+
+.. _`Python 2.6`: http://python.org/download/releases/2.6/
+.. _`simplejson`: http://www.undefined.org/python/#simplejson
+.. _`json`: http://docs.python.org/library/json.html
+.. _`str.format`: http://docs.python.org/library/stdtypes.html#str.format
+.. _`cool new features`: http://docs.python.org/whatsnew/2.6.html
+.. _`multiprocessing`: http://docs.python.org/library/multiprocessing.html

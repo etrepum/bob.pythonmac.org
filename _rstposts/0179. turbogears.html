@@ -1,0 +1,41 @@
+---
+categories: python, javascript, MochiKit, AJAX
+date: 2005/09/17 13:37:08
+guid: http://bob.pythonmac.org/?p=179
+permalink: http://bob.pythonmac.org/archives/2005/09/17/turbogears/
+tags: ''
+title: TurboGears
+---
+.. -*- mode: rst -*-
+
+`TurboGears`_, "the rapid web development megaframework you've been looking for", has just been released.  It's the first web framework (for any language) that includes `MochiKit`_ in its war chest.  `TurboGears`_ looks cool because it leverages a lot of very good existing software and wraps it up in a very usable manner.  It does not have `NIH syndrome`_.  It has `excellent documentation`_ and a very nice 20 minute `wiki tutorial`_ that covers the `whole stack`_ (all the way up to "AJAX" with `MochiKit`_!).
+
+.. _`whole stack`: http://www.turbogears.org/about/index.html
+.. _`excellent documentation`: http://www.turbogears.org/docs/index.html
+.. _`wiki tutorial`: http://www.turbogears.org/docs/wiki20/index.html
+.. _`NIH syndrome`: http://en.wikipedia.org/wiki/Not_Invented_Here
+.. _`TurboGears`: http://www.turbogears.org/
+.. _`MochiKit`: http://mochikit.com/
+
+There's a lot of good first impressions to be had with the technology:
+
+- It's not afraid to take advantage of Python 2.4 features (decorators)
+- Despite the fact that it has a bunch of dependencies, installation is painless as it's `setuptools`_-based (eggs!)
+- It uses `Kid`_ for templating.  XML in, XML out.  This means your templates look like your output and can be tested (for validation, look and feel, etc.) with just a web browser.  A web developer's dream come true!  If you've used `TAL`_ (or `ZPT`_) before, it's similar.
+- `SQLObject`_ is a pretty good ORM layer, with support for SQLite, MySQL and PostgreSQL.  What's especially cool is that you don't actually have to use it, so if you have another way of doing your model layer you really don't have to change.
+- The model hooks up to the view by returning a dictionary.  These dictionaries are either passed to `Kid`_ to render a template, or can be returned to the browser as `JSON`_.  There are plenty of other possibilities here (XML, etc.).  Perfect for `MochiKit`_ integration!
+- It comes with a script to make a project using the default template, so a new project is not a blank slate.  This is especially useful for new users.
+- `CherryPy`_ knows how to reload code and templates when they change on disk.  This is probably my biggest pet peeve with some of the "competition".  Boy do I hate restarting servers!
+- It supports all the important platforms (anything unix-like, including Mac OS X, and Windows).
+
+It seems to be quite a complete package.  I'd be a little more excited about it if it was built on top of `Twisted`_, but it's probably possible to plug that in to an extent using `CherryPy`_'s `WSGI`_ support.
+
+.. _`setuptools`: http://peak.telecommunity.com/DevCenter/setuptools
+.. _`Twisted`: http://twistedmatrix.com/
+.. _`WSGI`: http://peak.telecommunity.com/DevCenter/setuptools
+.. _`CherryPy`: http://www.cherrypy.org/
+.. _`JSON`: http://json.org/
+.. _`Kid`: http://kid.lesscode.org/
+.. _`TAL`: http://www.zope.org/Wikis/DevSite/Projects/ZPT/TAL
+.. _`ZPT`: http://www.zope.org/Wikis/DevSite/Projects/ZPT/FrontPage
+.. _`SQLObject`: http://sqlobject.org/

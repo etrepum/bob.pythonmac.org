@@ -1,0 +1,45 @@
+---
+categories: debugging, javascript, AJAX
+date: 2005/06/02 17:17:30
+guid: /?p=142
+permalink: http://bob.pythonmac.org/archives/2005/06/02/javascript-sucks-volume-1/
+tags: ''
+title: JavaScript sucks (volume 1)
+---
+.. -*- mode: rst -*-
+
+JavaScript Sucks:
+
+1. You can extend types by assigning stuff to their prototype, but that can easily break code since these new things can show up when iterating over the properties of an instance.  There is no way to hide these new properties.  Only magical built-in prototypes can define hidden properties.
+
+2. Arrays are braindead because you can't trust the built-in ways to compare them.   Strangely enough it seems that ``==`` is broken in most implementations, but the other comparison operators *seem* to do the right thing.  However, that is observed behavior, and I don't trust it to do the same thing everywhere.
+
+3. The only built-in mapping is the object, which means all keys must be strings.
+
+4. Everything is an object, except for the three or forty things that aren't.  Ugh.
+
+5. Referencing names of things that don't exist is not an error, but returns ``undefined``.  Referencing a property of ``undefined`` is an error.  It's a great way to get an exception very, very, far away from the code that was broken.
+
+6. Some implementations don't like extraneous commas, so you can't sanely write multi-line literal objects or arrays.  When you have them, you'll get strange errors and it will take you a long time to find and fix them.
+
+7. There's no way to introspect the stack beyond the function that's currently running, and the function that called it.  Your test failed, somewhere.  Debugging JavaScript sucks.
+
+8. Exceptions raised by "C code" often carry no information about the last JavaScript line that was running (if you were especially fortunate, it would simply crash the browser, in IE's case anyway).  Finding where an error happened basically requires a binary search of the new code that you introduced with debugging statements until you find it.
+
+9. Unit tests are good, the JavaScript unit test frameworks available aren't.  The fact that exceptions are so hard to track down makes unit tests basically necessary in order to remain sane, why the hell isn't there something as good as `py.test`_?  There's a port of Perl's `TestSimple`_, which is usable, but there's plenty of things not to like about it right now (which is to be expected, at 0.03).
+
+10. There's no operator overloading.
+
+11. There's no sprintf (to format numbers, mostly).
+
+12. Generally, there are a lot of objects that behave like arrays, but aren't, so you either have to convert them to arrays or not expect to be able to use array methods everywhere.  Fortunately, there isn't a quick and easy way to convert an array-like object to a real array.  Awesome.
+
+13. No varargs syntax, but you can call functions with variable arguments and painfully extract additional arguments from the arguments local variable.  So, it's kinda like Perl subs, except since arguments isn't a real array, you can't even shift off the arguments or otherwise use it as a regular array.  Ugh.
+
+14. ``foo.bar()`` and ``var bar = foo.bar; bar();`` do entirely different things.  You can write a function that does return a "bound function", but then you have this:  ``var bar = bind(foo.bar, foo);``.  Dumb!
+
+`continued...`__
+
+.. __: http://bob.pythonmac.org/archives/2005/07/18/javascript-sucks-volume-2/
+.. _`py.test`: http://codespeak.net/py/current/doc/test.html
+.. _`TestSimple`: http://www.justatheory.com/computers/programming/javascript/test_simple-0.03.html

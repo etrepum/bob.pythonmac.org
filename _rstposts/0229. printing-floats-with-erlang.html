@@ -1,0 +1,29 @@
+---
+categories: erlang, mochiweb
+date: 2007/12/17 22:37:36
+guid: http://bob.pythonmac.org/?p=229
+permalink: http://bob.pythonmac.org/archives/2007/12/17/printing-floats-with-erlang/
+tags: ''
+title: Printing floats with Erlang
+---
+.. -*- mode: rst -*-
+
+The float printing options that ship with Erlang all suck. You either don't have sufficient precision, or you have an extremely verbose representation::
+
+    1> io:format("~w ~.18g ~g ~s~n", [0.1234567, 0.1234567, 0.1234567, float_to_list(0.1234567)]).
+    0.123457 0.123456700000000003 0.123457 1.23456700000000002548e-01
+    2> io:format("~w ~.18g ~g ~s~n", [0.1, 0.1, 0.1, float_to_list(0.1)]).
+    0.100000 0.100000000000000006 0.100000 1.00000000000000005551e-01
+    
+`mochiweb`_ includes an implementation of the algorithm from the `"Printing Floating-Point Numbers Quickly and Accurately"`_ paper in the `mochinum`_ module (which is standalone, if you just want to use it without the rest of `mochiweb`_)::
+
+    3> io:format("~s~n", [mochinum:digits(0.1234567)]).
+    0.1234567
+    4> io:format("~s~n", [mochinum:digits(0.1)]).
+    0.1
+
+Problem solved :)
+
+.. _`mochiweb`: http://mochiweb.com/
+.. _`mochinum`: http://mochiweb.googlecode.com/svn/trunk/src/mochinum.erl
+.. _`"Printing Floating-Point Numbers Quickly and Accurately"`: http://www.cs.indiana.edu/~burger/fp/index.html

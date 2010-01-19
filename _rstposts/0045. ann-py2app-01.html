@@ -1,0 +1,27 @@
+---
+categories: python, py2app
+date: 2004/10/03 17:09:20
+guid: /?p=45
+permalink: http://bob.pythonmac.org/archives/2004/10/03/ann-py2app-01/
+tags: ''
+title: 'ANN: py2app 0.1'
+---
+.. -*- mode: rst -*-
+.. original id: P73
+
+`py2app`_ is the bundlebuilder replacement we've all been waiting for.  It is implemented as a distutils command, similar to `py2exe`_.
+
+Even at this early stage, it's probably the most advanced python packaging utility out there with regard to dependency analysis.  It's at a "works for me and the two other people that have tried it" stage.  It's not particularly documented, and I don't have time to document it today, but you should be able to get along given the examples.  Since it is very similar to `py2exe`_ in design, you can also borrow ideas from there.
+
+If you have any issues with `py2app`_, please let me know.  Provide source if possible.  I'm particularly interested in problematic packages which use import tricks or in-package data files such as `PIL`_ or `pygame`_.  These two are explicitly supported by the extensible "recipe" mechanism of `py2app`_, but there are surely others.  I believe `PEAK`_, `ZConfig`_, `Twisted`_, etc. may do one or both of these things.  Until a recipe is created for a particular problematic package, you may always just include it wholesale with the -p argument.
+
+Download and related links are here:
+http://undefined.org/python/#py2app
+
+.. _`PIL`: http://www.pythonware.com/products/pil/
+.. _`pygame`: http://pygame.org/
+.. _`PEAK`: http://peak.telecommunity.com/
+.. _`ZConfig`: http://www.zope.org/Members/fdrake/zconfig/
+.. _`Twisted`: http://twistedmatrix.com/
+.. _`py2app`: http://undefined.org/python/#py2app
+.. _`py2exe`: http://starship.python.net/crew/theller/py2exe/

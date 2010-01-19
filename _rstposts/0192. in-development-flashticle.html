@@ -1,0 +1,38 @@
+---
+categories: python, flash, TurboGears, flashticle
+date: 2006/01/06 20:23:22
+guid: http://bob.pythonmac.org/?p=192
+permalink: http://bob.pythonmac.org/archives/2006/01/06/in-development-flashticle/
+tags: ''
+title: 'In development: flashticle'
+---
+.. -*- mode: rst -*-
+
+We at `Mochi Media`_ have been working on Macromedia Flash related stuff a lot lately (especially `MochiBot`_).  One such thing is a soon-to-be-released (but available from svn) open source library called `flashticle`_.
+
+`flashticle`_ deals in all of those gnarly binary proprietary formats: FLV, SWF, AMF, Flash Remoting, Local Shared Object files, etc.  The only reason this was possible is because of the efforts of the `osflash`_ community, who have tirelessly reverse engineered all of these things and boiled it down into source code and documentation that I can learn from.
+
+One of the more interesting features of `flashticle`_ is the integration it has with `TurboGears`_: flashticle.turbogateway.  This lets you very simply develop Flash Remoting services using Python.  How simple you ask?  Well, here's the Python source to *TWO* demo applications:
+
+ - `turbogatewaydemos.model`_ (database model for both)
+ - `turbogatewaydemos.services.PizzaService`_ (pizzaService example from `AMFPHP`_ / `ARP`_)
+ - `turbogatewaydemos.services.BirthdayOrganizer`_ (BirthdayOrganizer example from `OpenAMF`_ / `ARP`_)
+
+This is a total of a whopping 117 lines of very liberally spaced Python code that defines all three database tables and fully implements every feature of both sample applications.
+
+The PHP version of the pizzaService backend (`pizzaService.php`_) is 138 lines of code, is one big security flaw (doesn't escape SQL properly, big surprise), is MySQL specific, and it doesn't include the DB schema and can't create any tables for you (thank you ``tg-admin sql create``).
+
+The Java version of the BirthdayOrganizer backend, which I won't even bother linking to, is well... ginormous.  246 lines of XML configuration sludge in 5 files, 29 lines of SQL schema in 1 file, and 3004 lines of Java code in 45 files.  Holy crap.  If you add that all up, the *trivial BirthdayOrganizer example* is only a hair shorter than *all of flashticle*!  And the BirthdayOrganizer example builds on top of 15 Java dependencies and requires a J2EE server plus ant.  Friends don't let friends code Java.  Oh, and it's also MySQL specific, but you better be damn well sure that there's a stub implementation you can subclass and an XML file you can mangle in order to support something else if you so choose to write that 200 lines of code to support a single three column table database.
+
+.. _`pizzaService.php`: http://amfphp.sourceforge.net/examples/pizzaservice/pizzaService.phps
+.. _`OpenAMF`: http://www.openamf.org/
+.. _`turbogatewaydemos.model`: http://svn.red-bean.com/bob/turbogatewaydemos/trunk/turbogatewaydemos/model.py
+.. _`turbogatewaydemos.services.PizzaService`: http://svn.red-bean.com/bob/turbogatewaydemos/trunk/turbogatewaydemos/services/PizzaService.py
+.. _`turbogatewaydemos.services.BirthdayOrganizer`: http://svn.red-bean.com/bob/turbogatewaydemos/trunk/turbogatewaydemos/services/BirthdayOrganizer.py
+.. _`flashticle`: http://undefined.org/python/#flashticle
+.. _`Mochi Media`: http://mochimedia.com/
+.. _`MochiBot`: http://mochibot.com/
+.. _`osflash`: http://osflash.org/
+.. _`ARP`: http://osflash.org/arp
+.. _`TurboGears`: http://turbogears.org/
+.. _`AMFPHP`: http://amfphp.sourceforge.net/

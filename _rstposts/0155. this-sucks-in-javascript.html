@@ -1,0 +1,51 @@
+---
+categories: javascript, AJAX
+date: 2005/07/06 20:49:19
+guid: /?p=155
+permalink: http://bob.pythonmac.org/archives/2005/07/06/this-sucks-in-javascript/
+tags: ''
+title: this sucks (in JavaScript)
+---
+.. -*- mode: rst -*-
+
+One of the biggest `stumbling blocks`_ most people bash into when learning JavaScript is the "``this``" variable.  ``this`` is a special variable (like ``arguments``) that's always bound to some object.  By default, ``this`` is bound to the global object, which is typically going to be ``document.window`` in a browser.  However, there are two things that can temporarily bind it to something else:
+
+.. _`stumbling blocks`: http://blog.ianbicking.org/prototype-and-object-prototype.html
+
+1. JavaScript's magical ``foo.bar()`` call syntax.
+2. `Function.prototype.apply`_ (or `Function.prototype.call`_)
+
+.. _`Function.prototype.apply`: http://developer-test.mozilla.org/en/docs/Core_JavaScript_1.5_Reference:Objects:Function:apply
+.. _`Function.prototype.call`: http://developer-test.mozilla.org/en/docs/Core_JavaScript_1.5_Reference:Objects:Function:call
+
+
+You can demonstrate JavaScript's magical (read: completely stick-your-head-in-a-blender stupid) treatment of "foo.bar()" call syntax with the following snippet:
+
+.. pycode::
+
+    foo = {
+        'bar': function () {
+            alert(this);
+        },
+        'toString': function () {
+            return 'foo';
+        }
+    };
+    foo.bar();
+    (foo.bar)();
+    (foo.bar || null)();
+    bar = foo.bar; bar();
+
+The first call, ``foo.bar()`` is the "call with this" syntax, so you should get an alert with "foo".
+
+The second call, ``(foo.bar)()`` is technically "just call" syntax, but some JavaScript interpreters will interpret it as the same AST as the first one.  For example, Safari will still say "foo" here, but Firefox will say "[object Window]".
+
+The third call is unambiguously "just call" syntax, so you will get "[object Window]" here.  I suppose if Safari gets any smarter, it might give the wrong answer here someday ;)
+
+And the fourth is really really unambiguous "just call" syntax, so you will get "[object Window]" here as well.
+
+Bah.
+
+As for apply and call, it's basically the same thing except you spell it backwards.  Instead of ``foo.bar()`` you say ``bar = foo.bar; bar.apply(foo, [])``.  This is particularly useful, but it's only necessary because JavaScript is dumb and doesn't have bound methods or anything like Python's ``*args`` variable argument `call syntax`_.
+
+.. _`call syntax`: http://docs.python.org/ref/calls.html

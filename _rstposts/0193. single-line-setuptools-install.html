@@ -1,0 +1,20 @@
+---
+categories: python, setuptools
+date: 2006/01/17 15:42:51
+guid: http://bob.pythonmac.org/?p=193
+permalink: http://bob.pythonmac.org/archives/2006/01/17/single-line-setuptools-install/
+tags: ''
+title: Single-line setuptools install
+---
+.. -*- mode: rst -*-
+
+For those of you just starting out with `setuptools`_, here's a quick way to install it.  After running this, you'll have access to `easy_install`_ for all of your other installation needs::
+
+    python -c "import urllib; urllib.main()" \
+    http://peak.telecommunity.com/dist/ez_setup.py \
+    | python - -U setuptools
+
+Note that this will execute Python code from a remote host without any kind of authenticity check.  Use at your own risk.  Only tested on Mac OS X, FreeBSD, and Linux (with Python 2.3 and 2.4).
+
+.. _`easy_install`: http://peak.telecommunity.com/DevCenter/EasyInstall
+.. _`setuptools`: http://peak.telecommunity.com/DevCenter/setuptools

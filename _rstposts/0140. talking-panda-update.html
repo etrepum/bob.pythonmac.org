@@ -1,0 +1,43 @@
+---
+categories: General, python, PyObjC, py2app, perl, java, pil, macosx, iPod
+date: 2005/05/23 23:37:30
+guid: /?p=140
+permalink: http://bob.pythonmac.org/archives/2005/05/23/talking-panda-update/
+tags: ''
+title: Talking Panda Update
+---
+.. -*- mode: rst -*-
+
+We've (finally) updated `talkingpanda.com`_ today with a fresh new look and a new product: `iBar`_.
+
+`iBar`_ turns your iPod (any iPod with a screen and a `dock connector`_) into an "ultimate bartending tool" with over a thousand drink recipes, mixing techniques, and even a couple history lessons.  Like any good bar should be, it's stocked.  Altogether, the Notes content adds up to over 3 megabytes (yes, that's text!) with more than 40 minutes of original, professionally recorded, audio.
+
+Like its sibling `iLingo`_, `iBar`_ ships with installers for Mac OS X and Windows XP/2000 (everywhere iTunes is supported) that make installation painless.
+
+And for relevance, here's a little bit about how it's all put together:
+
+* The Mac OS X installer was developed with `Python`_ 2.3, `PyObjC`_ 1.2, and bundled up with `py2app`_.
+
+* The Win32 installer was developed with `Python`_ 2.4, `win32all`_, `Tkinter`_, `PIL`_ and is bundled up with `py2exe`_ and then made self-contained with `NSIS`_.
+
+* The build scripts for the installer application actually use *even more* open source stuff.  We use `JExcelAPI`_ to convert Excel spreadsheets to XML, and `Win32::Exe`_ to swap out the ICO resource out of win32 executables -- but no Java or Perl makes it into the redistributable :)
+
+We're also blogging updates and podcasting some of our content, so point your `NetNewsWire`_ or `Safari RSS`_ over to `Talking Panda News`_!
+
+.. _`Safari RSS`: http://www.apple.com/macosx/features/safari/
+.. _`NetNewsWire`: http://ranchero.com/netnewswire/
+.. _`Talking Panda News`: http://talkingpanda.com/news/
+.. _`JExcelAPI`: http://www.andykhan.com/jexcelapi/
+.. _`Win32::Exe`: http://search.cpan.org/~autrijus/Win32-Exe/
+.. _`dock connector`: http://docs.info.apple.com/article.html?artnum=61688
+.. _`talkingpanda.com`:  http://talkingpanda.com/
+.. _`iBar`: http://talkingpanda.com/ibar.php
+.. _`iLingo`: http://talkingpanda.com/ilingo.php
+.. _`Python`: http://python.org/
+.. _`PyObjC`: http://pyobjc.sourceforge.net/
+.. _`py2app`: http://undefined.org/python/#py2app
+.. _`py2exe`: http://starship.python.net/crew/theller/py2exe/
+.. _`win32all`: http://starship.python.net/crew/mhammond/win32/
+.. _`Tkinter`: http://docs.python.org/lib/module-Tkinter.html
+.. _`NSIS`: http://nsis.sourceforge.net/
+.. _`PIL`: http://www.pythonware.com/products/pil/

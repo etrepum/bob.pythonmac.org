@@ -1,0 +1,72 @@
+---
+categories: FreeBSD, PostgreSQL, Bizgres, SQL
+date: 2005/08/17 23:05:04
+guid: /?p=174
+permalink: http://bob.pythonmac.org/archives/2005/08/17/bizgres-on-freebsd-and-mac-os-x/
+tags: ''
+title: Bizgres on FreeBSD and Mac OS X
+---
+.. -*- mode: rst -*-
+
+We're currently experimenting with various optimization techniques for our databases using `PostgreSQL`_'s features, and we've become quite interested in the `Table Partitioning`_ in PostgreSQL 8.1.  `Bizgres`_ has this feature now (amongst others that will likely benefit our app) in its 0.7 release, so I decided to give it a whirl.
+
+.. _`Bizgres`: http://www.bizgres.org/
+.. _`PostgreSQL`: http://www.postgresql.org/
+.. _`Table Partitioning`: http://www.bizgres.org/assets/docs/html/tblpartn.htm
+
+Installing `Bizgres`_ 0.7 on Mac OS X is easy enough, but it loses a few points (no big deal, it's beta):
+
+- The installer doesn't use Apple's installer, it uses some InstallAnywhere crap that I don't really trust
+- The installer is probably one of the `ugliest`_ things I have ever seen on Mac OS X outside of perversiontracker
+- It throws a readline library in a Fink-owned location if it's not already there (install_name_tool, anyone?!)
+- It doesn't install any sort of preference pane, StartupItem, or GUI tools at all
+- The demos are there, but they're sitting in tar files... wtf?
+
+.. _`ugliest`: http://photos.yafro.com/pics3/i/20050817/19/f/d/d/fdda35337d7d9eacb89bb909ce2740fe0_full.png
+
+Installing on FreeBSD er.. loses even more points.  It's not a supported platform yet, so that's to be expected.  The build process depends on a suite of bash scripts to set some environment variables, and ant to do the build.  Autoconf happens somewhere too, but that's not invoked directly.  The problems here are:
+
+- Bash isn't the default shell in FreeBSD, and isn't even normally installed (unless you did it yourself)
+- The bash scripts assume /bin/bash (where it's /usr/local/bin/bash on FreeBSD)
+- The Ant build script, common.xml:
+    
+    - Needs OS-specific incantations
+    - Assumes ``make`` is GNU make
+    - Assumes ``bash`` is at ``/bin/bash`` (even though it checks for its presence anywhere in ``$PATH``!) 
+    
+- Oh, and it needs Java for Ant:
+   
+    Java Is A Royal Pain In The Ass On FreeBSD (and installing it is beyond the scope of this post).
+
+So anyway, I fixed those things and made a patch.  Here's how you could build and install with it:
+
+- Download the 0.7 source tarball
+- Do this::
+
+    cd bizgres
+    curl -s http://redivi.com/~bob/bizgres-0_7_4-FreeBSD-1.patch | patch -u -p0
+    su
+    bash
+    source source-before-build.sh
+    ant -Ddebug=false -DinstallRoot=/usr/local/bizgres -DdevoBuild=true install
+    exit
+    exit
+
+This will install bizgres to ``/usr/local/bizgres-0_7_4``.  It's not going to make any rc scripts for you, but they can be trivially adapted from the PostgreSQL port.
+
+.. _`bizgres-0_7_4-FreeBSD.patch`: http://undefined.org/~bob/bizgres-0_7_4-FreeBSD.patch
+
+Note that:
+
+- This is the first time I've ever attempted to port something to FreeBSD (though I do have extensive Mac OS X experience)
+- `Bizgres`_ 0.7 is beta software
+- This is largely untested
+- FreeBSD is not a supported platform (by them, or me)
+
+If this causes you to lose all of your data, first, make sure that you weren't using MySQL.  If you were indeed using Bizgres on FreeBSD, then blame yourself for not listening to the above.
+
+UPDATE:
+
+    Changed the URL of the patch to one that compiles with OpenSSL support by default.  To add OpenSSL support to an already patched source (or to JUST add OpenSSL support to unpatched source), use the following:
+
+    http://redivi.com/~bob/bizgres-0_7_4-OpenSSL.patch

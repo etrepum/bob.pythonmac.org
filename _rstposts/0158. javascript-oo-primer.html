@@ -1,0 +1,112 @@
+---
+categories: javascript, AJAX
+date: 2005/07/18 04:10:31
+guid: /?p=158
+permalink: http://bob.pythonmac.org/archives/2005/07/18/javascript-oo-primer/
+tags: ''
+title: Javascript OO Primer
+---
+.. -*- mode: rst -*-
+
+Prototypes
+----------
+
+JavaScript is a non-traditional Object Oriented language in that it uses
+prototype based, rather than class based inheritance.  Some other languages
+that implement prototype-based OO are Self, Lua, Io, NewtonScript, Slate,
+and Prothon.
+
+The basic premise of prototype-based OO is that new objects are created from
+similar objects, much like using a copy machine.  The new object is largely
+indistinguishable from the prototype used to create it.  It is possible
+to modify the new object without affecting the prototype, and this
+new object may be used as the prototype for other objects.
+
+Functions
+---------
+
+In JavaScript, functions are first-class objects like any other.  They may be
+stored in variables, passed as arguments, and properties may be added or
+removed from them dynamically (e.g. ``func.foo = "bar"``).  Functions are
+also the building block for creating new objects.  There are three different
+syntaxes for invoking a function:
+
+Function Call:
+    ``func(a, b)``
+
+    Execute the body of ``func`` with two arguments, ``a`` and ``b``, and the special
+    ``this`` variable set to the global object (typically ``window`` in a browser).
+    The value of this expression will be the value given by the terminal ``return``
+    statement, or ``undefined`` if no ``return`` statement is reached before the
+    execution completes.
+
+    Note that even if ``func`` is a local variable in another function's scope,
+    ``this`` will still be set to the global object!
+
+Method Call:
+    ``obj.func(a, b)``
+
+    Execute the body of ``func`` with two arguments, ``a`` and ``b``, and special
+    ``this`` variable set to ``obj``.  The value of this expression will be the
+    value given by the terminal ``return`` statement, or ``undefined`` if no
+    ``return`` statement is reached before the execution completes.
+
+    Note that this is actually a different syntax entirely than the function call.
+    ``func`` is not bound to ``obj`` in any way, and that a reference to ``func`` as
+    a local variable or on another object will behave differently if called!
+
+Constructor:
+    ``new func(a, b)``
+
+    Execute the body of ``func`` with two arguments, ``a`` and ``b``, and special
+    ``this`` variable set to a new object (``newObject``) cloned from
+    ``func.prototype``.  The value of this expression is always ``newObject``.  If
+    any ``return`` statement is reached during execution, its value is ignored.
+
+    The expression ``(newObject instanceof func)`` will evaluate to ``true`` so long
+    as ``func.prototype`` is not replaced with another object.  Additionally,
+    ``(newObject instanceof T)`` will evaluate to ``true`` for all values of ``T``
+    where ``(func.prototype instanceof T)`` evalutes to ``true``.
+
+    ``newObject`` is a copy-on-write clone of ``func.prototype``.  This means that
+    any property set on ``newObject`` *will not* propagate to ``func.prototype``.
+    Conversely, any property added or changed on ``func.prototype`` *will*
+    propagate to ``newObject``, unless that property has been set on ``newObject``.
+
+    All objects, including ``func.prototype``, have this prototype property
+    delegation behavior.  This means that properties from ``func.prototype``'s
+    prototype will propagate to ``newObject`` unless otherwise set by
+    ``func.prototype`` or ``newObject``, and so on.  This prototype property
+    delegation chain terminates with ``Object.prototype``, so properties set on
+    ``Object.prototype`` are accessible (and enumerable) from every object in the
+    whole interpreter!  Due to this, it's generally wise to avoid modifying
+    ``Object.prototype`` (or really, any built-in prototype) whenever possible.
+
+Demonstration
+-------------
+
+.. pycode::
+
+    // set up the prototype
+    func.prototype.protoProperty = 1;
+    func.prototype.anotherProperty = 2;
+
+    // create a new object from the prototype
+    var newObject = new func(a, b);
+
+    // the prototype's properties are visible on newObject
+    assert( newObject.protoProperty == 1 );
+    assert( newObject.anotherProperty == 2 );
+
+    // newObject can be modified without affecting its prototype
+    newObject.anotherProperty = 3;
+    assert( newObject.anotherProperty == 3 );
+    assert( func.prototype.anotherProperty == 2 );
+
+    // func.prototype can be modified, and it will affect
+    // newObject unless the modified properties were written to
+    // in newObject
+    func.prototype.protoProperty = 0;
+    func.prototype.anotherProperty = 1;
+    assert( newObject.protoProperty == 0 );
+    assert( newObject.anotherProperty == 3 );

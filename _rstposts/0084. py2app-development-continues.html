@@ -1,0 +1,40 @@
+---
+categories: python, py2app
+date: 2004/09/28 03:09:20
+guid: /?p=84
+permalink: http://bob.pythonmac.org/archives/2004/09/28/py2app-development-continues/
+tags: ''
+title: py2app development continues
+---
+.. -*- mode: rst -*-
+.. original id: P71
+
+I've done a bunch of work on `py2app`_ the past couple days.  It's probably in a state where it could be used for a legitimate project, but I'm not going to provide any real support it yet.  If you do play with it, you will need to also check out the latest `macholib`_.
+
+New stuff:
+
+* dylib dependency hunting and rewriting
+* standalone (for non-vendor python builds)
+* data resources
+* icon
+* template plist file, plistlib.Plist, or dict
+* alias build mode (similar to but better than bundlebuilder --symlink)
+* can avoid modulefinder (when using alias build mode)
+* Python 2.4 support
+* dylib/framework includes
+* semi-standalone option when using non-system Python
+* argv emulation
+* chdir to Resources folder (or not)
+
+Still missing:
+
+* Non-zip distribution mode
+* Plugins (preference panes, etc.)
+* Including full packages
+* Still haven't tried anything non-trivial
+* dylib/framework excludes
+* baked-in "recipes" for common problematic packages (PIL, for example)
+* a couple minor bundlebuilder options (creator, bundle-id, strip)
+
+.. _`py2app`: http://svn.red-bean.com/bob/py2app/trunk/
+.. _`macholib`: http://svn.red-bean.com/bob/macholib/trunk/

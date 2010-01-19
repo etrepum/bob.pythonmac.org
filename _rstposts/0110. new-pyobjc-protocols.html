@@ -1,0 +1,57 @@
+---
+categories: python, PyObjC, macosx
+date: 2005/02/16 23:14:43
+guid: /?p=110
+permalink: http://bob.pythonmac.org/archives/2005/02/16/new-pyobjc-protocols/
+tags: ''
+title: New PyObjC Protocols
+---
+.. -*- mode: rst -*-
+
+`PyObjC`_ now (in svn) has a new protocol that makes it significantly easier to handle the special cases of Python -> Objective-C bridging:
+
+- The Python to Objective-C bridge now looks for a ``__pyobjc_object__``
+  attribute to get a PyObjC object from a Python object.
+
+Although the news item is short, it has far-reaching implications.  I'm pretty certain that I've been able to remove hundreds of lines of code in just ``NSNumber`` support with this generalization:
+
+- ``NSNumber`` instances are bridged to a ``float``, ``long``, or ``int``
+  subclass that uses ``__pyobjc_object__``.  ``NSDecimalNumber`` is bridged
+  to ``Foundation.NSDecimal``, which now supports ``__pyobjc_object__``.
+  This eliminates a HUGE amount of cruft in ``objc._conveniences``.
+
+Speaking of protocols, I also added support so that the formal ones work!
+
+- PyObjC classes can now declare that they implement formal protocols,
+  for example:
+
+.. pycode::
+
+    import objc
+    from Foundation import *
+    class MyLockingClass(NSObject, objc.protocolNamed('NSLocking')):
+        # implementation
+        pass
+
+There's still a lot of room for improvement in the ``Protocol`` support:
+
+- Protocols are not type checked.  Anything in the base list that is a ``PyObjCObject`` will get chunked into the protocol list.  Will probably crash if you do something really stupid (though there's plenty of that in `PyObjC`_ anyway)
+- Protocols can not be created from `PyObjC`_
+- selectors don't benefit from the Protocol information like they do for informal protocols
+- `PyObjC`_ doesn't verify that you implement the protocol like it does for informal protocols
+- ``objc.protocolNamed`` is probably pretty slow, should use a lookup hash
+
+There's also a nice new convenience in ``PyObjCTools.KeyValueCoding``:
+
+- PyObjCTools.KeyValueCoding has a new ``kvc`` class that allows
+  Pythonic Key-Value Coding.
+
+  - ``__getitem__`` is mapped to ``valueForKeyPath:``
+  - ``__setitem__`` is mapped to ``setValue:forKeyPath:``
+  - ``__getattr__`` is mapped to ``valueForKey:``
+  - ``__setattr__`` is mapped to ``setValue:forKey:``
+
+  The ``kvc`` class uses ``__pyobjc_object__``, so it may cross the bridge
+  as the wrapped object.
+
+.. _`PyObjC`: http://pyobjc.sourceforge.net/

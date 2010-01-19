@@ -1,0 +1,16 @@
+---
+categories: python
+date: 2004/02/20 20:17:36
+guid: /?p=59
+permalink: http://bob.pythonmac.org/archives/2004/02/20/pth-files-are-your-friend/
+tags: ''
+title: pth files are your friend
+---
+.. -*- mode: rst -*-
+.. original id: P43
+
+Why is it that many Python packages insist on littering your site-packages folder?  It's not very hard to make a setup.py that has its own little microcosm referenced by a pth file, and it makes the user's life so much better.  See Numeric, PIL, or PyObjC for decent examples.
+
+Bonus: the user can easily uninstall, cleanly upgrade, or even move the package to an alternate location simply by moving it and changing the path in the pth.
+
+Update: It looks like this is done with the extra_path argument to setup(...).  I would've mentioned it, but I didn't realize that it wasn't documented outside of the source, mailing lists, and files in an old CVS attic!

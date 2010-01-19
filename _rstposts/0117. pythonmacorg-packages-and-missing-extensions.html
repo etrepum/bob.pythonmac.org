@@ -1,0 +1,48 @@
+---
+categories: python, py2app, packman, macosx
+date: 2005/03/09 21:32:27
+guid: /?p=117
+permalink: http://bob.pythonmac.org/archives/2005/03/09/pythonmacorg-packages-and-missing-extensions/
+tags: ''
+title: pythonmac.org packages and missing extensions
+---
+.. -*- mode: rst -*-
+
+The Python 2.3.0 distributed with Mac OS X 10.3 is missing three extensions typically found on other platforms::
+
+    _bsddb
+    _tkinter
+    readline
+
+Since these are part of the standard library, it is somewhat annoying to build them after the fact.  I have put together a little svn repository with the relevant setup scripts and sources:
+
+http://svn.red-bean.com/bob/MacPythonPantherExtras/trunk/
+
+Installer packages for these three extensions are available at:
+
+http://pythonmac.org/packages/
+
+Note that ``_bsddb`` and ``readline`` include their respective dependencies statically, where ``_tkinter`` requires `TclTkAqua`_ 8.4.
+
+Many other packages are also available from this repository, including `PantherPythonFix`_, `wxPython`_, `Numeric`_ and `numarray`_ (with AltiVec support via Apple's `Accelerate`_ framework), `PIL`_ (with tiff, jpeg, and Tkinter support), and `matplotlib`_ (with Agg, wxPython, and Tkinter support contributed by Chris Barker).
+
+The majority of these packages are only available for the Python 2.3.0 that ships with Mac OS X 10.3 (Panther), but a few are available for Mac OS X 10.2 (Jaguar).  These Jaguar packages are compatible with the `MacPython 2.3 distribution`_ (even if used on Mac OS X 10.3 or later).
+
+Most of the packages in this repository were built with the `bdist_mpkg`_ command of `py2app`_.  Building your own redistributable package installers can be as easy as::
+
+  bdist_mpkg setup.py --zipdist
+
+The ``--zipdist`` option is currently only available in `py2app svn trunk`_, but will be part of the 0.1.8 release later this month.
+
+.. _`bdist_mpkg`: http://undefined.org/python/py2app.html#bdist-mpkg-documentation
+.. _`py2app svn trunk`: http://svn.red-bean.com/bob/py2app/trunk/
+.. _`py2app`: http://undefined.org/python/#py2app
+.. _`matplotlib`: http://matplotlib.sourceforge.net/
+.. _`MacPython 2.3 distribution`: http://homepages.cwi.nl/~jack/macpython/
+.. _`Accelerate`: http://developer.apple.com/hardware/ve/vector_libraries.html
+.. _`Numeric`: http://numeric.scipy.org/
+.. _`numarray`: http://www.stsci.edu/resources/software_hardware/numarray
+.. _`PantherPythonFix`: http://bob.pythonmac.org/archives/2005/02/04/fix-mac-os-x-103s-python-230/
+.. _`wxPython`: http://wxpython.org/
+.. _`PIL`: http://www.pythonware.com/products/pil/
+.. _`TclTkAqua`: http://tcltkaqua.sf.net/

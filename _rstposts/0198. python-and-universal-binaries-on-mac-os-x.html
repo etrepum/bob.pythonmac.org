@@ -1,0 +1,50 @@
+---
+categories: python, PyObjC, py2app, macosx, universal binaries, setuptools
+date: 2006/04/10 14:41:04
+guid: http://bob.pythonmac.org/?p=198
+permalink: http://bob.pythonmac.org/archives/2006/04/10/python-and-universal-binaries-on-mac-os-x/
+tags: ''
+title: Python and Universal Binaries on Mac OS X
+---
+.. -*- mode: rst -*-
+
+It's been a pretty long haul getting Python to do the right thing on Mac OS X with regard to Universal Binaries.  The dust is settling, and it's about time to start publicizing the results.
+
+In order to compile extensions with Universal MacPython, you absolutely must have the latest version of Xcode installed.  When you install it, make absolutely sure that you Customize the installation and install the Mac OS X 10.4 Universal SDK.  Universal MacPython *requires* this SDK to be installed, as it instructs the compiler and linker to use this specific SDK.  There is a hook that will remove these special flags, but ONLY for legacy Mac OS X 10.3.9 users.  Mac OS X 10.3.9 users should still be able to compile extensions, but the resultant binaries will be PPC only and shouldn't be distributed (as they will not work on Intel).
+
+Besides the obvious endian fixes and distutils/configure hackery, Universal MacPython includes many usability enhancements over previous distributions of Python for Mac OS X:
+
+- IDLE, the Python IDE, should now ship with Mac keybindings and menus by default
+- Placing binaries in ``/usr/local/bin`` is now optional
+- The ``bin`` directory from the framework is now (by default) automatically added first to your ``PATH`` environment variable.  This means that when you open a new terminal session and type ``python``, you will get Universal Python 2.4.3.  Yes, it's ugly to do this, but it's a necessary evil. ``PATH`` related issues are *by far* the most frequent source of confusion on `pythonmac-sig`_ (between Python itself and distutils-installed scripts), and this is the solution.  `darwinports`_ does something quite similar.
+- ``pythonw`` is now an executable, instead of a shell script, so it may be used directly in a hash-bang line for a shell script (``#!``).
+- Users no longer need to know or care about ``pythonw``.  ``python`` and ``pythonw`` are the same binary, which simply does an ``execve`` to a Python executable inside of a "fake" application bundle to placate the WindowServer.  Yes, this introduces a tiny little bit of overhead when invoking ``python`` due to the extra syscall, but it is again a necessary evil to work around a design flaw in Mac OS X.
+- Includes a working bsddb, readline, and curses.
+- Known compatible with Mac OS X 10.3.9 and later, without any patching necessary on Mac OS X 10.4.
+
+The latest Universal Python source code is currently a fork of Python 2.4.3, and currently resides outside of the official Python subversion repository.  For those interested in the source, it is here:
+
+- http://svn.pythonmac.org/python24/python24-fat/
+
+The latest binary release of Universal Python is currently available in the Universal Python 2.4 section of `pythonmac.org packages`_!  There is/was an older Universal Python build available somewhere on python.org but it is NOT what you should be using (it's built without compiler optimization and is roughly 50% slower on either architecture!):
+
+- http://pythonmac.org/packages/py24-fat
+
+`PyObjC`_ and `py2app`_ users with Universal MacPython should install `PyObjC`_ from SVN trunk (which will net you a universal-ready `py2app`).  There is currently no tagged release of either project that is suitable for this build of Python, but we hope to fix that soon:
+
+- http://svn.red-bean.com/pyobjc/trunk/pyobjc/
+- http://svn.red-bean.com/bob/py2app/branches/py2app-0.2-maint/
+
+`pythonmac.org packages`_ has been split into two sections, one for universal packages, and one for legacy builds of Python.  Currently there aren't many universal packages ready (largely because I don't have an Intel machine yet, so I can only test on PPC).  The legacy packages for Python 2.4 are still compatible with Universal MacPython, however, they are NOT compatible with Intel.
+
+Most packages should compile just fine, and `setuptools`_/`easy_install`_ are already Universal MacPython aware.  However, packages that depend on external libraries will not compile correctly of the dependent libraries aren't also Universal.  This means that MySQL bindings, wxPython, and a few other popular packages are not yet readily available.  This issue will resolve itself at some point due to the demand, but it's not resolved *yet*.  There's a list of desired packages and their status at the `UniversalPackages`_ node on the `pythonmac.org wiki`_.
+
+.. _`darwinports`: http://darwinports.opendarwin.org/
+.. _`UniversalPackages`: http://pythonmac.org/wiki/UniversalPackages
+.. _`pythonmac.org wiki`: http://pythonmac.org/wiki/
+.. _`setuptools`: http://peak.telecommunity.com/DevCenter/setuptools
+.. _`easy_install`: http://peak.telecommunity.com/DevCenter/EasyInstall
+.. _`pythonmac.org packages`: http://pythonmac.org/packages/
+.. _`pythonmac-sig`: http://www.python.org/community/sigs/current/pythonmac-sig/
+.. _`PyObjC`: http://pyobjc.sourceforge.net/
+.. _`py2app`: http://undefined.org/python/#py2app

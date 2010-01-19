@@ -1,0 +1,54 @@
+---
+categories: python, PyObjC, macosx
+date: 2005/04/04 20:53:40
+guid: /?p=128
+permalink: http://bob.pythonmac.org/archives/2005/04/04/pyobjc-and-unicode/
+tags: ''
+title: PyObjC and unicode
+---
+.. -*- mode: rst -*-
+
+There's a constant battle in `PyObjC`__ about what to do about regular ``str`` instances, since Foundation doesn't have a data type that's unencoded bytes (``NSData``) and text (``NSString``) at the same time.  Up to now, ``str`` instances were be converted to ``NSString`` using Python's default encoding (``sys.getdefaultencoding()``), which is basically always ``ascii`` and will raise an exception, which is really never what you want.  I committed a change this week that will hopefully be a least worst of both worlds solution:
+
+.. __: http://pyobjc.sourceforge.net/
+
+- Added ``OC_PythonUnicode`` and ``OC_PythonString`` classes that
+  preserve the identity of ``str`` and ``unicode`` objects across
+  the bridge.  Additionally, bridge for ``str`` now uses the default
+  encoding of ``NSString``, rather than ``sys.getdefaultencoding()``
+  from Python.  For Mac OS X, this is typically MacRoman.  The reason
+  for this is that not all Python ``str`` instances could cross the
+  bridge at all previously.  ``objc.setStrBridgeEnabled(False)`` will
+  still trigger warnings, if you are attempting to track down an
+  encoding bug.  However, the symptoms of the bug will be incorrectly
+  encoded text, not an exception.
+
+This lets ``NSString`` decide what encoding to use (generally, MacRoman), so you still get garbage in garbage out, but:
+
+- It's lossless (garbage in, same garbage out)
+- 7-bit ASCII safe (usually when str is used for text, it is just ascii)
+- Doesn't raise exceptions in strange places
+- If it was data (not text) and you were just putting it in a container or something, it will still be data when you get it back
+
+NeXT/Apple definitely did strings in a very nice way.  Rather than deciding there should be one and only one way to do them, they made ``NSString`` a class cluster where you can have any concrete implementation you want.  The only methods your concrete classes *have* to implement are:
+
+``-(unsigned)length``:
+    Return the number of characters in the string
+
+``-(unichar)characterAtIndex:(unsigned)index``:
+    Return the character at that index (or raise an exception)
+
+There are, of course, additional methods that a concrete subclass of ``NSString`` can implement for efficiency.
+
+Doing strings in this way has some nice advantages:
+
+- If they wanted to trade up ``unichar`` to 32 bits, it would require minimal changes to the source code
+- You can use whatever backing store you need to use, with whatever properties it needs to have (i.e. mmap backed store, a constant in the code that never gets freed, a length-prefixed string, whatever!)
+- You can use whatever encoding you want to use, and conversion doesn't take place until you do something with it
+
+In Python's case, ``OC_PythonUnicode`` is actually a zero-copy concrete subclass of ``NSString`` (if Python's unicode characters are the same size as unichar, anyway).  Python can't do ANYTHING like this:
+
+- The backing store of a Python unicode object must be controlled by Python (i.e. you can't point to a constant string, you can't point to a slice of another unicode object, etc.).  This throws zero-copy strategies out the window.
+- The encoding of a Python unicode object must be UCS-2 (or UCS-4, depending on configure time options)
+
+So, that sucks... but at least Python does have good unicode support, unlike some other languages with similar heritage.

@@ -1,0 +1,44 @@
+---
+categories: javascript, MochiKit, AJAX
+date: 2005/11/14 16:35:47
+guid: http://bob.pythonmac.org/?p=185
+permalink: http://bob.pythonmac.org/archives/2005/11/14/mochikit-11/
+tags: ''
+title: MochiKit 1.1
+---
+.. -*- mode: rst -*-
+
+`MochiKit`_ 1.1 is now available [`download`_].  This release contains a bunch of bug fixes, performance enhancements, cross-referenced and bookmarkable `documentation`_, and some convenient new APIs.
+
+Also make sure to check out the new `MochiKit 1.1 Intro Screencast`_!
+
+`MochiKit`_ is still quite lightweight, the entire library is just shy of ``90k`` (up from ``89k`` in the 1.0 release).  Comparatively, this is the same size as the AJAX edition of `Dojo Toolkit`_ 1.0.
+
+`MochiKit.DOM.currentWindow`_ and `currentDocument`_ allow you to change the global ``window`` and/or ``document`` object used by all `MochiKit.DOM`_ functions, which allows you to use mock DOM objects (great for testing), deal in a separate window, frame, or XML document's objects, etc.
+
+`MochiKit.Async.Deferred.prototype.addCallback`_, `addErrback`_, and `addBoth`_ now accept additional arguments, which will create a `partial`_ function.
+
+`MochiKit.Async.doSimpleXMLHttpRequest`_ will now use additional arguments to build a query string, via `MochiKit.Base.queryString`_ and/or `MochiKit.DOM.formContents`_ depending on the arguments given.
+
+There's a new `MochiKit.Async.DeferredLock`_ object to use for synchronizing `Deferred`_ instances.
+
+For a full list of changes, see `Version History`_.
+
+.. _`MochiKit`: http://mochikit.com/
+.. _`Documentation`: http://mochikit.com/doc/html/MochiKit/index.html
+.. _`Version History`: http://mochikit.com/doc/html/MochiKit/index.html#version-history
+.. _`download`: http://mochikit.com/download.html
+.. _`Dojo Toolkit`: http://dojotoolkit.org/
+.. _`MochiKit.DOM`: http://mochikit.com/doc/html/MochiKit/DOM.html
+.. _`MochiKit.DOM.currentWindow`: http://mochikit.com/doc/html/MochiKit/DOM.html#fn-currentwindow
+.. _`currentDocument`: http://mochikit.com/doc/html/MochiKit/DOM.html#fn-currentdocument
+.. _`MochiKit.Async.Deferred.prototype.addCallback`: http://mochikit.com/doc/html/MochiKit/Async.html#fn-deferred.prototype.addcallback
+.. _`addErrback`: http://mochikit.com/doc/html/MochiKit/Async.html#fn-deferred.prototype.adderrback
+.. _`addBoth`: http://mochikit.com/doc/html/MochiKit/Async.html#fn-deferred.prototype.addboth
+.. _`MochiKit.Async.doSimpleXMLHttpRequest`: http://mochikit.com/doc/html/MochiKit/Async.html#fn-dosimplexmlhttprequest
+.. _`MochiKit.Base.queryString`: http://mochikit.com/doc/html/MochiKit/Base.html#fn-querystring
+.. _`MochiKit.DOM.formContents`: http://mochikit.com/doc/html/MochiKit/DOM.html#fn-formcontents
+.. _`Deferred`: http://mochikit.com/doc/html/MochiKit/Async.html#fn-deferred
+.. _`MochiKit.Async.DeferredLock`: http://mochikit.com/doc/html/MochiKit/Async.html#fn-deferredlock
+.. _`MochiKit 1.1 Intro Screencast`: http://mochikit.com/screencasts/MochiKit_Intro-1
+.. _`partial`: http://mochikit.com/doc/html/MochiKit/Base.html#fn-partial

@@ -1,0 +1,29 @@
+---
+categories: python, simplejson
+date: 2008/03/24 07:40:59
+guid: http://bob.pythonmac.org/?p=232
+permalink: http://bob.pythonmac.org/archives/2008/03/24/simplejson-181/
+tags: ''
+title: simplejson 1.8.1
+---
+.. -*- mode: rst -*-
+
+`simplejson`_ is a simple, fast, complete, correct and extensible `JSON`_ (`RFC 4627`_) encoder/decoder for Python 2.3+.  It is pure Python code with no dependencies.
+
+`simplejson`_ 1.8.1 is a major update:
+
+* Optional C extension for accelerating the decoding of JSON strings
+* Command line interface for pretty-printing JSON (via ``python -msimplejson``)
+* Decoding of integers and floats is now extensible (e.g. to use ``Decimal``) via ``parse_int``, ``parse_float`` options.
+* Subversion and issue tracker moved to google code: http://code.google.com/p/simplejson/
+* Misc. bug fixes
+
+There is one incompatible change:
+
+* ``"/"`` is no longer escaped, so if you're embedding JSON directly in HTML you'll want to use ``.replace("/", "\\/")`` to prevent a close-tag attack. Sorry, but the in-HTML use case just isn't worth the bloat in everyone else's documents.
+
+.. _`RFC 4627`: http://www.ietf.org/rfc/rfc4627.txt
+.. _`documentation`: http://simplejson.googlecode.com/svn/tags/simplejson-1.8.1/docs/index.html
+.. _`JSON`: http://json.org/
+.. _`JSON.org`: http://json.org/
+.. _`simplejson`: http://undefined.org/python/#simplejson

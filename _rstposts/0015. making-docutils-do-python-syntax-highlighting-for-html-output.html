@@ -1,0 +1,27 @@
+---
+categories: python, docutils
+date: 2003/11/10 18:18:08
+guid: /?p=15
+permalink: http://bob.pythonmac.org/archives/2003/11/10/making-docutils-do-python-syntax-highlighting-for-html-output/
+tags: ''
+title: Making docutils do python syntax highlighting (for HTML output)
+---
+.. -*- mode: rst -*-
+.. original id: P7
+
+http://undefined.org/python/docpytils-0.0.tgz is a simple docutils directive that does simple python syntax highlighting in ReST.. basically, after importing docpytils, you can do something like this::
+
+    .. pycode::
+        
+        python code here..
+
+Like raw, you can also use :file: or :url: as arguments.
+
+Output will look like this:
+
+.. pycode::
+
+    >>> from __future__ import *
+      File "<stdin">, line 1
+    SyntaxError: future statement does not support import *
+    >>>

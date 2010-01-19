@@ -1,0 +1,61 @@
+---
+categories: python
+date: 2004/01/06 21:01:20
+guid: /?p=31
+permalink: http://bob.pythonmac.org/archives/2004/01/06/abusing-__getitem__-is-fun/
+tags: ''
+title: Abusing __getitem__ is fun
+---
+.. -*- mode: rst -*-
+.. original id: P23
+
+.. pycode::
+
+    class SliceAbuser(object):
+        def __init__(self, value):
+            self.value = value
+            self.items = []
+
+        def __getitem__(self, items):
+            if not isinstance(items, tuple):
+                items = items,
+            append = self.items.append
+            for item in items:
+                append((item.start, item.stop))
+            return self
+
+It doesn't look like much, right?  Well, this hack basically allows you to use dict syntax on a __getitem__!  Check this out:
+
+.. pycode::
+
+    s = SliceAbuser
+    resource, index, help, style, more, moreindex = 'resource', 'index', 'help', 'style', 'more', 'moreindex'
+    o = s(resource)[
+        'index.html': s(index),
+        'help.html': s(help),
+        'style.css': s(style),
+        'more': s(more)[
+            'index.html': s(moreindex),
+        ],
+    ]
+
+Yeah, it's a whole sitemap in Python syntax.  Instead of strings, pretend that resource, index, etc. are all whatever kind of Resource objects your web framework uses (I'm thinking in `Twisted`_).  Don't believe me?  Look at this:
+
+.. pycode::
+
+    def printSiteMap(obj, parents = ()):
+        print '    ' * len(parents), '/'.join(parents), '->', obj.value
+        for key, value in obj.items:
+            printSiteMap(value, parents+(key,))
+    printSiteMap(o)
+
+.. pycode::
+  
+  -> resource
+     index.html -> index
+     help.html -> help
+     style.css -> style
+     more -> more
+         more/index.html -> moreindex
+
+.. _`Twisted`: http://twistedmatrix.com/

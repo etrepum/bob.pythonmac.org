@@ -1,0 +1,27 @@
+---
+categories: python, py2app
+date: 2004/08/15 18:50:08
+guid: /?p=79
+permalink: http://bob.pythonmac.org/archives/2004/08/15/macholib-does-symbols-now/
+tags: ''
+title: macholib does symbols now
+---
+.. -*- mode: rst -*-
+.. original id: P65
+
+I wrote some code last night that adds some rudimentary Mach-O symbol table support to `macholib`_.  I did this primarily because `py2exe`_ introspects dll and pyd files to see if they reference `PyImport_ImportModule`_ so that it can potentially display a warning message since the extension will be able to dynamically add dependencies to the application in a way that is undetectable without actually running the code.
+
+.. pycode::
+
+    >>> import macholib
+    >>> s = macholib.SymbolTable(macholib.MachO('pygame/display.so'))
+    >>> for (nlist, name) in s.undefsyms:
+    ...   if name == '_PyImport_ImportModule':
+    ...     print name
+    ...     break
+    ... 
+    _PyImport_ImportModule
+
+.. _`macholib`: http://svn.red-bean.com/bob/macholib/trunk/
+.. _`py2exe`: http://starship.python.net/crew/theller/py2exe/
+.. _`PyImport_ImportModule`: http://docs.python.org/api/importing.html

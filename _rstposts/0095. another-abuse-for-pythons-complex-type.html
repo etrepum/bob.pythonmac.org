@@ -1,0 +1,35 @@
+---
+categories: python
+date: 2005/01/29 19:51:20
+guid: /?p=95
+permalink: http://bob.pythonmac.org/archives/2005/01/29/another-abuse-for-pythons-complex-type/
+tags: ''
+title: Another (ab)use for Python's complex type
+---
+.. -*- mode: rst -*-
+
+I'm not sure where I saw this first, but it can be convenient to use Python's complex type to represent 2D points or vectors.  Adding two complex numbers together is the same operation as adding vectors, and the absolute value of a complex number is equivalent to the norm of the vector (can be used to calculate distance or length).
+
+.. pycode::
+
+    # The norm of the vector (3.0, 4.0)
+    >>> abs(3 + 4j)
+    5.0
+
+    # The distance between (8.0, 10.0) and (-5.0, 2.0)
+    >>> abs((-5 + 2j) - (8 + 10j))
+    15.264337522473749
+
+    # Adding the vectors (5.0, 8.0) and (-3.0, 2.0) to get (2.0, 10.0)
+    >>> (5 + 8j) + (-3 + 2j)
+    (2+10j)
+
+    # Suggested by Max Thiercy
+    # Multiplication of a vector (2, 3) by a scalar (5):
+    >>> a = 2 + 3j
+    >>> b = 5 * a
+    (10+15j)
+
+UPDATE:  Frederik commented that he had also `written on this topic in the context of Tkinter`__
+
+.. __: http://online.effbot.org/2004_09_01_archive.htm#tkinter-complex

@@ -1,0 +1,37 @@
+---
+categories: python, py2app
+date: 2004/10/08 20:02:40
+guid: /?p=49
+permalink: http://bob.pythonmac.org/archives/2004/10/08/ann-py2app-012/
+tags: ''
+title: 'ANN: py2app 0.1.2'
+---
+.. -*- mode: rst -*-
+.. original id: P77
+
+`py2app`_ is the bundlebuilder replacement we've all been waiting for.  It is implemented as a distutils command, similar to `py2exe`_, that builds Mac OS X applications from Python scripts, extensions, and related data files.  It tries very hard to include all dependencies it can find so that your application can be distributed standalone, as Mac OS X applications should be.
+
+`py2app`_ 0.1.2 is primarily a bugfix release:
+
+ * The encodings package now gets included in the zip file (saves space)
+ * A copy of the Python interpreter is not included anymore in standalone builds (saves space)
+ * The executable bootstrap is now stripped by default (saves a little space)
+ * sys.argv is set correctly now, it used to point to the executable, now it points to the boot script.  This should enhance compatibility with some applications.
+ * Adds an "Alias" feature to modulegraph, so that sys.modules craziness such as wxPython.wx -> wx can be accomodated (this particular craziness is also now handled by default)
+ * A sys.path alternative may be passed to find_modules now, though this is not used yet
+ * The Command instance is now passed to recipes instead of the Distribution instance (though no recipes currently use either)
+ * The post-filtering of modules and extensions is now generalized into a stack and can be modified by recipes
+ * A `wxPython`_ example demonstrating how to package `wxGlade`_ has been added (this is a good example of how to write your own recipe, and how to deal with complex applications that mix code and data files)
+ * PyRuntimeLocations is now set to (only) the location of the current interpreter's Python.framework for alias and semi-standalone build modes (enhances compatibility with extensions built with an unpatched Makefile with Mac OS X 10.3's Python 2.3.0)
+
+Known issues:
+
+ * Includes *all* files from packages, it should be smart enough to strip unused .py/.pyc/.pyo files (to save space, depending on which optimization flag is used).
+
+Download and related links are here:
+http://undefined.org/python/#py2app
+
+.. _`wxGlade`: http://wxglade.sourceforge.net/
+.. _`wxPython`: http://www.wxpython.org/
+.. _`py2app`: http://undefined.org/python/#py2app
+.. _`py2exe`: http://starship.python.net/crew/theller/py2exe/

@@ -1,0 +1,27 @@
+---
+categories: python, PyObjC, py2app
+date: 2004/02/04 23:14:40
+guid: /?p=54
+permalink: http://bob.pythonmac.org/archives/2004/02/04/bundlebuilder2-coming-soon-to-a-mac-near-you/
+tags: ''
+title: bundlebuilder2 -- coming soon to a mac near you
+---
+.. -*- mode: rst -*-
+.. original id: P38
+
+For the past.. while.. I've been slowly hacking at a refactoring of `bundlebuilder`_ that uses my (unreleased) macholib package.  Here's what the new bundlebuilder will do:
+
+  * (complete) In addition to automatically finding modules when in ``--semi-standalone`` and ``--standalone`` mode, it will *also* find non-System dylibs and frameworks!
+  * (complete) It properly rewrites mach-o headers on everything such that they have load commands referencing ``@executable_path/../Frameworks`` rather than their original paths.
+  * (in progress) Configurable detection of packages that should be included whole, such as `pygame`_, because it references data files via ``__file__`` (breaking zip import).
+  * (planned, to be released separately) a `PyObjC`_ GUI for bundlebuilder2, that makes all of this even more configurable and easy to use.
+
+For the interested, macholib is basically a Python-rewrite of the ``/usr/include/mach-o`` headers, which a subset of the functionality from `otool`_ and `install_name_tool`_.  Originally I had released something called potool that attempted to do these things, but I had made a few wrong assumptions, so I rewrote it all as macholib.
+
+Honestly, the only things I can think of that otool has that I don't are symbolic disassembly, symbol table dumps, and useless things like printing a nice description of the threadstate load commands.  I actually do have a mostly-finished symbolic PPC disassembler written in Python, but it's an ugly port of some of GCC's guts and I doubt it'd be a good idea to unleash it on the world :)
+
+.. _`bundlebuilder`: http://pythonmac.org/wiki/BundleBuilder
+.. _`otool`: x-man-page://otool
+.. _`install_name_tool`: x-man-page://install_name_tool
+.. _`pygame`: http://pygame.org/
+.. _`PyObjC`: http://pyobjc.sf.net/

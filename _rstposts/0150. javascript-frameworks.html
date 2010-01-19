@@ -1,0 +1,47 @@
+---
+categories: javascript, MochiKit, AJAX
+date: 2005/07/01 15:12:00
+guid: /?p=150
+permalink: http://bob.pythonmac.org/archives/2005/07/01/javascript-frameworks/
+tags: ''
+title: JavaScript frameworks
+---
+.. -*- mode: rst -*-
+
+JavaScript, as a language, gives you just about nothing useful.  All you have are objects (little more than key-value bags, or null), extremely lame exception handling, and a few primitives (number, string, undefined, function).  That means no classes, macros, continuations, coroutines, metaclasses, etc.  Forget even thinking about overloading operators or inventing new control structures.
+
+To make JavaScript a half-assed environment for writing code that does more than twiddle the visibility of DOM elements, you have to really add a lot of junk to it.  There are two or three out there worth their salt, but all of them have their issues.  Here's my beef with `Prototype`_, for example:
+
+.. _`Prototype`: http://prototype.conio.net/
+
+- ``Object.prototype`` hacking breaks ``for (key in obj)`` syntax in just about every imaginable way
+- No documentation
+- No tests
+- No good method for doing deferred operations
+- Crufty code evolved from JavaScript frameworks past that attempts to work around bugs in browsers that wouldn't even consider Prototype valid code in the first place!
+
+There really isn't enough useful code in `Prototype`_ to make it worth my while to embrace and extend it, so I went and wrote my own (`MochiKit`_).  It's not released yet, but we're planning to put it out there this month.  Currently it has some really interesting stuff, though.  Here's just a small taste.
+
+MochiKit/Base.js:
+
+- A complete set of operator-wrappers for use with functional programming (e.g. ``operator.add``, ``operator.truth``, etc.)
+- Wrapper functions for common operations (``itemgetter(nameOfKey)``, ``forward(forwardMethodName)``, ``typeMatcher(tA, tB, ...)``, ``isUndefinedOrNull``, etc.
+- Partial function application ``partial(func, arg0, arg1, ...)`` and function-binding ``bind(func, obj)``.
+- Functional programming constructs for Array-like-objects and argument lists: ``map(fn, seq0, seq1, ...)``, ``xmap(fn, p0, p1, p2, ...)``, ``filter(pred, seq)``, ``xfilter(pred, p0, p1, p2, ...)``, ``concat(seq0, seq1, ...)``
+- An adapter registry concept that makes certain bits of the framework more like generic functions.
+- COMPARISON THAT WORKS.  ``compare(a, b)`` for any reasonable ``a`` and ``b`` will do the right thing.  This includes arrays, dates, numbers, and strings.  If you want to teach it how to compare something else, there is ``registerComparator(...)`` which is a wrapper around an adapter registry!  Also, ``keyComparator(...)`` and ``reverseKeyComparator(...)`` that conveniently wrap up ``compare(a.key, b.key)``.
+- ``repr(obj)`` gives you Python-like ``repr`` for objects, if ``obj.repr()`` is implemented OR if there is an adapter for it via ``registerRepr(...)``.  Built-in ``repr`` for array, string, undefined, and null.  The default is ``obj.toString()``, of course.
+- min/max functions that use ``compare(...)``: ``listMax(lst)``, ``listMin(lst)``, ``objMax(p0, p1, ...)``, ``objMin(p0, p1, ...)``
+- ``nodeWalk(node, visitor)``, a non-recursive object walker (great for finding things in DOM trees).
+
+Every feature has tests.  Tests are run on Safari, Firefox, and IE.  The tests all pass.
+
+Every function has documentation.  The documentation is in reStructuredText.  A documentation tool extractor and generator will ship with `MochiKit`_.
+
+I'll save talking about Async, DOM, Iter, and DateTime for a later entry.  Needless to say, they're much cooler than Base.
+
+UPDATE:
+    You can check out `MochiKit`_ at `mochikit.com`_!  We ended up splitting the docs and source, though, so there is no doc extraction tool.  It's still reStructuredText, though!
+
+.. _`MochiKit`: http://mochikit.com/
+.. _`mochikit.com`: http://mochikit.com/

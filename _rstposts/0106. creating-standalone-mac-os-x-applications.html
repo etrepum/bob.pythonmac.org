@@ -1,0 +1,27 @@
+---
+categories: python, py2app, macosx
+date: 2005/02/09 15:28:25
+guid: /?p=106
+permalink: http://bob.pythonmac.org/archives/2005/02/09/creating-standalone-mac-os-x-applications/
+tags: ''
+title: Creating standalone Mac OS X applications
+---
+.. -*- mode: rst -*-
+
+`py2app`_ 0.1.8 will ship with a new script: ``macho_standalone`` (in svn already)
+
+This script takes an application bundle as a parameter, and it does the following:
+
+- Scans every file in the application bundle for Mach-O files
+- Builds a dependency graph of every Mach-O file, copying in Mach-O files that are not part of the bundle already and not in a system location (``/System`` or ``/usr`` except for ``/usr/local``).  Frameworks are a special case, they are copied in wholesale and then also scanned for additional Mach-O files (plugins, etc.).
+- Normalizes the Mach-O headers to point to the right place.  Normally this means they will point to ``@executable_path/../Frameworks`` style paths.
+- Strips everything
+
+The functionality in this script is used internally by `py2app`_, with some additional special cases for frameworks.  However, this script could be used for applications not written in Python.. perhaps as an alternative to the "copy files build phase" for frameworks in Xcode, or as part of the build process for other `py2app`_-like environments (`RubyCocoa`_, `CamelBones`_, etc.)
+
+Of lesser interest is the new ``macho_find`` script.  Like the `find`_ tool, it walks files/directories and prints each on its own line to stdout.  ``macho_find`` simply matches files that have the Mach-O signature, and could be used as input to a tool such as strip.
+
+.. _`find`: x-man-page://1/find
+.. _`py2app`: http://undefined.org/python/#py2app
+.. _`CamelBones`: http://camelbones.sourceforge.net/index.php
+.. _`RubyCocoa`: http://www.fobj.com/rubycocoa/

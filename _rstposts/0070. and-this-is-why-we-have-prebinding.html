@@ -1,0 +1,24 @@
+---
+categories: python, py2app
+date: 2004/04/04 02:43:44
+guid: /?p=70
+permalink: http://bob.pythonmac.org/archives/2004/04/04/and-this-is-why-we-have-prebinding/
+tags: ''
+title: And this is why we have prebinding...
+---
+.. -*- mode: rst -*-
+.. original id: P55
+
+I thought it would be interesting to see some `Mach-O`_ dependency graphs, so I whipped up a quick Python script to generate `GraphViz`_ output using my `macholib`_ module.  These graphs are built using only the LC_LOAD_DYLIB command.  If I were to include the LC_PREBOUND_DYLIB command, they get a whole order of magnitude uglier.  Now you can see why it's a good idea to have lazy loading of symbols and prebinding, at least when you link to Foundation!
+
+* `/bin/ls`_
+* `/usr/bin/python`_
+* `/Applications/Mail.app/Contents/MacOS/Mail`_ (this is truly obscene, you have been warned)
+
+.. _`/bin/ls`: http://undefined.org/~bob/macho_ls_loadonly.pdf
+.. _`/usr/bin/python`: http://undefined.org/~bob/macho_python_loadonly.pdf
+.. _`/Applications/Mail.app/Contents/MacOS/Mail`: http://undefined.org/~bob/macho_mail_loadonly.pdf
+.. _`macholib`: http://mail.python.org/pipermail/pythonmac-sig/2004-February/010158.html
+.. _`GraphViz`: http://www.pixelglow.com/graphviz/
+.. _`Mach-O`: http://developer.apple.com/documentation/DeveloperTools/Conceptual/MachORuntime/
+    

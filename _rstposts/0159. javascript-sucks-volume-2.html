@@ -1,0 +1,36 @@
+---
+categories: javascript, AJAX
+date: 2005/07/18 20:07:16
+guid: /?p=159
+permalink: http://bob.pythonmac.org/archives/2005/07/18/javascript-sucks-volume-2/
+tags: ''
+title: JavaScript Sucks (volume 2)
+---
+.. -*- mode: rst -*-
+
+JavaScript sucks (`1-14 here`_):
+
+.. _`1-14 here`: http://bob.pythonmac.org/archives/2005/06/02/javascript-sucks-volume-1/
+
+15. Functions can't be used as a prototype, and you can't do ``new Function(anotherFunction)``, so you can't "clone" a function unless you reliably have access to its source code(!!).
+
+16. While accessing the source code to a function is possible, accessing the scope it was defined in is not.  So, you still can't "clone" a function reliably.
+
+17. All JavaScript implementations are broken.  Some more broken than others (\*cough\*JScript\*cough\*).  They're all broken in different ways.
+
+18. When you run into a broken JScript.. er JavaScript...  interpreter, it will either crash, or behave in a completely unexpected way.  Good luck debugging either.
+
+19. There's no ``import`` statement.  Good luck writing re-usable code.  There are workarounds (e.g. ``XMLHttpRequest`` + ``eval``, ``document.write("...")``, etc.), but all are pretty hackish and don't work everywhere all the time or don't get cached by all browsers.
+
+20. It's terribly hard to find something that tokenizes JavaScript correctly.  Hell, most JavaScript interpreters don't even get that far.
+
+21. No coroutines, continuations, generators, threads (please don't!), or equivalent.  That means implementing iterators, cooperative multitasking, or anything else asynchronous is only slightly more fun than a good caning.
+
+22. Despite its terrible facilities for doing so, writing asynchronous code is necessary.  JavaScript interpreters nearly always have the capability to block a browser, sometimes indefinitely.
+
+23. When they can't block a browser indefinitely, the user gets a stupid "Do you want to terminate this script?" modal dialog.  Regardless of the user's choice, they probably have to terminate the process anyway.
+
+24. ``alert()`` is a modal dialog, which means that if the script invokes it repeatedly fast enough, you have to terminate your browser's process.  Of course, there really isn't a better way to get debugging output.
+
+25. JavaScript's caretakers don't seem to be interested fixing any of its problems, just adding new ones.  Optional type declarations, classes and interfaces, inline XML, etc.  Whee!
+

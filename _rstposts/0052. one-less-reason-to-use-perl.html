@@ -1,0 +1,16 @@
+---
+categories: python, perl
+date: 2004/02/02 15:01:52
+guid: /?p=52
+permalink: http://bob.pythonmac.org/archives/2004/02/02/one-less-reason-to-use-perl/
+tags: ''
+title: One less reason to use Perl
+---
+.. -*- mode: rst -*-
+.. original id: P36
+
+I've ended up using Perl in a few of my otherwise Python programs just to get Excel spreadsheets (via Spreadsheet::WriteExcel).
+
+Never again, apparently Evgeny Filatov (who must hate Perl a little more than I do) did the hard work for us by porting it from Perl: `pyXLWriter`_.  Currently, it sports all the same features as Spreadsheet::WriteExcel, except for BigFile support (7 MB+), because of the OLE::Storage_Lite dependency.
+
+.. _`pyXLWriter`: http://pyxlwriter.sourceforge.net/

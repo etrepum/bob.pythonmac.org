@@ -1,8 +1,12 @@
 <div id="right_sidebar">
   <div id="contact">
   <h3>Contact</h3>
+  <p>
   <a href="http://www.google.com/profiles/bob.ippolito">Bob Ippolito</a><br />
-  CTO - <a href="http://www.mochimedia.com/">Mochi Media</a>
+  <small>
+  Co-founder and CTO of <a href="http://www.mochimedia.com/">Mochi Media</a>, open source python/erlang hacker
+  </small>
+  </p>
   </div>
   <div id="blog_post_list">
   <h3>Latest blog posts</h3>
@@ -11,10 +15,16 @@
     <li><a href="${post.path}">${post.title}</a></li>
 % endfor
   </ul>
+ 
+    <div id="subscribe">
+        <p>Subscribe via <a href="/feed">RSS</a></p>
+        <div class="clear"></div>
+    </div>
+
   </div>
   <div id="on_twitter">
     <h3>On Twitter</h3>
-    <div id="etrepum_tweets"></div>
+    <div id="blogofile_tweets"></div>
     <a href="http://search.twitter.com/search?q=etrepum" style="float: right">See more tweets</a>
     <div style="clear: both">&nbsp;</div>
   </div>
@@ -22,7 +32,7 @@
     <h3>Categories</h3>
     <ul>
 % for category, num_posts in bf.all_categories:
-     <li><a href="${category.path}">${category}</a> (<a href="${category.path}/feed">rss</a>) (${num_posts})</li>
+     <li><a href="${category.path}">${category}</a><!-- (<a href="${category.path}/feed">rss</a>)--> (${num_posts})</li>
 % endfor
     </ul>
   </div> 

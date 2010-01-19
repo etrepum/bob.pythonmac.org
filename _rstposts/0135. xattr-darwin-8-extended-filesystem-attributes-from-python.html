@@ -1,0 +1,51 @@
+---
+categories: python, macosx
+date: 2005/05/03 21:03:40
+guid: /?p=135
+permalink: http://bob.pythonmac.org/archives/2005/05/03/xattr-darwin-8-extended-filesystem-attributes-from-python/
+tags: ''
+title: xattr - Darwin 8 Extended Filesystem Attributes from Python
+---
+.. -*- mode: rst -*-
+
+Darwin 8.0, the underpinnings of Mac OS X 10.4 (Tiger) ships with a new API at the filesystem layer: Extended Attributes.  I haven't really seen much documentation thrown about, but effectively they can be used to associate arbitrary metadata with files (note that this is *entirely separate* from `Spotlight Metadata Attributes`_).  Extended attributes are the new way that the resource fork and finder information is looked up and stored.  They're also used by the obscure `copyfile`_ that lives beneath all of the changes to cp, mv, tar, etc.
+
+I whipped up a quick wrapper for the APIs today, `xattr`_.  This extension module exposes an ``xattr`` object that wraps paths or file descriptors (either as an ``int``, or as an object with a ``fileno()``), and it acts like a ``dict``.  Usage looks like this:
+
+.. pycode::
+
+    >>> import xattr
+    >>> x = xattr.xattr('tiger_8a428_userdvd.dmg')
+    >>> x
+    <xattr file='tiger_8a428_userdvd.dmg'>
+    >>> x.keys()
+    [u'com.apple.diskimages.recentcksum']
+    >>> dict(x)
+    {u'com.apple.diskimages.recentcksum': 'i:969254 ...more stuff'}
+    >>> x['com.apple.diskimages.recentcksum']
+    'i:969254 ...more stuff'
+    >>> x['com.apple.adc'] = 'select'
+    >>> dict(x)
+    {u'com.apple.adc': 'select',
+     u'com.apple.diskimages.recentcksum': 'i:969254 ...more stuff'}
+    >>> del x['com.apple.adc']
+    >>> dict(x)
+    {u'com.apple.diskimages.recentcksum': 'i:969254 ...more stuff'}    
+
+Note that keys are limited to 128 bytes and values appear to be limited to 3800 bytes.  I think the resource fork is special cased to be longer, though.
+
+You can download xattr 0.1 from http://pythonmac.org/packages/ for Tiger's Python 2.3.5 or Python 2.4.1 (installed on Tiger).
+
+svn trunk:
+    http://svn.red-bean.com/bob/xattr/trunk/
+
+0.1 source:
+    http://svn.red-bean.com/bob/xattr/releases/xattr-0.1/
+
+UPDATE:
+  It looks like there is some relevant information and an xattr command line tool in the `arstechnica tiger review`_.
+
+.. _`arstechnica tiger review`: http://arstechnica.com/reviews/os/macosx-10.4.ars/7
+.. _`xattr`: http://undefined.org/python/#xattr
+.. _`Spotlight Metadata Attributes`: http://developer.apple.com/documentation/Carbon/Reference/MetadataAttributesRef/index.html
+.. _`copyfile`: http://bob.pythonmac.org/archives/2005/05/03/mac-os-x-104-tigers-copyfile/

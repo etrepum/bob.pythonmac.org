@@ -1,0 +1,41 @@
+---
+categories: python, perl
+date: 2004/08/15 03:45:36
+guid: /?p=77
+permalink: http://bob.pythonmac.org/archives/2004/08/15/changing-win32-icons-from-a-mac-with-perl/
+tags: ''
+title: Changing win32 icons from a Mac with Perl
+---
+.. -*- mode: rst -*-
+.. original id: P63
+
+The current build procedure for `Talking Panda`_ involves taking two stub applications (Mac OS X, Win2K/XP) and replacing their resources.  This is extremely easy for the Mac installer, because it's just a bunch of folders.  It's actually so convenient that I use the Mac application bundle to house the majority of resources that the Windows installer uses.  Unfortunately, I do have to change one in-exe resource for the Win32 installer: the application's icon.
+
+The Win32 application icons are still created "by hand" using `Axialis IconWorkshop`_, which I highly recommend.  It understands the Mac OS X icns format and does everything in a few shortcut keystrokes.  Eventually I hope to write a script to generate the Windows icons on the fly with `PIL`_, but I had a bit of trouble trying to find updated specs for the Windows XP additions to the `ICO format`_.
+
+I did some research into the `Microsoft`_ `Portable`_ `Executable`_ `File Format`_, but was unable to find any portable C or Python libraries that could create a new executable using an existing one as a template.  `py2exe`_ does this, but it uses a non-portable C library.  Whenever this happens, I generally turn to Perl.  `CPAN`_ is pretty good about having modules to read/write various file formats (the only other Perl I've used in the past few years is for reading/writing Excel spreadsheets).
+
+Unsurprisingly, `CPAN`_ did indeed have what I needed in a module called `Win32::Exe`_, which has a pretty painless API.  And here it is, my most recent Perl monstrosity.  It takes 3 arguments, the source executable, the new icon, and the destination executable.  If someone wrote an equivalent Python module, I'd love to switch, but this does the job quite nicely for now.
+
+.. pycode::
+
+    #!/usr/bin/perl
+
+    use Win32::Exe;
+    use strict;
+    my $exe = Win32::Exe->new(shift());
+    $exe->update(icon => shift());
+    $exe->write(shift()); 
+
+
+.. _`Talking Panda`: http://talkingpanda.com/
+.. _`Win32::Exe`: http://search.cpan.org/~autrijus/Win32-Exe-0.08/lib/Win32/Exe.pm
+.. _`CPAN`: http://www.cpan.org/
+.. _`py2exe`: http://starship.python.net/crew/theller/py2exe/
+.. _`Microsoft`: http://www.microsoft.com/whdc/system/platform/firmware/PECOFF.mspx
+.. _`Portable`: http://msdn.microsoft.com/msdnmag/issues/02/02/PE/default.aspx
+.. _`Executable`: http://msdn.microsoft.com/msdnmag/issues/02/03/PE2/default.aspx
+.. _`File Format`: http://www.windowsitlibrary.com/Content/356/11/toc.html
+.. _`Axialis IconWorkshop`: http://www.axialis.com/axicons/
+.. _`PIL`: http://www.pythonware.com/products/pil/
+.. _`ICO format`: http://www.iconolog.net/info/icoFormat.html

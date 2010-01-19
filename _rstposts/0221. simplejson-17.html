@@ -1,0 +1,19 @@
+---
+categories: python, simplejson
+date: 2007/03/18 14:31:57
+guid: http://bob.pythonmac.org/archives/2007/03/18/simplejson-17/
+permalink: http://bob.pythonmac.org/archives/2007/03/18/simplejson-17/
+tags: ''
+title: simplejson 1.7
+---
+.. -*- mode: rst -*-
+
+`simplejson`_ is a simple, fast, complete, correct and extensible `JSON`_ (`RFC 4627`_) encoder/decoder for Python 2.3+.  It is pure Python code with no dependencies.
+
+`simplejson`_ 1.7 is a minor update that improves encoding performance with an optional C extension to speed up str/unicode encoding (by 10-150x or so), which yields an overall speed boost of 2x+ (JSON is string-heavy). Additionally 1.7 adds support for encoding unicode code points outside the BMP to UTF-16 surrogate code pairs (specified by the Strings section of `RFC 4627`_).
+
+.. _`RFC 4627`: http://www.ietf.org/rfc/rfc4627.txt
+.. _`documentation`: http://svn.red-bean.com/bob/simplejson/trunk/docs/index.html
+.. _`JSON`: http://json.org/
+.. _`JSON.org`: http://json.org/
+.. _`simplejson`: http://undefined.org/python/#simplejson

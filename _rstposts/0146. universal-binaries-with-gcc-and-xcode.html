@@ -1,0 +1,40 @@
+---
+categories: macosx, c, universal binaries
+date: 2005/06/11 11:16:48
+guid: /?p=146
+permalink: http://bob.pythonmac.org/archives/2005/06/11/universal-binaries-with-gcc-and-xcode/
+tags: ''
+title: Universal Binaries with gcc and Xcode
+---
+.. -*- mode: rst -*-
+
+Versions of Mac OS X prior to 10.4 *did* support universal binaries, but the shipping gcc did not, so it is possible to compile applications that will work on both 10.3 ppc (Panther) and 10.4 i386 (Tiger).  To build Panther-compatible universal binaries, you'll need to use the following Custom Build Settings in Xcode 2.1 or later...
+
+Per-architecture SDK Support for Universal Binaries in Xcode.  *This is according to documentation, but I couldn't get it to work*::
+
+    SDKROOT_ppc = /Developer/SDKs/MacOSX10.3.9.sdk
+    SDKROOT_ppc64 = /Developer/SDKs/MacOSX10.4u.sdk
+    SDKROOT_i386 = /Developer/SDKs/MacOSX10.4u.sdk
+
+I'm not sure how to translate per-architecture SDKs to gcc settings, but to build single-SDK Universal Binaries with GCC, there are some undocumented (not in the compiler man page, anyhow) flags that you can use.  These flags are only available in GCC 4.0 and later, and probably only with Apple's toolchain.
+
+Universal Binaries with GCC (in Makefile syntax)::
+
+    SDK=/Developer/SDKs/MacOSX10.4u.sdk
+    CFLAGS= -isysroot ${SDK} -arch ppc -arch ppc64 -arch i386
+    LDFLAGS= -isysroot ${SDK} -syslibroot,${SDK}
+
+Using `lipo(1)`_ to do per-architecture SDK builds with gcc should be possible, but painful.  Hopefully it's not the only way! *However, that's exactly what Xcode 2.1 does*.
+
+See Also:
+
+- `Universal Binary Programming Guidelines`_
+- `Xcode 2.1 Release Notes`_
+- `Cross-Development: Configuring Your Project for Cross Development`_
+- `lipo - create or operate on fat files`_
+
+.. _`lipo - create or operate on fat files`: http://developer.apple.com/documentation/Darwin/Reference/ManPages/man1/lipo.1.html
+.. _`lipo(1)`: http://developer.apple.com/documentation/Darwin/Reference/ManPages/man1/lipo.1.html
+.. _`Cross-Development: Configuring Your Project for Cross Development`: http://developer.apple.com/documentation/DeveloperTools/Conceptual/cross_development/Articles/cd_overview.html
+.. _`Universal Binary Programming Guidelines`: http://developer.apple.com/documentation/MacOSX/Conceptual/universal_binary/
+.. _`Xcode 2.1 Release Notes`: http://developer.apple.com/releasenotes/DeveloperTools/Xcode/Xcode.html

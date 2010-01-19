@@ -1,0 +1,16 @@
+---
+categories: python
+date: 2004/02/06 05:00:16
+guid: /?p=57
+permalink: http://bob.pythonmac.org/archives/2004/02/06/daikon/
+tags: ''
+title: Daikon
+---
+.. -*- mode: rst -*-
+.. original id: P41
+
+`Daikon`_ is a pretty neat idea.. it seems sort of like an empirical way to do stuff like type inference, but officially it dynamically detects program invariants.  It would be nice if we had something like this for Python to help us write better tests and possibly optimize code.  For some bizarre reason, Daikon 1 was written in Python, but 2 and 3 were Java.  Even still, it has never analyzed Python code.
+
+And if you think about doing a version for Python, don't bother porting it; the Daikon license is bogus.  "Daikon is made available for education, research, and evaluation purposes (not for direct commercial gain), and there is no warranty".  Besides, it would probably take more time to figure out which license a port/front end would be subject to (I see four or five mentioned!) than to just rewrite the damned thing.
+
+.. _`Daikon`: http://pag.lcs.mit.edu/daikon/

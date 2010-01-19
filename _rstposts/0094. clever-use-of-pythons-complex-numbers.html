@@ -1,0 +1,51 @@
+---
+categories: python
+date: 2005/01/29 18:05:42
+guid: /?p=94
+permalink: http://bob.pythonmac.org/archives/2005/01/29/clever-use-of-pythons-complex-numbers/
+tags: ''
+title: Clever use of Python's complex number type
+---
+.. -*- mode: rst -*-
+
+I was thoroughly amused when I saw the `Linear equations solver in 3 lines`_ recipe in `ASPN`_'s `Python Cookbook`_ this morning.  Since it's so short, I'll reproduce it here as a two line recipe ;)
+
+.. _`Linear equations solver in 3 lines`: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/365013
+.. _`ASPN`: http://aspn.activestate.com/ASPN/
+.. _`Python Cookbook`: http://aspn.activestate.com/ASPN/Cookbook/Python/
+
+.. pycode::
+
+    def solve(eq, var='x'):
+        """
+        >>> solve("x - 2*x + 5*x - 46*(235 - 24) = x + 2")
+        3236.0
+        """
+        c = eval(eq.replace("=", "-(") + ")", {var: 1j})
+        return -c.real/c.imag
+
+The way it works is really clever.  First, it uses string replacement to turn it into a single expression rather than an equality.  This is effectively the same as rewriting an equation in the form of ``x = 4`` to ``x - 4 = 0``.
+
+.. pycode::
+
+    x - 2*x + 5*x + 46*(235 - 24) = x + 2
+    x - 2*x + 5*x + 46*(253 - 24) - (x + 2)
+
+(Please forgive me for using uncommon math expressions below, the standard notations are confusing given the way the equation above was written and I wanted to remain close to valid Python syntax.)
+
+In order to solve such an equation, you would work through the simple math and end up with something in the form of ``a*x + b``.  Since this is for simple linear equations only, the author took the liberty of (ab)using the ``complex`` type to make this happen automagically.
+
+`Complex numbers`_ are in the form of ``a + bj``, where the *a* represents the "real" component and *b* represents the "imaginary", the *j* represents ``math.sqrt(-1)``.  Python's ``complex`` type stores the *a* in the ``real`` attribute and the *b* in the ``imag`` attribute.  In this example, we are pretending that the *j* really represents something other than ``math.sqrt(-1)``, namely, the value of *x* that solves our equation.  In order to solve for *x*, we need to do the following transformation:
+
+.. pycode::
+    
+    a + bj
+    bj = -a
+    j = (-a)/b
+
+When the ``solve`` function evaluates the rewritten expression, it uses ``1j`` (really, ``0 + 1j`` -- or ``complex(0, 1)``) for the value of *x*, which  Python simply evaluates down to a single complex number.  As stated above, when we divide the negation of the real part by the imaginary part, we get the desired solution.  Neat!
+
+UPDATE: maxim commented that a more comprehensive recipe by Rick Muller, `Manipulate simple polynomials in Python`_, is also available in the `Python Cookbook`_.  It's not two lines, though :)
+
+.. _`Manipulate simple polynomials in Python`: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/362193
+.. _`Complex numbers`: http://mathworld.wolfram.com/ComplexNumber.html

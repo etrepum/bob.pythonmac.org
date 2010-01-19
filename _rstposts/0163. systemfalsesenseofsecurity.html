@@ -1,0 +1,16 @@
+---
+categories: flash, actionscript
+date: 2005/07/23 16:59:31
+guid: /?p=163
+permalink: http://bob.pythonmac.org/archives/2005/07/23/systemfalsesenseofsecurity/
+tags: ''
+title: System.falseSenseOfSecurity
+---
+.. -*- mode: rst -*-
+
+The (in)security model [1]_ available to ActionScript at runtime in Macromedia Flash is absolutely worthless.  The only capability that off-domain loaded movies *don't* have is the ability to read variables out of movie clips elsewhere in the hierarchy.  This is almost entirely useless, and is really weak default behavior.  If you loaded a movie, you damn well better already trust it!  It could be a key logger, a denial of service attack (``while (true) {}``, ``getURL("somewhere else")``), etc.  If you don't trust it, DON'T LOAD IT.  You have already lost if you're loading untrusted movies.
+
+If you do trust the movie, and you end up needing the movies to communicate, you have to remember to add the ``System.security.allowDomain`` call.  This means that you're writing more code for the common case, and the uncommon case is broken anyway.
+
+.. [1] Macromedia Flash MX Security (`PDF`__)
+.. __:  http://www.macromedia.com/devnet/mx/flash/whitepapers/security.pdf

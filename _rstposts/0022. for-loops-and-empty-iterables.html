@@ -1,0 +1,33 @@
+---
+categories: python
+date: 2003/11/24 14:11:44
+guid: /?p=22
+permalink: http://bob.pythonmac.org/archives/2003/11/24/for-loops-and-empty-iterables/
+tags: ''
+title: for loops and empty iterables
+---
+.. -*- mode: rst -*-
+.. original id: P14
+
+`Just van Rossum`_ and I were discussing the `for:else:`_, `while:else:`_ and `try:else:`_ syntax on the `MacPythonChannel`_ this morning (morning for me, at least).  I'm not sure if this is sufficiently covered elsewhere, but here is the pattern I use to check for empty iterables:
+
+.. pycode::
+
+    class NoValue:
+        """A unique placeholder, since None is sometimes used in iterables"""
+
+    def doesSomethingWithIterable(iterable):
+        x = NoValue
+        for x in iterable:
+            pass # something useful could go here ;)
+        else:
+            if x is NoValue:
+                pass # do something because iterable was empty
+            else:
+                pass # do something because iterable was not empty
+
+.. _`for:else:`: http://python.org/doc/current/ref/for.html
+.. _`while:else:`: http://python.org/doc/current/ref/while.html
+.. _`try:else:`: http://python.org/doc/current/ref/try.html
+.. _`Just van Rossum`: http://pythonmac.org/wiki/JustVanRossum
+.. _`MacPythonChannel`: http://pythonmac.org/wiki/MacPythonChannel

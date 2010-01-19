@@ -1,0 +1,94 @@
+---
+categories: python, macosx, debugging, iPod
+date: 2005/06/16 15:55:40
+guid: /?p=148
+permalink: http://bob.pythonmac.org/archives/2005/06/16/ipod-model-detection/
+tags: ''
+title: iPod model detection
+---
+.. -*- mode: rst -*-
+
+For various reasons, I have a need to determine the version of an iPod.  Previously, I only needed to know if an iPod was "firmware version 2" or later (aka "Dock-connector"), and there's a whole slew of obvious ways to determine that (presence of a ``Notes`` folder would be the most obvious).  There are also ways to grab iPod information with SPI (via COM on win32 or the private ``iPod.framework`` on Mac OS X), but I like to avoid that whenever possible.
+
+So far, the most reliable method I've found was with a little parsing of the ``SysInfo`` file.  This file is located at "``$(IPOD_VOLUME)/iPod_Control/Device/SysInfo``".  The ``iPod_Control`` folder is going to be hidden on either platform, so you may not have noticed it before.  Many examples of ``SysInfo`` files can be found by googling for some of the keys, such as ``buildID``, ``visibleBuildID``, ``boardHwName``, etc.  The most complete resource I've found is the on the `iPodLinux forums`_.
+
+.. _`iPodLinux forums`: http://www.ipodlinux.org/forums/viewtopic.php?t=1583
+
+As-is, the ``SysInfo`` files don't make any of the useful information very obvious.  However, with a little reverse-engineering of the `iPod Updater`_ for Mac OS X, it was relatively easy to figure out what it was using to determine the iPod model.
+
+.. _`iPod Updater`: http://www.apple.com/ipod/download/
+
+In the ``Resources`` folder of any `iPod Updater`_, you'll find a lot of interesting things.  The most interesting bits are ``UpdaterVersions.plist`` and the ``Updates`` folder.
+
+``UpdaterVersions.plist`` is a typical XML property list with a single root key: ``Versions``.  Under this key you'll find a dictionary that maps ``updaterFamily`` to a dictionary of information about the iPods in that ``updaterFamily``, not unlike the information you will find in a ``SysInfo``.  The dicts with a ``displayInAbout`` key with a ``true`` value are the most interesting, all of the other entries are simply variations on the theme (i.e. the `iPod U2 Special Edition`_ or the various colors of `iPod Mini`_).  When using this filter, you should have exactly one entry per unique ``iPodFamily`` value.
+
+.. _`iPod U2 Special Edition`: http://www.apple.com/ipod/u2/
+.. _`iPod Mini`: http://www.apple.com/ipodmini/
+
+The ``Updates`` folder is interesting because it contains icons for each iPod, as well as the firmware images.  The icons are named either ``DeviceIcon-$(iPodFamily).icns`` or ``DeviceIcon-$(iPodFamily)-$(iPodColor).icns``.  I'm relatively certain that the color can be determined from the last three characters of the ``pszSerialNumber``, but I don't have enough iPods around to test that theory.
+
+With all of this information, it would *almost* be easy to determine the model of an iPod.  However, it's not quite that simple.  Not all ``SysInfo`` files contain an ``iPodFamily`` key, and some that do incorrectly report ``0``!  The only reliable identifier for an iPod family is the following (given a dict from either the ``UpdaterVersions.plist`` or from a ``SysInfo`` file):
+
+.. pycode::
+
+    def buildPair(dct):
+        buildID = dct.get('buildID', 0) 
+        visibleBuildID = dct.get('visibleBuildID') or dct.get('VisibleBuildID', 0)
+        # grab these bits: 0xFF000000L
+        return (buildID >> 24, visibleBuildID >> 24)
+
+What I'm doing here is pulling the "major" version out of the version keys.  It appears that the versioning convention is:  ``0x0ABC8000`` where the firmware version is pretty-printed as "A.B.C", trimming "C" and possibly "B" if they are ``0``.  This is similar to the hex-version-convention you see in ``gestaltSystemVersion`` (``'sysv'``) and other places.  It would be a little less ugly if the ``UpdaterVersions.plist`` used the same case as the ``SysInfo`` files for the ``visibileBuildID`` key!  The reason that we need both the ``buildID`` and the ``visibleBuildID`` is that the `iPod Mini`_ and "3G iPod" both report a ``buildID`` major version of ``2``, however the `iPod Mini`_ has a ``visibleBuildID`` major version of ``1``.
+
+Parsing the ``SysInfo`` file in a manner that will grab the information in the right way is pretty trivial, but perhaps not so obvious:
+
+.. pycode::
+
+    import os
+    def infoForMountedPod(path):
+        path = os.path.join(path, u'iPod_Control', u'Device', u'SysInfo')
+        lines = file(path).read().splitlines()
+        d = {}
+        for line in lines:
+            try:
+                key, value = line.split(': ', 1)
+            except ValueError:
+                continue
+            try:
+                value = long(value.split(None, 1)[0], 0)
+            except (ValueError, IndexError):
+                pass
+            d[key] = value
+        return d
+
+``infoForMountedPod`` simply looks for all lines that look like a key-value pair (containing a ``": "``).  For each of these lines, it will set the key-value pair in the returned dictionary.  For lines whose first "word" (split on whitespace) is parseable as an integer (typically as hex), it will be set as an integer.  Otherwise, it is set to the string value of that line (i.e. ``pszSerialNumber``).
+
+Parsing ``UpdaterVersions.plist`` is pretty trivial too:
+
+.. pycode::
+
+    import plistlib
+    def parseUpdaterVersions(path):
+        # this is Python 2.4 plistlib API
+        # in 2.3 you can use plistlib.Plist.fromFile
+        versions = plistlib.readPlist(path)
+        buildPairs = {}
+        families = {}
+        for k,v in versions['Versions'].iteritems():
+            # only pick out unique iPodFamily dicts
+            if v['displayInAbout']:
+                fam = v['iPodFamily']
+                # skip pre-2.x iPods and iPod Shuffle.
+                # This is specific to my use case, you may
+                # not want this filter.
+                if 1 < fam < 128:
+                    assert fam not in families
+                    families[fam] = v
+                    pair = buildPair(v)
+                    assert pair not in buildPairs
+                    buildPairs[pair] = v
+        return buildPairs, families
+
+Note that all of this code is cross-platform, but you'll need an ``UpdaterVersions.plist`` or equivalent from somewhere, and you'll need to pick up ``plistlib.py`` from Python's ``src/Lib/plat-mac`` dir if using it on some other platform.  Alternatively, you could use `ElementTree`_ to parse the plist XML.  Its `iterparse documentation`_ has an excellent example of how easily it can be used to parse these files.
+
+.. _`ElementTree`: http://effbot.org/zone/element-index.htm
+.. _`iterparse documentation`: http://effbot.org/zone/element-iterparse.htm

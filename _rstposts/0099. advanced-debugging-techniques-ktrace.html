@@ -1,0 +1,66 @@
+---
+categories: python, py2app, macosx, c, wxPython, debugging
+date: 2005/02/04 00:29:04
+guid: /?p=99
+permalink: http://bob.pythonmac.org/archives/2005/02/04/advanced-debugging-techniques-ktrace/
+tags: ''
+title: 'Advanced Debugging Techniques: ktrace'
+---
+.. -*- mode: rst -*-
+
+I had spent the past few days on and off trying to help a `py2app`_ user with a very hairy problem:  when `wxPython`_ 2.4.2.4 was bundled, the main menu didn't work.  Running the application as an alias bundle or with ``pythonw`` worked just fine, but when built as standalone or semi-standalone, the menu no longer showed up.
+
+Right off the bat I (correctly) assumed it was a problem with `wxPython`_ or his sample code, because `py2app`_ doesn't do anything that would cause this sort of behavior.  It does link to Cocoa, but it doesn't call into any AppKit functionality unless it needs to display an error message.  Somewhat trivially converting his source to work with `wxPython`_ 2.5 solved this issue, so I was rather stumped.
+
+I had a hunch that perhaps there was something that `wxPython`_ 2.4.2.4 wants that didn't end up in the bundle, so I broke out `ktrace`_.  Using `ktrace`_ is rather simple::
+
+    % ktrace ./dist/test.app/Contents/MacOS/test
+
+This will create a file in the current directory, ``ktrace.out``, with a log of just about everything that happened.  For efficiency, this file is in a binary format that you must process with `kdump`_.  The output of `kdump`_ is quite lengthy, but it looks like this::
+
+    15121 ktrace   CALL  execve(0xbffffd1b,0xbffffc84,0xbffffc8c)
+    15121 ktrace   NAMI  "dist/test.app/Contents/MacOS/test"
+    15121 ktrace   NAMI  "/usr/lib/dyld"
+    15121 test     RET   execve 0
+
+``CALL`` is the actual system call, ``NAMI`` is a name to inode translation that the system call used, and ``RET`` is the value returned to the application.  If there was an error during the system call, `kdump`_ will gladly tell you everything you wanted to know::
+
+    15121 test     CALL  open(0xbfffe7f0,0,0x1b6)
+    15121 test     NAMI  "/Library/Preferences/org.pythonmac.unspecified.test.plist"
+    15121 test     RET   open -1 errno 2 No such file or directory
+
+Since I suspected that `wxPython`_ was missing a file, I wanted to narrow down the output, so I naturally used `grep`_ on the `kdump`_ output to find errors::
+
+    % kdump | grep -B 2 errno | grep wx
+    15121 test     NAMI  "/Users/bob/Desktop/simple/dist/test.app/Contents/Resources/wxPython"
+    15121 test     NAMI  "/Users/bob/Desktop/simple/dist/test.app/Contents/Resources/wxPython.so"
+    15121 test     NAMI  "/Users/bob/Desktop/simple/dist/test.app/Contents/Resources/wxPythonmodule.so"
+    15121 test     NAMI  "/Users/bob/Desktop/simple/dist/test.app/Contents/Resources/wxPython.py"
+    ....
+
+Unfortunately, what we're looking at here (and for the next 150 or so lines) is primarily just Python doing its module import search.  Since I knew that all of ``sys.path`` pointed to locations under ``Resources``, I can just filter that out.  It is extremely unlikely that `wxPython`_ wants anything from there::
+
+    % kdump | grep -B 2 errno | grep wx | grep -v Resources
+    15121 test     NAMI  "/Users/bob/Desktop/simple/dist/test.app/Contents/MacOS/../Frameworks/libwx_mac-2.4.0.rsrc"
+    15121 test     NAMI  "/libwx_mac-2.4.0.rsrc"
+
+There it is!  So now I just need to make the ``setup.py`` look like the following:
+
+.. pycode::
+
+    from distutils.core import setup
+    import py2app
+    setup(
+        app = ['test.py'],
+        data_files = [
+            ('../Frameworks', ['/usr/local/lib/libwx_mac-2.4.0.rsrc']),
+        ],
+    )
+
+Now the application works as expected.  `py2app`_ 0.1.9 will include a recipe for `wxPython`_ to make sure that this file ends up in the bundle automagically, among other new features.
+
+.. _`py2app`: http://undefined.org/python/#py2app
+.. _`wxPython`: http://wxpython.org/
+.. _`ktrace`: x-man-page://1/ktrace
+.. _`kdump`: x-man-page://1/kdump
+.. _`grep`: x-man-page://1/grep

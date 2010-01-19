@@ -1,0 +1,114 @@
+---
+categories: python
+date: 2005/02/06 23:09:44
+guid: /?p=103
+permalink: http://bob.pythonmac.org/archives/2005/02/06/using-pth-files-for-python-development/
+tags: ''
+title: Using .pth files for Python development
+---
+.. -*- mode: rst -*-
+
+Python's `site`_ module is responsible for setting up the interpreter's environment
+upon startup.  One of the things it does during startup is scan your site directories (typically just ``site-packages``, but framework builds for Mac OS X have an additional undocumented default location) for
+``.pth`` files.  ``.pth`` files are used to add additional locations ``sys.path``, and
+they are typically created by `distutils`_ setup scripts that use the (still undocumented)
+``extra_path`` argument.
+
+``.pth`` files are a great alternative to using the ``PYTHONPATH`` environment variable:
+
+- You don't have to screw with your environment (which can be difficult on Mac OS X
+  and Windows).
+- The effect is localized to a particular Python installation.
+- You can toggle their usage simply by moving them around on the filesystem.
+
+They become especially useful when using a framework build of Python, such as the one that
+ships with Mac OS X 10.3, because ``~/Library/Python/2.3/site-packages/`` is added to your
+path (undocumented), so they become a vector for simply and easily "installing" packages
+without authentication or administrator access -- perfect for development.
+
+For pure Python ("purelib" in `distutils`_ terminology) packages, I create a ``.pth`` file
+that points straight at the source directory, which means I don't have to bother with the
+`distutils`_ setup script when I modify the code.  For example, I have two of these on this
+machine:
+
+**py2app.pth**
+
+.. pycode::
+
+    # /Users/bob/src/py2app is a svn checkout of:
+    #     https://svn.red-bean.com/bob/py2app/trunk
+    #
+    /Users/bob/src/py2app/src
+
+**docutils.pth**
+
+.. pycode::
+
+    # /Users/bob/src/docutils is a cvs checkout of:
+    #     :pserver:anonymous@cvs.sourceforge.net:/cvsroot/docutils
+    #
+    /Users/bob/src/docutils
+
+For Python packages that require extensions ("platlib" in `distutils`_ terminology), I create
+a ``.pth`` file that points to the "temporary" build directory created by ``python setup.py build``:
+
+**PyObjC.pth**
+
+.. pycode::
+
+    # /Users/bob/src/pyobjc is a svn checkout of:
+    #     https://svn.red-bean.com/pyobjc/trunk/pyobjc
+    #
+    /Users/bob/src/pyobjc/build/lib.darwin-7.7.0-Power_Macintosh-2.3
+
+**ctypes.pth**
+
+.. pycode::
+
+    # /Users/bob/src/ctypes is a cvs checkout of:
+    #    :ext:etrepum@cvs.sourceforge.net:/cvsroot/ctypes
+    /Users/bob/src/ctypes/build/lib.darwin-7.7.0-Power_Macintosh-2.3
+
+This is somewhat inconvenient because:
+
+- I have to run setup whenever I change the source (I'd have to do that anyway...)
+- The build directory includes specific version information about the OS that changes on many Software Updates
+  (these don't happen too often, so it's not such a big deal).
+
+These can both be fixed, of course, with additional hacks - but I like to use as few hacks as possible
+so that my development environment is easily reproducible.
+
+There are two features I wish that the `site`_ module had:
+
+- Tilde expansion in ``.pth`` paths (e.g. ``~/src/py2app/src``, or to implement home-dir-site-packages on other platforms - assuming the next feature)
+- Promoting ``.pth`` paths to become site directories of their own (so that they are scanned for additional ``.pth`` files)
+
+Both of these can be hacked in with another undocumented feature: you can cause arbitrary code to be run during this
+process if the line starts with an ``import`` statement.  Due to the way it's implemented, you can run arbitrary code in one of two ways (the second way requires two files):
+
+**hack1.pth**
+
+.. pycode::
+
+    # The module imported is not important, it's used only to 
+    # trigger the execution of the following line.
+    import sys; print "hack1 installed!"
+
+**hack2.pth**
+
+.. pycode::
+
+    # This simply uses an additional module that implements the hack.
+    # It's probably "preferable" to ``hack1.pth`` as it doesn't depend
+    # on side-effects of the implementation.  The feature isn't
+    # documented anyway, so you may be on your own anyway...
+    import hack2
+
+**hack2.py**
+
+.. pycode::
+
+    print "hack2 installed"
+
+.. _`site`: http://docs.python.org/lib/module-site.html
+.. _`distutils`: http://docs.python.org/lib/module-distutils.html

@@ -1,0 +1,22 @@
+---
+categories: python
+date: 2004/02/25 18:54:24
+guid: /?p=66
+permalink: http://bob.pythonmac.org/archives/2004/02/25/the-dictpopitem-conspiracy/
+tags: ''
+title: The dict.popitem conspiracy
+---
+.. -*- mode: rst -*-
+.. original id: P51
+
+I was creating `PyProtocols`_ interfaces for dict-like objects today, and I got stuck trying to decide whether ``dict.popitem`` is worthy of including in the interface for a mutable mapping.  I have never used it, and I couldn't remember ever seeing it in use, so I checked the standard library.  Other than objects that expose the same interface as dict, it seems that popitem is used once and only once in the entire standard library:
+
+.. pycode::
+
+    def pop(self):
+        """Remove and return an arbitrary set element."""
+        return self._data.popitem()[0]
+
+I guess it might be vestige from before Python had a decent iterator protocol (though Set doesn't have the excuse of being so old).. but it's pretty ridiculous that popitem is used more often to expose dict-like interfaces than it is used to actually do something.
+
+.. _`PyProtocols`:  http://peak.telecommunity.com/PyProtocols.html

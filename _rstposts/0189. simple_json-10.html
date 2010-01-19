@@ -1,0 +1,45 @@
+---
+categories: python, simplejson
+date: 2005/12/26 00:29:55
+guid: http://bob.pythonmac.org/?p=189
+permalink: http://bob.pythonmac.org/archives/2005/12/26/simple_json-10/
+tags: ''
+title: simple_json 1.0
+---
+.. -*- mode: rst -*-
+
+`simple_json`_ is a simple, fast, complete, correct and extensible `JSON`_ encoder/decoder for Python 2.3+.  It's pure Python code with no dependencies.
+
+`simple_json`_ exists because `json-py`_ sucks.  `simple_json`_ is a drop-in replacement for `json-py`_, but it also exposes more sanely named APIs, and can be extended by subclassing.
+
+Here are the issues I found in `json-py`_ after evaluating the source:
+
+- LGPL (does this license have a clear interpretation for Python modules?)
+- Doesn't have a proper egg (or source) distribution on `Cheese Shop`_.
+- Wonky API.  ``read`` and ``write`` are very bad names to call something that doesn't act file-like!
+- No streaming encoder support.
+- The decoder is extremely inefficient as it invokes at least one method call per character of input.
+- The encoder supports *exactly* these types: ``dict``, ``list``, ``tuple``, ``str``, ``unicode``, ``int``, ``long``, ``float`` plus the singletons ``True``, ``False``, and ``None``.  It can't be made to support anything else, not even subclasses of those types.  The implementation is in a single function and has no extensibility hook.
+- The encoder has no clue about unicode.  Depending on the input, it may return a ``str`` or ``unicode``.  It has no option to escape the output.
+- The decoder similarly has no clue about unicode.  If it ain't ASCII or escaped, then *BOOM*!
+- It uses custom exception subclasses that descend directly from ``Exception``, so will not be caught by traditional ``ValueError`` clauses.
+- The source code mixes tabs and spaces.  That's uh.. reassuring :)
+
+`simple_json`_ is designed to address all of those issues:
+
+- MIT license
+- It's on `Cheese Shop`_, so `setuptools`_ users can depend on it with a simple ``install_requires``
+- The official API follows the familiar convention of marshal and pickle
+- Encoding can be streamed (via dump or iterator)
+- The decoder is fast, because it uses regular expressions rather than processing each character with Python code
+- The encoder can be subclassed and extended to support serialization of any type, and it supports subclasses of ``dict``, ``list``, ``str``, etc. by default
+- The encoder outputs ASCII by default, with unicode characters escaped with ``\uXXXX``.  Optionally, it can also output a unicode string with ``ensure_ascii=False``.
+- The decoder understands encoded strings (and unicode).  It defaults to UTF-8, but can use anything ASCII-based.  If the input is of an encoding that is not ASCII-based (such as UCS-2), it can be decoded to unicode first.
+- Exceptions during encoding or decoding are simply ``ValueError`` (though a future version could provide more informative messages)
+
+.. _`JSON`: http://json.org/
+.. _`Cheese Shop`: http://python.org/pypi/
+.. _`simple_json`: http://undefined.org/python/#simple_json
+.. _`json-py`: http://sourceforge.net/projects/json-py/
+.. _`setuptools`: http://peak.telecommunity.com/DevCenter/setuptools
+.. _`PEP 8`: http://python.org/peps/pep-0008.html

@@ -1,0 +1,63 @@
+---
+categories: General, FreeBSD
+date: 2006/08/04 20:23:43
+guid: http://bob.pythonmac.org/?p=204
+permalink: http://bob.pythonmac.org/archives/2006/08/04/reverse-proxy-roundup/
+tags: ''
+title: Reverse proxy roundup
+---
+.. -*- mode: rst -*-
+
+The first line of defense in scaling out a web solution is a load balancer, often implemented as a HTTP reverse proxy. In my particular situation, I wanted to be able to load balance based on HTTP headers (``Host`` is a must, URL is a bonus) on a FreeBSD platform.
+
+`Apache 2.0 + mod_proxy`_
+
+    Pros:
+        We were already running Apache, so it was an obvious initial solution to the problem. Not too bad to configure, well documented, and pretty stable. It served us well for quite some time.
+
+    Cons:
+        The prefork MPM is definitely not ideal for this purpose and doesn't give us the scalability we want. Screwing around with other MPMs was not ideal because Apache is also doing other things that we didn't want to disturb. Maintaining a separately configured installation just for proxying isn't a good solution. The thread-using MPMs would only be a small win, anyway.
+
+`LightTPD`_
+
+    Pros:
+        Easy enough to configure, supports all of the features we need, pretty good performance and scalability. Single process event-driven model that can use kqueue.
+
+    Cons:
+        Spotty documentation. Totally bizarre configuration language. Not terribly mature compared to other solutions. Lots of bugs. The current version (1.4.11) leaks memory like a sieve (`#758`_), so it's unfortunately not an option at this point.
+
+`Pound`_
+
+    Pros:
+        Solid documentation (but only in man page format). All of the features we need, not a whole lot of other junk. Good track record. This is what we're currently using for now, but it's no permanent solution. Better than Apache, and it doesn't seem to leak RAM.
+
+    Cons:
+        Uses LOTS of threads. That means lots of RAM, limited scalability and performance. Documentation is only available as a man page, had to install it to really evaluate it.
+
+
+The other solutions I looked into, but didn't end up trying were
+
+`Squid`_:
+    Way too complicated. Too hard to figure out how to get it to do what we wanted to. Might be a good solution though, so I'll probably look into it again.
+
+`Perlbal`_:
+    No usable docs. FreeBSD port exists, but sucks (no rc file, no sample config). Couldn't figure out how to get it to reverse proxy with the features that I needed. Written in Perl, which I do grok, but don't like hacking on.
+
+`HAProxy`_:
+    Looks awesome, but doesn't have the features we need. Seems to only be able to do IP based load balancing, not by headers. More than just a TCP proxy, but not enough of a HTTP proxy.
+
+`Balance`_:
+    Just a TCP proxy.
+
+`Pen`_:
+    Just a TCP proxy.
+
+.. _`Pound`: http://www.apsis.ch/pound/
+.. _`Balance`: http://www.inlab.de/balance.html
+.. _`Pen`: http://siag.nu/pen/
+.. _`HAProxy`: http://haproxy.1wt.eu/
+.. _`Perlbal`: http://www.danga.com/perlbal/
+.. _`LightTPD`: http://www.lighttpd.net/
+.. _`#758`: http://trac.lighttpd.net/trac/ticket/758
+.. _`Squid`: http://www.squid-cache.org/
+.. _`Apache 2.0 + mod_proxy`: http://httpd.apache.org/docs/2.0/mod/mod_proxy.html

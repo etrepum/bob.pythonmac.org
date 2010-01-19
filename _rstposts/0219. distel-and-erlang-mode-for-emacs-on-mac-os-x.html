@@ -1,0 +1,61 @@
+---
+categories: erlang
+date: 2007/03/16 18:19:23
+guid: http://bob.pythonmac.org/?p=219
+permalink: http://bob.pythonmac.org/archives/2007/03/16/distel-and-erlang-mode-for-emacs-on-mac-os-x/
+tags: ''
+title: Distel and Erlang mode for Emacs, on Mac OS X
+---
+.. -*- mode: rst -*-
+
+In the comments of my post on `Erlang Mode for Emacs`_ Tobbe pointed me at the `new Distel repository`_ for `Distel`_. I had originally tried to install `Distel`_ last year when I began with `Erlang`_ but it didn't work. It works now! Here's the deal.
+
+1. Check out `Distel`_. In my case I'm going to check it out to ``/Users/bob/src/distel``::
+
+    $ cd /Users/bob/src
+    $ svn co http://distel.googlecode.com/svn/trunk distel
+
+2. Configure and compile `Distel`_::
+
+    $ ./configure
+    $ make
+
+3. Configure `Distel`_ and configure `Erlang mode`_, ensure that the inferior `Erlang`_ shell has an explicit node name of ``emacs`` so that `Distel`_ can connect to the. Here's my full ``.emacs``::
+
+    (add-to-list 'load-path  "/usr/local/lib/erlang/lib/tools-2.5.3/emacs")
+          (setq erlang-root-dir "/usr/local/lib/erlang")
+          (setq exec-path (cons "/usr/local/lib/erlang/bin" exec-path))
+          (require 'erlang-start)
+    (add-to-list 'load-path "/Users/bob/src/distel/elisp")
+          (require 'distel)
+          (distel-setup)
+
+    ;; prevent annoying hang-on-compile
+    (defvar inferior-erlang-prompt-timeout t)
+    ;; default node name to emacs@localhost
+    (setq inferior-erlang-machine-options '("-sname" "emacs"))
+    ;; tell distel to default to that node
+    (setq erl-nodename-cache
+          (make-symbol
+           (concat 
+            "emacs@"
+            ;; Mac OS X uses "name.local" instead of "name", this should work
+            ;; pretty much anywhere without having to muck with NetInfo
+            ;; ... but I only tested it on Mac OS X.
+            (car (split-string (shell-command-to-string "hostname"))))))
+
+4. Add `Distel`_ to your ``~/.erlang`` so that it's on your `Erlang`_ code path::
+
+    $ echo 'code:add_pathsz(["/Users/bob/src/distel/ebin"]).' >> ~/.erlang
+
+If the `Distel`_ installation was done properly your Emacs mode line will be displayed as ``(Erlang EXT)`` next time you're editing an `Erlang`_ module. If you get a "nodedown: ..." message when executing a `Distel`_ command that means you haven't started a shell yet (``C-c C-z``). A good test is to stick your insertion point at a function name and hit ``M-.`` to get to its definition. ``M-TAB`` is auto-completion. I haven't used too much else from it yet.
+
+(Now here's to hoping I don't have to learn any more elisp, ever).
+
+.. _`new Distel repository`: http://code.google.com/p/distel/
+.. _`Erlang`: http://www.erlang.org/
+.. _`Erlang Mode for Emacs`: http://bob.pythonmac.org/archives/2007/03/14/erlang-mode-for-emacs/
+.. _`Distel`: http://fresh.homeunix.net/~luke/distel/
+.. _`Erlang`: http://www.erlang.org/
+.. _`Erlang mode`: http://erlang.se/doc/doc-5.5.3/lib/tools-2.5.3/doc/html/erlang_mode.html
+.. _`Emacs`: http://www.gnu.org/software/emacs/

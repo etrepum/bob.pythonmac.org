@@ -1,0 +1,37 @@
+---
+categories: javascript, MochiKit, AJAX
+date: 2005/07/23 02:30:49
+guid: /?p=162
+permalink: http://bob.pythonmac.org/archives/2005/07/23/round-those-corners-with-mochikitvisual/
+tags: ''
+title: Round those corners with MochiKit.Visual
+---
+.. -*- mode: rst -*-
+
+.. _`MochiKit`: http://mochikit.com/
+
+`MochiKit`_ received its first "third party" contribution today: MochiKit.Visual.  `Kevin Dangoor`_ deserves some mad props for this!
+
+.. _`Kevin Dangoor`: http://www.blueskyonmars.com/
+
+Currently, the only spiffy thing MochiKit.Visual does is provide a method to round the corners of HTML elements (`demo`_).  Originally it was a port of the `Rico`_ code to do the same, but the `current implementation`_ bears little similarity to its ancestor.
+
+.. _`demo`: http://mochikit.com/examples/rounded_corners/index.html
+.. _`Rico`: http://openrico.org/
+.. _`current implementation`: http://mochikit.com/MochiKit/Visual.js
+
+Three big things (read: almost everything) have changed from the `Rico`_ implementation:
+
+- The API to round the corners of an element is a function, ``roundElement``.  Not some crazy construct-an-object-just-for-the-side-effects ``new RoundCorners``.  Man, some of the JavaScript out there (that people actually use!) should really be making more appearances on the `The Daily WTF`_.
+
+- The ``Color`` object is no longer mutable.  Again, WTF?  I re-engineered the whole thing, so now it really bears more resemblence to AppKit's `NSColor`_.    Including the convenient ``Color.whiteColor()``, etc.  The Color object also supports a whole lot more stuff than the Rico version; it should be able to handle any color expression in CSS3 (including alpha support and HSL)!  Oh, and it has `tests`_, so you know it's not b0rked.
+
+- `MochiKit.Visual has documentation`_.
+
+Come on guys, JavaScript code is fugly.  Write some documentation already.  I think that if more people wrote docs, they'd realize how bad their APIs are.  We've got `plenty of docs`_.  In fact, we have *complete doc coverage*.  That's right, everything in MochiKit has documentation you can read without looking at the source!
+
+.. _`tests`: http://mochikit.com/tests/test_MochiKit-Visual.html
+.. _`The Daily WTF`: http://thedailywtf.com/
+.. _`NSColor`: http://developer.apple.com/documentation/Cocoa/Reference/ApplicationKit/ObjC_classic/Classes/NSColor.html
+.. _`MochiKit.Visual has documentation`: http://mochikit.com/doc/html/MochiKit/Visual.html
+.. _`plenty of docs`: http://mochikit.com/doc/html/MochiKit/

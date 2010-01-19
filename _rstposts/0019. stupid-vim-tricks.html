@@ -1,0 +1,28 @@
+---
+categories: python, vim
+date: 2003/11/14 15:02:56
+guid: /?p=19
+permalink: http://bob.pythonmac.org/archives/2003/11/14/stupid-vim-tricks/
+tags: ''
+title: Stupid vim tricks
+---
+.. -*- mode: rst -*-
+.. original id: P11
+
+In some projects, like PyObjC, the coding style is to use tabs in C/Objective-C code, and spaces in Python.  I'm lazy, and haven't set it to do this on load, and I often forget to `:set noet` (not expand tabs) in vim.  The quick trick I use to convert tabs to spaces (or vice versa) is to:
+ * set/unset `et` as appropriate
+ * make sure my `sw` (shiftwidth) and `ts` (tabstop) are both 4 (this is in my .vimrc)
+ * indent the block of code once (this converts, but gives me extra indent) with `>` in visual mode
+ * dedent it with `<` in visual mode
+
+Voila, the whole mess is now converted from tabs to spaces or vice versa.  Here's what I find to be comfortable in my `.vimrc` (I do have some custom stuff for python, pyrex, coloring, etc. but that's not as important)::
+
+    set ffs=unix,dos,mac
+    set ts=4
+    set bs=2
+    set et
+    set sw=4
+    set sm
+    set sta
+    set sts=4
+    set ai

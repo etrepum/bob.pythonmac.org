@@ -1,0 +1,38 @@
+---
+categories: javascript, MochiKit, AJAX
+date: 2005/07/21 04:23:27
+guid: /?p=161
+permalink: http://bob.pythonmac.org/archives/2005/07/21/mochikit-sneak-preview/
+tags: ''
+title: MochiKit sneak preview
+---
+.. -*- mode: rst -*-
+
+UPDATE:
+    There are more examples, and a real site for `MochiKit`_ now.  Check out `mochikit.com`_.
+
+.. _`mochikit.com`: http://mochikit.com/
+.. _`MochiKit`: http://mochikit.com/
+
+As some of you know, `MochiKit`_ is a badass lightweight JavaScript library that implements some very cool stuff.  We've been working on it from a `public subversion repository`_ (thanks `red-bean`_!) for some time now, but haven't had the time to finish the site or package up the distribution .  It's very close, and has been more than usable for weeks now.
+
+If you're into edges and bleeding, check out: http://svn.red-bean.com/mochikit/trunk
+
+There's currently exactly one example, `Sortable Tables from Scratch with MochiKit`_, which shows off just a smidge of what `MochiKit`_ makes easy.  The particular example follows the "unobtrusive javascript" buzz train and adds column sorting to a table that would otherwise display and look just fine if no JavaScript interpreter were available.
+
+The `documentation`_ is really shaping up, but is completely unstyled at the moment, so shield your eyes for now.  The `reStructuredText documentation`_ might be more palatable in the interim.
+
+Look out for `MochiKit`_'s imminent release here and on `JSAN`_!
+
+If you want to see more of `MochiKit`_ in action, check out its sugar daddy: `MochiBot`_.  `MochiBot`_ is a tricked out traffic monitoring system for Flash content (that *really* shines if you're doing a viral campaign or want to watch your game spread over the internet).  If you're a Flash developer, you ought to find `MochiBot`_ pretty damn cool, and this is just the beginning of many services we're working on at `Mochi Media`_.  It's still beta, but it's free.  Free is good.
+
+All of the tables in the `MochiBot`_ UI are sortable (when that makes sense) and are loaded on the fly by XMLHttpRequest.  This makes the interface just about as responsive as it gets for a browser, and you can refresh the data in a fraction of a second if you just can't wait to see how your Flash content is doing.  There's even some cute little sparklines on the dashboard!
+
+.. _`Mochi Media`: http://mochimedia.com/
+.. _`MochiBot`: http://mochibot.com/
+.. _`JSAN`: http://openjsan.org/
+.. _`documentation`: http://svn.red-bean.com/mochikit/trunk/doc/html/MochiKit/
+.. _`reStructuredText documentation`: http://svn.red-bean.com/mochikit/trunk/doc/rst/MochiKit/
+.. _`Sortable Tables from Scratch with MochiKit`: http://svn.red-bean.com/mochikit/trunk/examples/sortable_tables/index.html
+.. _`public subversion repository`: http://svn.red-bean.com/mochikit/trunk
+.. _`red-bean`: http://red-bean.com/

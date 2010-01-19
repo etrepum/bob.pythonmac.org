@@ -1,0 +1,200 @@
+---
+categories: python, PyObjC, py2app
+date: 2005/03/17 22:31:36
+guid: /?p=121
+permalink: http://bob.pythonmac.org/archives/2005/03/17/ann-pyobjc-13b1/
+tags: ''
+title: 'ANN: PyObjC 1.3b1'
+---
+.. -*- mode: rst -*-
+
+NOTE:
+
+    This is an announcement for a BETA release of `PyObjC`_.  Though we know it to be quite stable, and have been using it on a daily basis for quite some time, use it at your own risk.  1.3.0 will be out in a matter of days, but it is essential that we get some eyes on this!
+
+.. _`PyObjC`: http://pyobjc.sourceforge.net/
+
+Installer package available from:
+    http://pythonmac.org/packages/ (note that the installer also contains `py2app`_ 0.1.8)
+
+.. _`py2app`: http://undefined.org/python/#py2app
+
+Source:
+    http://svn.red-bean.com/pyobjc/tags/pyobjc-1.3b1/
+
+Version 1.3 (2005-03-??)
+------------------------
+
+- The bridge now maintains object identity across the bridge
+  in both directions. Previous versions of the bridge only did this when
+  bridging from Objective-C to Python.
+
+  Exceptions: NSString and NSNumber do not have unique proxies. NSString
+  never will have. Python numbers and strings are converted, not proxied and
+  therefore also don't get unique proxies.
+
+  And finally, any python object that is proxied using the ``__pyobjc_object__``
+  interface will only get a unique proxy if the ``__pyobjc_object__`` method
+  implements that feature.
+
+- New ``objc.protocolsForClass`` function that returns a list of protocols
+  that the class directly claims to conform to.
+
+- PyObjC classes can now declare that they implement formal protocols,
+  for example::
+
+    class MyLockingClass(NSObject, objc.protocolNamed('NSLocking')):
+        # implementation
+        pass
+
+  It is also possible to define new protocols::
+
+     MyProtocol = objc.formal_protocol("MyProtocol", None, [
+     	selector(None, selector='mymethod', signature='v@:'),
+     ])
+
+  All formal protocols are instances of ``objc.formal_protocol``.
+        
+- PyObjCTools.KeyValueCoding has a new ``kvc`` class that allows
+  Pythonic Key-Value Coding.
+
+  - ``__getitem__`` is mapped to ``valueForKeyPath:``
+  - ``__setitem__`` is mapped to ``setValue:forKeyPath:``
+  - ``__getattr__`` is mapped to ``valueForKey:``
+  - ``__setattr__`` is mapped to ``setValue:forKey:``
+
+  The ``kvc`` class uses ``__pyobjc_object__``, so it may cross the bridge
+  as the wrapped object.
+
+- ``NSNumber`` instances are bridged to a ``float``, ``long``, or ``int``
+  subclass that uses ``__pyobjc_object__``.  
+  ``NSDecimal`` is converted to ``NSDecimalNumber`` when used as an object,
+  ``NSDecimalNumber`` is not bridged to ``NSDecimal`` because the latter is
+  a mutable type.
+
+- The Python to Objective-C bridge now looks for a ``__pyobjc_object__`` 
+  attribute to get a PyObjC object from a Python object.
+
+- New IDNSnitch example in Inject that demonstrates how to write an
+  monitor for the launch of another application,
+  use ``objc.inject`` to load code into a target process,
+  and override the implementation of an existing method but still
+  call back into the original implementation (method swizzling).
+
+- ``objc.IMP`` should do the right thing now.  This type is returned
+  by ``+[NSObject methodForSelector:]`` and
+  ``+[NSObject instanceMethodForSelector:]``
+
+- New ToDos example in CocoaBindings that demonstrates how to use
+  two array controllers for the same data, and how to use value
+  transformers to alter the color of text.  Originally from
+  "Cocoa Bindings Examples and Hints", converted to PyObjC by u.fiedler.
+
+- New Bookmarks example in CocoaBindings that demonstrates how to
+  subclass ``NSArrayController`` to implement the ``NSTableView``
+  delegate drag and drop protocol, including copying of objects between
+  documents and accepting URL drops from other applications.  Also
+  demonstrates re-ordering of the content array.  Originally from
+  "Cocoa Bindings Examples and Hints", converted to PyObjC by u.fiedler.
+
+- New FilteringController example in CocoaBindings that demonstrates
+  how to subclass ``NSArrayController`` to implement filtering
+  of a ``NSTableView``.  Also demonstrates the use of indexed accessors.
+  Originally from "Cocoa Bindings Examples and Hints", converted to PyObjC
+  by u.fiedler.
+
+- New ControlledPreferences example in CocoaBindings that demonstrates
+  how to use Cocoa Bindings to simplify storing and retrieving user
+  preferences.  Originally from "Cocoa Bindings Examples and Hints",
+  converted to PyObjC by u.fiedler.
+
+- New TemperatureTransformer example in CocoaBindings that demonstrates
+  how to use NSValueTransfomers with PyObjC.  Based on Apple's
+  "Cocoa: Value Transformers" documentation, converted to PyObjC
+  by u.fiedler.
+
+- New CurrencyConvBindings example in CocoaBindings that demonstrates
+  a Cocoa Bindings enabled version of the CurrencyConverter example.
+  Converted to PyObjC by u.fiedler from the example in Apple's
+  "Introduction to Developing Cocoa Applications Using Bindings".
+
+- New ManualBindings example in CocoaBindings that demonstrates how
+  to develop programmatic bindings from a PyObjC application.
+  Converted to PyObjC by u.fiedler from the "Cocoa Bindings and Hints"
+  example of the same name.
+
+- New HotKeyPython example in AppKit that demonstrates how to use
+  Carbon global hot keys from a PyObjC application.  Also demonstrates
+  how to use a NSApplication subclass.
+
+- Key-Value Observing support is now automatic in Python classes that
+  descend from ``NSObject``, unless they implement a custom
+  ``willChangeValueForKey:``, ``didChangeValueForKey:``, or
+  ``__useKVO__`` is not True.  This allows ``self.foo = 1`` to
+  automatically trigger notifications.  This works in all cases,
+  whether ``foo`` is a ``property``, ``ivar``, or just in the
+  ``__dict__``.
+
+- New Inject folder in Examples, with an InjectInterpreter
+  example that will inject a GUI Python interpreter into any process.
+
+- New ``objc.inject()`` function for Mac OS X 10.3 and later,
+  allows an arbitrary bundle to be loaded into another process
+  using mach_inject.
+
+- ``objc.classAddMethods`` now recognizes and supports
+  classmethods.
+
+- GC is now correctly implemented for struct wrappers.
+
+- The ``NSNumber`` bridge has been removed, now you will get
+  ``NSNumber`` instances across the bridge instead of a
+  Python representation.
+
+- ``PyObjCTools.AppHelper.runEventLoop()`` will now bring your
+  application to the front at startup when using pdb
+  mode for convenience.
+
+- ``objc.loadBundle()`` no longer filters the class list.  This
+  solves a few potential issues and shaves off about 1/3rd of
+  the overhead of ``python -c "import AppKit"``.
+
+- ``PyObjCTools.AppHelper.runEventLoop()`` no longer breaks on
+  pure Objective-C exceptions.  Most exceptions of this variety
+  are more like warnings, and there is nothing that can be done
+  them anyway.
+
+- ``PyObjCTools.AppHelper.runEventLoop()`` now installs the
+  interrupt handler and verbose exception logging when using pdb,
+  either explicitly or by the USE_PDB environment variable.
+
+- There is now a fast path for the ``NSString``/``unicode``
+  bridge when ``Py_UNICODE_SIZE`` is 2.  This is the default
+  setting for Python.
+
+- The default selector signature will have a void return value
+  unless a "return" statement with an argument is used in the
+  bytecode.  In that case, it will default to an object return
+  value.
+
+- ``__bundle_hack__`` is no longer necessary, py2app now sets
+  a different environment variable to the current plugin during
+  execution, and a hack is installed to ``NSBundle`` so that classes
+  may respond to requests for their bundle with the ``+bundleForClass``
+  method.  The class builder adds a default implementation of this to
+  Python classes if this environment variable is set.
+
+- Added ``objc.currentBundle()``, which is equivalent to
+  ``NSBundle.mainBundle()`` except after loading a plug-in.
+  Makes it easier to load nib files.
+
+- ``PyObjCTools.NibClassBuilder.extractClasses()`` now uses
+  ``objc.currentBundle()`` instead of ``NSBundle.mainBundle()``.  This
+  makes plugins less of a hassle to develop and allows identical code
+  to be used for application or plugin development.
+
+- ``objc.registerPlugin()`` and ``objc.pluginBundle()`` are now deprecated
+  as they are no longer useful.
+
+- It is now possible to subclass a class that implements ``copyWithZone:``
+  without setting ``__slots__`` to ``()``. 

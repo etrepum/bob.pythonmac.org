@@ -1,0 +1,32 @@
+---
+categories: python, macosx
+date: 2005/03/31 00:20:08
+guid: /?p=126
+permalink: http://bob.pythonmac.org/archives/2005/03/31/macpython-241-installer/
+tags: ''
+title: MacPython 2.4.1 Installer
+---
+.. -*- mode: rst -*-
+
+I've put together an "official unofficial" framework build distribution of Python 2.4.1 for Mac OS X 10.3 (and later, but that is not tested yet).  It is built using the same tools that Jack builds the official MacPython distribution with.
+
+Unlike typical builds, this one has all the stock goodies:
+
+- readline 5.0.005 (static)
+- BerkeleyDB 4.3.27 (static)
+- waste (static)
+- Tcl/Tk Aqua 8.4.9 (dynamic - you'll need `TclTkAqua`_ to use Tkinter)
+
+.. _`TclTkAqua`: http://tcltkaqua.sf.net/
+
+Note that this WILL NOT work with Mac OS X 10.2 (Jaguar) or earlier.  It is ONLY for Mac OS X 10.3 (Panther) and later.  That means, it *should* work on Mac OS X 10.4 (Tiger) .  Also note that it expects you to install to the root drive only, despite the fact that the installer doesn't force you to do this.
+
+If you are using Mac OS X 10.3, it is recommended that you also get the `PantherPythonFix`_ if you have not already, to prevent conflicts with the stock Python when you build new extensions.  Packages for this Python will start popping up at `pythonmac.org packages`_ in the coming weeks.
+
+If you are using Mac OS X 10.4, you should get the TigerPython24Fix package from `pythonmac.org packages`_.
+
+.. _`PantherPythonFix`: http://bob.pythonmac.org/archives/2005/02/04/fix-mac-os-x-103s-python-230/
+.. _`pythonmac.org packages`: http://pythonmac.org/packages/
+
+And now what you're all waiting for, the download link.  It's here:
+    http://undefined.org/python/#python

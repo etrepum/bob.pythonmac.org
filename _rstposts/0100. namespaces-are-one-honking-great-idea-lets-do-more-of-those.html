@@ -1,0 +1,28 @@
+---
+categories: python, PyObjC
+date: 2005/02/04 00:58:52
+guid: /?p=100
+permalink: http://bob.pythonmac.org/archives/2005/02/04/namespaces-are-one-honking-great-idea-lets-do-more-of-those/
+tags: ''
+title: Namespaces are one honking great idea -- let's do more of those!
+---
+.. -*- mode: rst -*-
+
+According to `The Zen of Python`_ by Tim Peters:
+
+    *Namespaces are one honking great idea -- let's do more of those!*
+
+Apparently some of us weren't listening.  Both `WebWare`_ and `PyObjC`_ use several global names in the module namespace.  `PyObjC`_ has ``objc``, ``PyObjCTools``, and one per framework it wraps.  `WebWare`_ has a few of its own.  Unfortunately, `both have a package named WebKit`_!
+
+Well, that sucks.  If either `WebWare`_ or `PyObjC`_ change, then existing applications will break.  If they don't, new applications that take advantage of both aren't possible.  Unfortunately, it's entirely reasonable to want to use both ``WebKit`` packages in the same application.  Oops!
+
+Clearly, something ought to change, but I'm not sure what.  `PyObjC`_ can and probably should grow a namespace for its wrapped frameworks, but should `WebWare`_ also be "polluting" the global namespace?
+
+Should `PyPI`_ grow a global registry for top level names, like Apple's `registry for creator codes`_?
+
+.. _`registry for creator codes`: http://developer.apple.com/datatype/
+.. _`PyPI`: http://www.python.org/pypi
+.. _`The Zen of Python`: http://www.python.org/peps/pep-0020.html
+.. _`WebWare`: http://webware.sourceforge.net/
+.. _`PyObjC`: http://pyobjc.sourceforge.net/
+.. _`both have a package named WebKit`: http://tinyurl.com/6b87l

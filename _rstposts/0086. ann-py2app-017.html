@@ -1,0 +1,121 @@
+---
+categories: python, PyObjC, py2app
+date: 2004/12/31 00:28:41
+guid: /?p=86
+permalink: http://bob.pythonmac.org/archives/2004/12/31/ann-py2app-017/
+tags: ''
+title: 'ANN: py2app 0.1.7'
+---
+.. -*- mode: rst -*-
+
+`py2app`_ is the bundlebuilder replacement we've all been waiting for.  It is implemented as a distutils command, similar to `py2exe`_, that builds Mac OS X applications from Python scripts, extensions, and related data files.  It tries very hard to include all dependencies it can find so that your application can be distributed standalone, as Mac OS X applications should be.
+
+`py2app`_ 0.1.7 is included in the installer for `PyObjC`_ 1.2.  If you have
+installed `PyObjC`_ 1.2, then you already have `py2app`_ 0.1.7 installed.
+
+Download and related links are here: http://undefined.org/python/#py2app
+
+`py2app`_ 0.1.7 is a bug fix release:
+
+*   The ``bdist_mpkg`` script will now set up sys.path properly, for setup scripts
+    that require local imports.
+*   ``bdist_mpkg`` will now correctly accept ``ReadMe``, ``License``, ``Welcome``,
+    and ``background`` files by parameter.
+*   ``bdist_mpkg`` can now display a custom background again (0.1.6 broke this).
+*   ``bdist_mpkg`` now accepts a ``build-base=`` argument, to put build files in
+    an alternate location.
+*   ``py2app`` will now accept main scripts with a ``.pyw`` extension.
+*   ``py2app``'s not_stdlib_filter will now ignore a ``site-python`` directory as
+    well as ``site-packages``.
+*   ``py2app``'s plugin bundle template no longer displays GUI dialogs by default,
+    but still links to ``AppKit``.
+*   ``py2app`` now ensures that the directory of the main script is now added to
+    ``sys.path`` when scanning modules.
+*   The ``py2app`` build command has been refactored such that it would be easier
+    to change its behavior by subclassing.
+*   ``py2app`` alias bundles can now cope with editors that do atomic saves
+    (write new file, swap names with existing file).
+*   ``macholib`` now has minimal support for fat binaries.  It still assumes big
+    endian and will not make any changes to a little endian header.
+*   Add a warning message when using the ``install`` command rather than installing
+    from a package.
+*   New ``simple/structured`` example that shows how you could package an
+    application that is organized into several folders.
+*   New ``PyObjC/pbplugin`` Xcode Plug-In example.
+
+Since I have been slacking and the last announcement was for 0.1.4, here are the 
+changes for the soft-launched releases 0.1.5 and 0.1.6:
+
+`py2app`_ 0.1.6 was a major feature enhancements release:
+
+*   ``py2applet`` and ``bdist_mpkg`` scripts have been moved to Python modules
+    so that the functionality can be shared with the tools.
+*   Generic graph-related functionality from ``py2app`` was moved to
+    ``altgraph.ObjectGraph`` and ``altgraph.GraphUtil``.
+*   ``bdist_mpkg`` now outputs more specific plist requirements
+    (for future compatibility).
+*   ``py2app`` can now create plugin bundles (MH_BUNDLE) as well as executables.
+*   New recipe for supporting extensions built with `sip`_, such as `PyQt`_.  Note that
+    due to the way that `sip`_ works, when one sip-based extension is used, *all*
+    sip-based extensions are included in your application.  In practice, this means
+    anything provided by `Riverbank`_, I don't think anyone else uses `sip`_ (publicly).
+*   New recipe for `PyOpenGL`_.  This is very naive and simply includes the whole
+    thing, rather than trying to monkeypatch their brain-dead
+    version acquisition routine in ``__init__``.
+*   Bootstrap now sets ``ARGVZERO`` and ``EXECUTABLEPATH`` environment variables,
+    corresponding to the ``argv[0]`` and the ``_NSGetExecutablePath(...)`` that the
+    bundle saw.  This is only really useful if you need to relaunch your own
+    application.
+*   More correct ``dyld`` search behavior.
+*   Refactored ``macholib`` to use ``altgraph``, can now generate `GraphViz`_ graphs
+    and more complex analysis of dependencies can be done.
+*   ``macholib`` was refactored to be easier to maintain, and the structure handling
+    has been optimized a bit.
+*   The few tests that there are were refactored in `py.test`_ style.
+*   New `PyQt`_ example.
+*   New `PyOpenGL`_ example.
+*   See also:
+
+    - http://mail.python.org/pipermail/pythonmac-sig/2004-December/012272.html
+
+`py2app`_ 0.1.5 was a major feature enhancements release:
+
+*   Added a ``bdist_mpkg`` distutils extension, for creating Installer 
+    an metapackage from any distutils script.
+
+    - Includes PackageInstaller tool
+    - bdist_mpkg script
+    - setup.py enhancements to support bdist_mpkg functionality
+
+*   Added a ``PackageInstaller`` tool, a droplet that performs the same function
+    as the ``bdist_mpkg`` script.
+*   Create a custom ``bdist_mpkg`` subclass for `py2app`_'s setup script.
+*   Source package now includes `PJE`_'s `setuptools`_ extension to distutils.
+*   Added lots of metadata to the setup script.
+*   ``py2app.modulegraph`` is now a top-level package, ``modulegraph``.
+*   ``py2app.find_modules`` is now ``modulegraph.find_modules``.
+*   Should now correctly handle paths (and application names) with unicode characters
+    in them.
+*   New ``--strip`` option for ``py2app`` build command, strips all Mach-O files 
+    in output application bundle.
+*   New ``--bdist-base=`` option for ``py2app`` build command, allows an alternate
+    build directory to be specified.
+*   New `docutils`_ recipe.
+*   Support for non-framework Python, such as the one provided by `DarwinPorts`_.
+*   See also:
+
+    - http://mail.python.org/pipermail/pythonmac-sig/2004-October/011933.html
+
+.. _`py.test`: http://codespeak.net/py/current/doc/test.html
+.. _`GraphViz`: http://www.pixelglow.com/graphviz/
+.. _`PyOpenGL`: http://pyopengl.sf.net/
+.. _`Riverbank`: http://www.riverbankcomputing.co.uk/
+.. _`sip`: http://www.riverbankcomputing.co.uk/sip/index.php
+.. _`PyQt`: http://www.riverbankcomputing.co.uk/pyqt/index.php
+.. _`DarwinPorts`: http://darwinports.opendarwin.org/
+.. _`docutils`: http://docutils.sf.net/
+.. _`setuptools`: http://cvs.eby-sarna.com/PEAK/setuptools/
+.. _`PJE`: http://dirtSimple.org/
+.. _`py2app`: http://undefined.org/python/#py2app
+.. _`py2exe`: http://starship.python.net/crew/theller/py2exe/
+.. _`PyObjC`: http://pyobjc.sf.net/

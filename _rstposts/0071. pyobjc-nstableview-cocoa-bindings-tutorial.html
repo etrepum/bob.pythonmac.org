@@ -1,0 +1,28 @@
+---
+categories: python, PyObjC, docutils
+date: 2004/04/04 21:02:24
+guid: /?p=71
+permalink: http://bob.pythonmac.org/archives/2004/04/04/pyobjc-nstableview-cocoa-bindings-tutorial/
+tags: ''
+title: PyObjC, NSTableView, Cocoa Bindings Tutorial
+---
+.. -*- mode: rst -*-
+.. original id: P56
+
+I created a small Cocoa Bindings example in the PyObjC CVS repository last night, and decided to follow it up with a step by step tutorial.  I figured this would be useful as the demonstration I gave during my PyCon talk isn't anywhere in my slides.
+
+The tutorial assumes you are using PyObjC CVS (or whatever release comes after 1.1b1).  In order to set up an appropriate environment you will have to perform the following steps:
+
+* Make sure you're running OS X 10.3 or later, and you have the latest Xcode installed.  If not, it's time to upgrade.  Cocoa Bindings are not available in previous versions of OS X.
+* Check out `PyObjC CVS`_
+* ``sudo python setup.py install``
+* Make the folder ``/Library/Application Support/Apple/Developer Tools/Project Templates``
+* Copy ``Xcode/Project Templates/Cocoa-Python Application`` from your PyObjC checkout into that folder.
+
+The finished example is in ``Examples/CocoaBindings/TableModel`` of the PyObjC source tree, but the tutorial (`PasswdViewer Tutorial PDF`_) is self-contained so using the finished example is not going to teach you anything about Interface Builder or creating projects with the new template.
+
+If you're interested in how I created the tutorial, here is the `reStructuredText source document`_.  Note that the screenshots are crucial to getting the hang of this, so you should really be using the PDF.  I'll post the code I used to create the tutorial PDF (and my PyCon slides) at some point in the future if there is interest, but it's merely a small hack of the PythonPoint output code already in docutils CVS (somewhere in the sandbox).
+
+.. _`PyObjC CVS`: http://sourceforge.net/cvs/?group_id=14534
+.. _`PasswdViewer Tutorial PDF`: http://undefined.org/python/passwdviewer_cocoabindings_tutorial.pdf
+.. _`reStructuredText source document`: http://undefined.org/python/passwdviewer_cocoabindings_tutorial.txt

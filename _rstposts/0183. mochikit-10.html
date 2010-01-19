@@ -1,0 +1,58 @@
+---
+categories: javascript, MochiKit, AJAX
+date: 2005/10/24 19:44:48
+guid: http://bob.pythonmac.org/?p=183
+permalink: http://bob.pythonmac.org/archives/2005/10/24/mochikit-10/
+tags: ''
+title: MochiKit 1.0
+---
+.. -*- mode: rst -*-
+
+I've been putting in a lot of time into `MochiKit`_ lately getting it ready for this release: 1.0 [`download`_].  This version number carries a certain connotation, but honestly `MochiKit`_'s first release was beyond 1.0 quality compared to the rest of what's out there in this space.  It's stable, and we just tagged the latest `MochiBot`_ release with what's currently in there (which was a couple checkins before 1.0).
+
+The first thing `MochiKit 1.0`_ brings is a bunch of little bugfixes.  There weren't all that many to begin with, but I think they're basically all covered at this point.  The rounded corners code still has some rough edges (hah), but it works if you use it as intended and MochiKit `isn't about bling`_ at this point.
+
+Everyone loves examples, so here's the new ones:
+
+`Interpreter`_:
+    An interactive JavaScript interpreter, much like python when run with no arguments.  Very useful!
+
+`MochiRegExp`_: 
+    A "live" RegExp explorer, good for debugging those gnarly JavaScript RegExps.  RegExps without named groups or a verbose flag suck, you need this.
+
+One API change has been made though (basically a bugfix): `MochiKit.Async`_'s ``sendXMLHttpRequest`` and anything that uses it will now call the errback chain under ANY error.  This means that if the web server is down or if the user has gone to another page or started closing the browser, then you'll get an error.  From what I've seen, the error under both of these conditions is going to be an ``XMLHttpRequestError`` with ``undefined`` status.  That's right, you won't be able to discern one from the other, so don't do anything obtrusive (like an ``alert``) if you see an ``XMLHttpRequestError`` in your errback!  The best thing to do is just log or ignore these errors.
+
+`MochiKit.Base`_ has a new ``updatetree(self, obj[, ...])`` function to update an object tree, in order to support new `MochiKit.DOM`_ ``updateNodeAttributes`` functionality (below).
+
+`MochiKit.DOM`_'s ``updateNodeAttributes`` now uses ``updatetree`` if it sees object values, so you can now set style attributes inline::
+
+    var div = DIV({"style": {"display": "block"}}, "div contents here...");
+
+`MochiKit.DateTime`_'s ``isoTimestamp`` now uses one of the ugliest regexps I've ever written in order to parse ANY `ISO 8601`_ timestamp.  It doesn't attempt to validate, so it will accept a large subset of incorrectly formatted `ISO 8601`_-ish timestamps.  RegExps in JavaScript are so bad that I had to write `MochiRegExp`_ to get this right!
+
+`MochiKit.Format`_ grew a couple new functions:
+
+- ``truncToFixed(aNumber, precision)``: Truncate a number to the given precision (does NOT round).
+- ``roundToFixed(aNumber, precision)``: Round a number to the given precision (because Safari's Number methods are `mostly`_ `broken`_)
+- ``numberFormatter(pattern, placeholder="", locale="default")`` and ``formatLocale(locale="default")`` brings Java style number formatting to JavaScript::
+
+   assert( percentFormat(1.234567) == "123.46%" );
+   assert( numberFormatter("###,###%")(125) == "12,500%" );
+   assert( numberFormatter("##.000")(1.25) == "1.250" );
+
+
+.. _`MochiBot`: http://mochibot.com/
+.. _`MochiKit`: http://mochikit.com/
+.. _`MochiKit.Async`: http://mochikit.com/doc/html/MochiKit/Async.html
+.. _`MochiKit.Base`: http://mochikit.com/doc/html/MochiKit/Base.html
+.. _`MochiKit.DateTime`: http://mochikit.com/doc/html/MochiKit/DateTime.html
+.. _`MochiKit.DOM`: http://mochikit.com/doc/html/MochiKit/DOM.html
+.. _`MochiKit.Format`: http://mochikit.com/doc/html/MochiKit/Format.html
+.. _`mostly`: http://bugzilla.opendarwin.org/show_bug.cgi?id=5307
+.. _`broken`: http://bugzilla.opendarwin.org/show_bug.cgi?id=5308
+.. _`isn't about bling`: http://bob.pythonmac.org/archives/2005/09/09/mochikit-cons-or-not/
+.. _`MochiRegExp`: http://mochikit.com/examples/mochiregexp/index.html
+.. _`Interpreter`: http://mochikit.com/examples/interpreter/index.html
+.. _`ISO 8601`: http://www.w3.org/TR/NOTE-datetime
+.. _`download`: http://mochikit.com/download.html
+.. _`MochiKit 1.0`: http://mochikit.com/download.html

@@ -1,0 +1,38 @@
+---
+categories: python, PyObjC
+date: 2004/01/23 10:57:52
+guid: /?p=38
+permalink: http://bob.pythonmac.org/archives/2004/01/23/pyobjc-windowserver-and-rasterizing-pdfs/
+tags: ''
+title: PyObjC, WindowServer, and rasterizing PDFs
+---
+.. -*- mode: rst -*-
+.. original id: P30
+
+We had a visitor to the `MacPython Channel`_ yesterday that had heard `Quartz`_ (really, CoreGraphics) was a really fast way to work with PDFs on OS X.  His specific application was quickly to generating preview jpegs of very large (10mb) dynamically generated press-ready PDFs on the OS X Server 10.2 platform (dual 1ghz Xserve).  His current solution was using `GhostScript`_ as the rasterization engine, but the color matching was off and it was grinding his poor server to a halt.  `MacPython`_ to the rescue!
+
+His first attempt was to figure out the CoreGraphics SWIG wrapper [1]_.  Unfortunately, he didn't know that it only worked on 10.3, and nobody in the channel was terribly familiar with the API beyond the examples from Apple and `Andrew Shearer`_.  That was eliminated as a potential solution.
+
+The next (final, and working) attempt was to use CoreGraphics indirectly by way of `Cocoa`_ through `PyObjC`_.  Fortunately, `Dinu Gherman`_ had already done the hard work here, and had made available an open source `pdf2tiff`_ command line application that did nearly everything that was required.  What was left was converting the script to output jpeg instead.
+
+Initially I had naively thought since there wasn't an explicit `NSImageRep`_ for JPEG, it would have to be done as a postprocess by way of PIL, ImageMagick, etc.  Then, fortunately I remembered that `NSBitmapImageRep`_ was the answer: it can read/write JPEG, PNG, TIFF, and more!  We quickly changed the code (it was a three or four *line* change to pdf2tiff in all) to support JPEG by using NSBitmapImageRep.  After we had that working, he wanted to tweak the quality options.  Of course, the name of the properties key (NSImageCompressionFactor) was right in the documentation, so he plugged it in and everything just worked.
+
+There is one caveat though, Cocoa requires WindowServer access.  WindowServer is the process that makes the GUI tick in OS X, and runs as the currently logged in user.  It communicates with these processes via a `mach port`_, with permissions such that only the current logged in user, or root, can access it.  So this means, that in order for his script to work on his server, it needs to be setuid root (or setuid the logged in user, and have a particular user logged in all the time).  Hopefully someday Apple will help us out here and allow us to run a WindowServer in a virtual framebuffer.. reminds me of when I had to run `Xvfb`_ on Linux in order to use Java's AWT stuff to render out images on a server, but these was some 5 years ago, so things may be different.
+
+In any case, he says the previews look better and it runs much faster.  I don't have any numbers, but in my experiences with GhostScript and OS X's PDF engine (especially in 10.3!) I would guess it's at least one order of magnitude faster ;)
+
+.. _`MacPython Channel`: http://pythonmac.org/wiki/MacPythonChannel
+.. _`Quartz`: http://developer.apple.com/documentation/GraphicsImaging/Reference/Quartz_2D_Ref/index.html
+.. _`GhostScript`: http://www.cs.wisc.edu/~ghost/
+.. _`MacPython`: http://homepages.cwi.nl/~jack/macpython/index.html
+.. [1] See /Developer/Examples/Quartz/Python/ (included with Xcode on OS X 10.3)
+.. _`Andrew Shearer`: http://www.shearersoftware.com/personal/weblog/2003/11/08/the-fastest-way-to-resize-images-with-panther
+.. _`MacPython community`: http://pythonmac.org/
+.. _`Cocoa`: http://developer.apple.com/cocoa/
+.. _`PyObjC`: http://pythonmac.org/wiki/PyObjC
+.. _`Dinu Gherman`: http://python.net/~gherman/
+.. _`pdf2tiff`: http://python.net/~gherman/pdf2tiff.html
+.. _`NSImageRep`: http://developer.apple.com/documentation/Cocoa/Reference/ApplicationKit/ObjC_classic/Classes/NSImageRep.html
+.. _`NSBitmapImageRep`: http://developer.apple.com/documentation/Cocoa/Reference/ApplicationKit/ObjC_classic/Classes/NSBitmapImageRep.html
+.. _`mach port`: http://developer.apple.com/documentation/Darwin/Conceptual/KernelProgramming/boundaries/chapter_14_section_4.html
+.. _`Xvfb`: http://www.xfree86.org/4.0.1/Xvfb.1.html

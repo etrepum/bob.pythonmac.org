@@ -17,40 +17,34 @@ body {
 }
 
 div#content {
-    width: 1000px;
-    margin: 0 auto;
-    padding: 0px;
+    margin: 0 13em 0 0;
+    padding: 0.5em;
 }
 
 /********** Header **********/
-div#header {
-    background-color:#e8e8e8;
+h1#header {
+    background: #e8e8e8;
     margin:0;
     padding:0;
     border: solid #444444;
-}
-div#header h1 {
     font-family: Verdana, monospace;
     font-size: 20pt;
     letter-spacing:0.1em;
     padding: 0.25em;
     text-decoration:none;
 }
-div#header a{
+
+h1#header a{
     text-decoration: none;
 }
 
 #blog_name {
-    color:black;
+    color: black;
 }
 
 
 /********** Main Block **********/
 div#prose_block {
-    float: left;
-    margin:0;
-    padding:0 0 20px 20px;
-    width:680px;
 }
 div#prose_block h2 {
     font-size:18px;
@@ -63,12 +57,13 @@ div#prose_block h2.intrablog {
     color:#000000;
     margin-bottom: 20px;
 }
-span.post_prose {
+div.post_prose {
+    display: inline;
     font-size:13px;
     line-height:1.6em;
 }
 .blog_post small {
-    font-family:Arial,Helvetica,Sans-Serif;
+    font-family: Helvetica, Arial, Sans-Serif;
     font-size:11px;
 }
 div.blog_post {
@@ -83,7 +78,6 @@ div.blog_post {
     overflow:auto;
     padding:5px;
     clear:none;
-    float:none;
     line-height:1.333;
     margin:0;
     overflow:visible;
@@ -117,8 +111,8 @@ div.blog_post small a:hover {
     text-decoration:none;
 }
 div.after_post {
-    margin-top: 50px;
-    text-align: center;
+    margin-top: 20px;
+    text-align: right;
     font-size: 75%;
 }
 div.after_post a:hover {
@@ -130,18 +124,16 @@ hr.interblog {
     border:0 none;
     color:#555555;
     height:1px;
-    width:90%;
 }
 
 /********** Sidebar **********/
 div#right_sidebar {
-    float: right;
-    width:270px;
-    font-size: 11px;
-    line-height: 1.5em;
-    margin: 0;
-    padding: 0 10px;
-    border-left: 1px solid #eeeeee;
+    width: 11em;
+    padding: 20px 0 10px 30px;
+    border-left: 1px dotted #cccccc;
+    position: absolute;
+    right: 2px;
+    top: 0;
 }
 #right_sidebar div {
     margin: 20px 0;
@@ -176,18 +168,13 @@ div#right_sidebar {
     margin:0;
     padding:5px;
 }
-ul#twitter_update_list li {
-    margin-bottom:1em;
-}
-div#commits li {
-    margin-bottom:1em;
-}
-div#commits {
-    font-family:Arial,serif;
-    font-size:90%;
-}
-div#commitsRSS span.timeref {
-    font-size: 90%;
+
+#subscribe p {
+    background: url(/site_img/b_rss.gif) no-repeat;
+    line-height: 18px;
+    padding-left: 23px;
+    font-size: 0.9em;
+    letter-spacing: -1px;
 }
 /********** Footer **********/
 div#footer {

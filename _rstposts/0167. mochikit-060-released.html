@@ -1,0 +1,60 @@
+---
+categories: javascript, MochiKit, AJAX
+date: 2005/07/30 23:52:39
+guid: /?p=167
+permalink: http://bob.pythonmac.org/archives/2005/07/30/mochikit-060-released/
+tags: ''
+title: MochiKit 0.60 Released
+---
+.. -*- mode: rst -*-
+
+I went ahead and created a mailing list for development of and with MochiKit: `Google Groups: MochiKit`_.  No public `Trac`_ instance yet, but we're planning to have one soon.
+
+.. _`Google Groups: MochiKit`: http://groups-beta.google.com/group/mochikit
+.. _`Trac`: http://www.edgewall.com/trac/
+
+`MochiKit 0.60`_ was released yesterday (coincidentally, also my birthday, from which I'm still recovering).  All of the changes are relatively minor; mostly just fixing distribution mistakes.  For those of you that have the subversion repository checked out, you'll notice that the layout of the distribution zips is slightly different (namely that ``MochiKit`` is ``lib/MochiKit`` in the zip).  That's because `JSAN`_ expects a `certain distribution layout`_, and my repository is almost, but not quite, in that form.  So, if you had downloaded the zip, I apologize that the examples and tests didn't run out of the box.  I may rearrange the repository to match at some point, but for now, this works for me.
+
+.. _`JSAN`: http://openjsan.org/
+.. _`MochiKit`: http://mochikit.com/
+.. _`MochiKit 0.60`: http://mochikit.com/download.html
+.. _`certain distribution layout`: https://master.openjsan.org/documentation/dists.html
+
+Aside from the obligatory bug fixes, there are two new features: a more general version of ``getElementsByTagAndClassName`` which doesn't assume you want to ask ``window.document`` for tags, plus a "packed" version of `MochiKit`_.
+
+The "packed" version of `MochiKit`_ lives at ``packed/MochiKit/MochiKit.js``.  It is the entirety  of `MochiKit`_ concatenated together and comment-stripped.  This is about 108k (24k with `gzip compression`_) as-is, but run through a real whitespace-annihilating JavaScript packer it should get considerably smaller, since the coding conventions for `MochiKit`_ dictate lots of whitespace (with spaces instead of tabs, at that).  While the style guide currently only resides somewhere between my brain and my fingers, it's more or less like what you'd get if `PEP 7`_ and `PEP 8`_ got drunk one night and a baby JavaScript style guide popped out several months later.
+
+.. _`gzip compression`: http://httpd.apache.org/docs/2.0/mod/mod_deflate.html
+.. _`PEP 7`: http://python.org/peps/pep-0007.html
+.. _`PEP 8`: http://python.org/peps/pep-0008.html
+
+``packed/MochiKit/MochiKit.js`` is API compatible with ``lib/MochiKit/MochiKit.js``; meaning, you may refer to it directly with a ``<script>`` tag, or you may import it with ``JSAN.use("MochiKit.MochiKit")`` or ``dojo.require("MochiKit.MochiKit")`` (``"MochiKit.*`` should work in svn, but not 0.60 because I forgot to add a ``__package__.js``).  The reason to use the packed MochiKit is that it's a single file and saves a couple round-trips to the server.  The packed `MochiKit`_ is *everything* though.  If you want an even smaller distribution consisting of a subset of `MochiKit`_, you'll have to roll your own.  I believe that `Dojo Toolkit`_ may already have this capability (though it's not documented so I don't know how to do it or what state it's in), and there's `JavaScript::Librarian`_ coming from the `JSAN`_ front.  The current stupid packing script is just a temporary means to an end, I intend for it to be replaced by one of those two when they're ready and I've learned how to use them.
+
+.. _`JavaScript::Librarian`: http://search.cpan.org/~adamk/JavaScript-Librarian/
+.. _`Dojo Toolkit`: http://dojotoolkit.org/
+.. _`JSAN`: http://openjsan.org/
+
+I recommend the following process for developing with `MochiKit`_ (if only because this is how we do it):
+
+Development:
+    Use `MochiKit`_ unpacked, as-is, from the trunk of the repository or the latest distribution.  You may even use `svn:externals`_ to do this (we do).  Using your loading method of choice, load all of `MochiKit`_ (e.g. ``JSAN.use("MochiKit.MochiKit")`` or ``<script src="lib/MochiKit/MochiKit.js" type="text/javascript"></script>``).
+
+Production:
+    In your staging branch, replace the ``lib`` tree with the ``packed`` tree from the latest release distribution of `MochiKit`_ (or change the `svn:externals`_ to point to a release tag in the repo).  Ensure that everything works as expected.  Deploy!
+
+.. _`svn:externals`: http://svnbook.red-bean.com/en/1.1/ch07s04.html
+
+2005-07-29      v0.60
+
+- Beefed up the MochiKit.DOM test suite
+- Fixed return value for MochiKit.DOM.swapElementClass, could return
+  false unexpectedly before
+- Added an optional "parent" argument to
+  MochiKit.DOM.getElementsByTagAndClassName
+- Added a "packed" version in packed/MochiKit/MochiKit.js
+- Changed build script to rewrite the URLs in tests to account for the
+  JSAN-required reorganization
+- MochiKit.Compat to potentially work around IE 5.5 issues
+  (5.0 still not supported).  Test.Simple doesn't seem to work there,
+  though.
+- Several minor documentation corrections

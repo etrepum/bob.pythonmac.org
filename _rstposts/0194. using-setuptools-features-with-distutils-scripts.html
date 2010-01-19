@@ -1,0 +1,20 @@
+---
+categories: python, setuptools
+date: 2006/01/18 15:25:24
+guid: http://bob.pythonmac.org/archives/2006/01/18/using-setuptools-features-with-distutils-scripts/
+permalink: http://bob.pythonmac.org/archives/2006/01/18/using-setuptools-features-with-distutils-scripts/
+tags: ''
+title: Using setuptools features with distutils scripts
+---
+.. -*- mode: rst -*-
+
+A quick and dirty way to use `setuptools`_ commands (such as `develop`_, `bdist_egg`_, etc.) given a standard distutils setup.py file is to just add an "import setuptools" statement to the top of the script.  This can also be done without modifying the setup.py as such::
+
+    python -c "import setuptools; execfile('setup.py')" develop
+
+It would be cool if `setuptools`_ shipped with a script for this, or if `buildutils`_ had that functionality built-in.
+
+.. _`buildutils`: http://buildutils.lesscode.org/
+.. _`bdist_egg`: http://peak.telecommunity.com/DevCenter/setuptools#bdist-egg-create-a-python-egg-for-the-project
+.. _`develop`: http://peak.telecommunity.com/DevCenter/setuptools#develop-deploy-the-project-source-in-development-mode
+.. _`setuptools`: http://peak.telecommunity.com/DevCenter/setuptools

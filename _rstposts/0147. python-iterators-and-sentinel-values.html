@@ -1,0 +1,44 @@
+---
+categories: python
+date: 2005/06/14 11:29:15
+guid: /?p=147
+permalink: http://bob.pythonmac.org/archives/2005/06/14/python-iterators-and-sentinel-values/
+tags: ''
+title: Python iterators and sentinel values
+---
+.. -*- mode: rst -*-
+
+A little known feature of `PEP 234: Iterators`_ (implemented in Python 2.1 and later) is the alternate form:
+
+.. pycode::
+
+    iter(callable, sentinel)
+
+This form creates an iterator out of any callable, and will stop when an exception is raised or the sentinel value is returned by the callable.  Additionally, raising ``StopIteration`` will stop the iteration as with a normal iterator.  A sentinel value is a special value that indicates the end of a sequence.  This can be any value, but the most commonly useful values are likely to be ``None``, ``0``, or ``''``.
+
+I haven't seen much code in the wild that takes advantage of this form of ``iter``, but an excellent usage would be to replace this common idiom:
+
+.. pycode::
+
+    while True:
+        data = fileobj.read(BLOCKSIZE)
+        if not data:
+            break
+        # do something with data here
+
+Using the sentinel form of ``iter``, it can be rewritten as an iterator with more obvious control flow:
+
+.. pycode::
+
+    for data in iter(lambda: fileobj.read(BLOCKSIZE), ''):
+        # do something with data here
+
+Of course, nobody likes a ``lambda``, but you could wrap this up as a little utility function, or you could wait for `PEP 309: Partial Function Application`_ (on the standards track, will be in Python 2.5).  With ``partial`` it would look like this:
+
+.. pycode::
+
+    for data in iter(partial(fileobj.read, BLOCKSIZE), ''):
+        # do something with data here
+
+.. _`PEP 234: Iterators`: http://www.python.org/peps/pep-0234.html
+.. _`PEP 309: Partial Function Application`:  http://www.python.org/peps/pep-0309.html

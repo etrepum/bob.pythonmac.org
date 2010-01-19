@@ -1,0 +1,30 @@
+---
+categories: perl, macosx
+date: 2005/02/28 05:27:14
+guid: /?p=113
+permalink: http://bob.pythonmac.org/archives/2005/02/28/updated-frozen-bubble-port/
+tags: ''
+title: Updated Frozen Bubble Port
+---
+.. -*- mode: rst -*-
+
+I've updated my `Mac OS X port of Frozen Bubble`_.  I updated all of the dependencies to the latest I could find (SDL_perl 1.20.3a, SDL 1.2.8 with my AltiVec patches, etc.), and now it embeds a `DarwinPorts`_-built Perl rather than links to the ``/System`` Perl.  I rewrote the port such that the Mac OS X specific changes were isolated, so the same source should run on other platforms.
+
+The interesting part is the new build system.  I'm leveraging a `Makefile`_ to do (most) everything, rather than using an Xcode project and a series of manual steps (that I don't even remember).  The biggest change to the build process is that it now embeds rather than links to Perl, so it needs to create a "standalone" Perl environment.  I wrote a script, `scan_and_copy.pl`_, that throws the main script of `Frozen-Bubble`_ over `Module::ScanDeps`_ to get the list of files that it requires.  It simply copies these into the ``Resources`` folder of the application bundle, along with everything else.  The bootstrap code now removes everything from ``@INC`` except for ``'.'``, so it does the right thing if the dependencies are in that location.  Normally, this wouldn't be enough, because there is no explicit step for bringing in all of the libraries that this depends on.  However, I simply leverage `macho_standalone`_, which copies in all dependent libraries and strips the files.
+
+I should submit the `Makefile`_ to `CPAN`_ and call it ``perl2app``.  It wouldn't be much worse than most of the other garbage I've found in there ;)
+
+Now I just need to figure out how to suppress that nasty feeling you get when you touch Perl again after mostly avoiding it for several years...
+
+`#macpython`_ quote of the day:
+    *endo:* so whats python like i do have knowlege of some programming languages just wonderin what its used for, is it software?
+
+.. _`#macpython`: http://pythonmac.org/wiki/MacPythonChannel
+.. _`CPAN`: http://www.cpan.org/
+.. _`macho_standalone`: http://bob.pythonmac.org/archives/2005/02/09/creating-standalone-mac-os-x-applications/
+.. _`Frozen-Bubble`: http://www.frozen-bubble.org/
+.. _`Module::ScanDeps`: http://search.cpan.org/dist/Module-ScanDeps/lib/Module/ScanDeps.pm
+.. _`scan_and_copy.pl`: http://svn.red-bean.com/bob/frozen-bubble/tags/frozen-bubble-1.0.0b/macosx/scan_and_copy.pl
+.. _`Makefile`: http://svn.red-bean.com/bob/frozen-bubble/tags/frozen-bubble-1.0.0b/macosx/Makefile
+.. _`DarwinPorts`: http://darwinports.opendarwin.org/
+.. _`Mac OS X port of Frozen Bubble`: http://redivi.com/~bob/frozenbubble.html

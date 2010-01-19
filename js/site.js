@@ -7,7 +7,7 @@ try{
 } catch(err) {}
 
 $j(document).ready(function(){
-    $j("#etrepum_tweets").tweet({
+    $j("#blogofile_tweets").tweet({
         avatar_size: 32,
           count: 5,
           query: "etrepum",

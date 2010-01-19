@@ -1,0 +1,21 @@
+---
+categories: python, py2app
+date: 2004/08/16 03:05:04
+guid: /?p=80
+permalink: http://bob.pythonmac.org/archives/2004/08/16/py2app-begins-find_modulespy/
+tags: ''
+title: 'py2app begins: find_modules.py'
+---
+.. -*- mode: rst -*-
+.. original id: P66
+
+I started ripping apart `py2exe`_ to see what tasty little chunks could be used in py2app (its evil Mac OS X clone-to-be).  It seems like a lot of `py2exe`_ is almost cross-platform-ish, but most of the logic is just in one huge Python script.
+
+So far the only working code I have is the `modulefinder`_ based code, plus a whole bunch of hacks to ignore modules that should be ignored.  The result is `find_modules.py`_, which is almost 400 lines long and should be totally cross-platform-ish (far more so than `py2exe`_, anyway).  Basically it knows how to ignore a non-definitive list of platform specific modules based upon which platform you're currently using.
+
+Perhaps at some point this little ugly monster could be shared between several packaging projects (`py2exe`_, py2app, `cx_Freeze`_, etc.)?  I'm not sure if it can go into `py2exe`_ as-is, because I used a bunch of Python 2.3+ features.
+
+.. _`cx_Freeze`: http://starship.python.net/crew/atuining/cx_Freeze/
+.. _`find_modules.py`: http://svn.red-bean.com/bob/py2app/trunk/py2app/find_modules.py
+.. _`modulefinder`: http://epydoc.sourceforge.net/stdlib/public/modulefinder-module.html
+.. _`py2exe`: http://starship.python.net/crew/theller/py2exe/

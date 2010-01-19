@@ -1,0 +1,41 @@
+---
+categories: python
+date: 2005/03/24 11:56:48
+guid: /?p=123
+permalink: http://bob.pythonmac.org/archives/2005/03/24/pycs-eggs-and-zipimport/
+tags: ''
+title: .pyc's, eggs, and zipimport
+---
+.. -*- mode: rst -*-
+
+I've been working on the `PythonEggs`_ runtime during `PyCon`_, and I ran across a bug in the ``zipimport`` built-in module.  It's not a proper `PEP 302`_ loader, so it can't be used on ``sys.meta_path``.  Unfortunately, due to some features we want to implement, we need this to work.
+
+Because ``zipimport`` is written in C, is a built-in, and has no Python reference implementation, it's quite hard to fix.  My current approach is to rewrite it in pure Python, determine the correct logic, and probably backport the correct behavior back to C.
+
+I've finished rewriting ``zipimport`` in Python, though I haven't fully and correctly implemented the PEP, it passes ``test.test_zipimport`` and doesn't have the particular bug we encountered when importing a trivial package-using Egg with the importer on ``sys.meta_path``.
+
+One of the things I noticed when writing this is that the Python bytecode file format (``.pyc`` and ``.pyo``) isn't really well specified outside of the source code.  Here are the constraints I came across by reading it.
+
+---------------------
+Python Bytecode Files
+---------------------
+
+Length:
+    A Python bytecode file must be more than 9 bytes long.
+
+Magic Number ``[0:4]``:
+    The first four bytes are a magic number.  This magic number changes for every major Python release, and can be determined by ``PyImport_GetMagicNumber()`` from the C API, or ``imp.get_magic()`` from Python.  For example, the magic number for Python 2.3 is ``';\xf2\r\n'`` and Python 2.4 is ``'m\xf2\r\n'``.  The reasoning and numbering scheme behind this magic number is documented in ``Python/import.c``.  One particularly clever feature of the magic number is that it incorporates a line ending, so if the file is read or written with an incorrect mode it will end up with a bad magic number, preventing it from being loaded.
+
+Modification Time ``[4:8]``:
+    The next four bytes are a 32 bit little endian signed long representing the modification time of the file.  If the OS uses a ``time_t`` longer than 32 bits, and higher bits are set, Python breaks.  So, Python (at least up to CVS) will not run if your clock is set past 2038.  More generally, it is written by ``PyMarshal_WriteLongToFile()``, but as that is not exposed to Python by the ``marshal`` module, I needed to know the precise layout.  For whatever reason, the ``zipimport`` module doesn't use the marshal API for reading it back in anyway.
+
+    - If the mtime is zero, the following checks are not performed, and the bytecode is used.
+    - The mtime *in* the bytecode file must match the mtime *of* the bytecode file exactly.  ``zipimport`` must relax this constraint to allow for there to be up to one second mismatch, due to the lack of precision in the zip format's TOC.
+    - The mtime must be >= the mtime of the corresponding source file, if one is present.
+
+Bytecode ``[8:]``:
+    The rest of the bytecode file must be a marshaled ``code`` object.
+
+.. _`PyCon`: http://pycon.org/
+.. _`PEP 302`: http://python.org/peps/pep-0302.html 
+.. _`PythonEggs`: http://peak.telecommunity.com/DevCenter/PythonEggs

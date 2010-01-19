@@ -1,0 +1,53 @@
+---
+categories: javascript, MochiKit, AJAX
+date: 2005/08/12 08:36:43
+guid: /?p=170
+permalink: http://bob.pythonmac.org/archives/2005/08/12/mochikit-080-released/
+tags: ''
+title: MochiKit 0.80 Released
+---
+.. -*- mode: rst -*-
+
+`MochiKit 0.80`_ has been released!  This release includes a new example, a bunch of new features, and some bug fixes.
+
+The major new features are HSV color model support for `MochiKit.Visual`_ (for all of you Photoshop users out there), Python-like ``strip`` functions in `MochiKit.Format`_ and the ``updateNodeAttributes``, ``appendChildNodes``, ``replaceChildNodes`` trio in `MochiKit.DOM`_.
+
+The new `view-source example`_ uses the excellent `dp.SyntaxHighlighter`_ and extends it to provide XMLHttpRequest-based syntax highlighting.  It simply reads the file name from ``location.hash``, makes an educated guess about how to highlight it, and displays the content.  It's quite cool, and now all of the examples have links to view their source files using it!
+
+The `mailing list`_ is really taking off too, so you should sign up!
+
+.. _`mailing list`: http://groups-beta.google.com/group/mochikit
+.. _`MochiKit.DOM`: http://mochikit.com/doc/html/MochiKit/DOM.html
+.. _`MochiKit.Visual`: http://mochikit.com/doc/html/MochiKit/Visual.html
+.. _`MochiKit.Format`: http://mochikit.com/doc/html/MochiKit/Format.html
+.. _`dp.SyntaxHighlighter`: http://www.dreamprojections.com/SyntaxHighlighter/
+.. _`view-source example`: http://mochikit.com/examples/view-source/view-source.html
+.. _`MochiKit 0.80`: http://mochikit.com/download.html
+
+2005-08-12      v0.80
+
+- Source highlighting in all examples, moved to a view-source example
+- Added some experimental syntax highlighting for the Rounded Corners example,
+  via the LGPL dp.SyntaxHighlighter 1.2.0 now included in examples/common/lib
+- Use an indirect binding for the logger conveniences, so that the global
+  logger could be replaced by setting MochiKit.Logger.logger to something else
+  (though an observer is probably a better choice).
+- Allow MochiKit.DOM.getElementsByTagAndClassName to take a string for parent,
+  which will be looked up with getElement
+- Fixed bug in MochiKit.Color.fromBackground (was using node.parent instead of
+  node.parentNode)
+- Consider a 304 (NOT_MODIFIED) response from XMLHttpRequest to be success
+- Disabled Mozilla map(...) fast-path due to Deer Park compatibility issues
+- Possible workaround for Safari issue with swapDOM, where it would get
+  confused because two elements were in the DOM at the same time with the
+  same id
+- Added missing THEAD convenience function to MochiKit.DOM
+- Added lstrip, rstrip, strip to MochiKit.Format
+- Added updateNodeAttributes, appendChildNodes, replaceChildNodes to
+  MochiKit.DOM
+- MochiKit.Iter.iextend now has a fast-path for array-like objects
+- Added HSV color space support to MochiKit.Visual
+- Fixed a bug in the sortable_tables example, it now converts types
+  correctly
+- Fixed a bug where MochiKit.DOM referenced MochiKit.Iter.next from global
+  scope

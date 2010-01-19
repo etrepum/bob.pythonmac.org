@@ -1,0 +1,42 @@
+---
+categories: python, perl, java
+date: 2004/08/24 22:32:00
+guid: /?p=81
+permalink: http://bob.pythonmac.org/archives/2004/08/24/forget-spreadsheetparseexcel/
+tags: ''
+title: Forget Spreadsheet::ParseExcel!
+---
+.. -*- mode: rst -*-
+.. original id: P68
+
+I've been working on some automation scripts to take data out of excel and do useful things with it, and I hit a big stumbling block with ``Spreadsheet::ParseExcel``.  Unicode SUCKS in Perl, and ``Spreadsheet::ParseExcel`` does nothing at all to help you with that.  Each cell gets its own encoding ('ucs2', '_native_' which I haven't seen, or it's simply undef.. which seems to be latin-1).  Anyway, it's completely bogus, so I started shopping around for another implementation.
+
+`Andy Khan`_'s `JExcelApi`_ does the trick and is light-years more correct and faster than the alternatives I have tried (other than the time it takes a JVM to start).  Not only that, but *by default* the jar does exactly what I want it to do.  It gets the unicode right, and everything worked perfectly the first time.  My dealings with Excel files have been reduced to the following:
+
+.. pycode::
+
+    java -jar -Djxl.encoding=latin1 jxl.jar -xml EXCELFILE.xls
+
+And the Python code to parse the workbook xml document from jxl looks roughly like this:
+
+.. pycode::
+
+    from xml.dom import minidom
+
+    def parseDocRows(doc):
+        for row in doc.getElementsByTagName(u'row'):
+            rowdata = [
+                u''.join([x.nodeValue for x in col.childNodes])
+                for col in row.getElementsByTagName(u'col')]
+            if rowdata:
+                yield rowdata
+
+    if __name__ == '__main__':
+        import sys
+        for row in parseDocRows(minidom.parse(file(sys.argv[1]))):
+            print row
+
+Thanks!
+
+.. _`Andy Khan`: http://andykhan.com/
+.. _`JExcelApi`: http://www.andykhan.com/jexcelapi/index.html

@@ -1,0 +1,31 @@
+---
+categories: python, aeve
+date: 2003/11/12 21:46:08
+guid: /?p=18
+permalink: http://bob.pythonmac.org/archives/2003/11/12/using-aeve-to-make-itunes-talk-to-ichat/
+tags: ''
+title: Using aeve to make iTunes talk to iChat
+---
+.. -*- mode: rst -*-
+.. original id: P10
+
+I was originally going to write a little bit about the `unicodedata module`_, but google tells me that `Ludoo already did`_.  So instead, here's a quick `aeve`_ script that will set your iChat status message to the current track in iTunes (make sure to `run with pythonw`_, it needs WindowManager access).
+
+.. pycode::
+
+    import aeve
+    ichat = aeve.talkto('com.apple.iChat')
+    itunes = aeve.talkto('com.apple.iTunes')
+    ichat.status_message = u'\N{BEAMED EIGHTH NOTES} %s - %s' % (
+        itunes.current_track.name, 
+        itunes.current_track.artist)
+
+Also see Donovan Preston's `iTunesStatus`_ script (requires `Twisted`_ and `Quotient`_) that makes the same information available from a web browser!
+
+.. _`run with pythonw`: http://pythonmac.org/wiki/FAQ#head-3d33c488ad44d45fb3fffae5119fe74441982b7d
+.. _`iTunesStatus`: http://soundfarmer.com/content/code/TunesStatus.py
+.. _`Quotient`: http://www.divmod.org/Quotient/
+.. _`Twisted`: http://www.twistedmatrix.com/
+.. _`aeve`: http://pythonmac.org/wiki/aeve
+.. _`Ludoo already did`: http://www.asiatica.org/~ludo/archive/2003/10/Python_unicodedata.html
+.. _`unicodedata module`: http://www.python.org/doc/current/lib/module-unicodedata.html

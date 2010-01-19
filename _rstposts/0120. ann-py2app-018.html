@@ -1,0 +1,64 @@
+---
+categories: python, PyObjC, py2app
+date: 2005/03/17 21:40:53
+guid: /?p=120
+permalink: http://bob.pythonmac.org/archives/2005/03/17/ann-py2app-018/
+tags: ''
+title: 'ANN: py2app 0.1.8'
+---
+.. -*- mode: rst -*-
+
+`py2app`_ is the bundlebuilder replacement we've all been waiting for.  It is implemented as a distutils command, similar to `py2exe`_, that builds Mac OS X applications from Python scripts, extensions, and related data files.  It tries very hard to include all dependencies it can find so that your application can be distributed standalone, as Mac OS X applications should be.
+
+`py2app`_ 0.1.8 will be included in the installer for `PyObjC`_ 1.3.  If you have installed `PyObjC`_ 1.3, then you already have `py2app`_ 0.1.8 installed.
+
+Download and related links are here: http://undefined.org/python/#py2app
+
+py2app 0.1.8 is a major enhancements release:
+
+Bugs fixed:
+
+- Symlinks in included frameworks should be preserved correctly
+  (fixes Tcl/Tk)
+- Fixes some minor issues with alias bundles
+- Removed implicit SpiderImagePlugin -> ImageTk reference in PIL
+  recipe
+- The ``--optimize`` option should work now
+- ``weakref`` is now included by default
+- ``anydbm``'s dynamic dependencies are now in the standard implies
+  list
+- Errors on app launch are brought to the front so the user does
+  not miss them
+- bdist_mpkg now compatible with pychecker (data_files had issues)
+
+Options changed:
+
+- deprecated ``--strip``, it is now on by default
+- new ``--no-strip`` option to turn off stripping of executables
+
+New features:
+
+- Looks for a hacked version of the PyOpenGL __init__.py so that
+  it doesn't have to include the whole package in order to get
+  at the stupid version file.
+- New ``loader_files`` key that a recipe can return in order to
+  ensure that non-code ends up in the .zip (the pygame recipe
+  uses this)
+- Now scans all files in the bundle and normalizes Mach-O load
+  commands, not just extensions.  This helps out when using the
+  ``--package`` option, when including frameworks that have plugins,
+  etc.
+- An embedded Python interpreter is now included in the executable
+  bundle (``sys.executable`` points to it), this currently only
+  works for framework builds of Python
+- New ``macho_standalone`` tool
+- New ``macho_find`` tool
+- Major enhancements to the way plugins are built
+- bdist_mpkg now has a ``--zipdist`` option to build zip files
+  from the built package
+- The bdist_mpkg "Installed to:" description is now based on the
+  package install root, rather than the build root
+
+.. _`py2app`:  http://undefined.org/python/#py2app
+.. _`pyobjc`: http://pyobjc.sourceforge.net/
+.. _`py2exe`: http://starship.python.net/crew/theller/py2exe/

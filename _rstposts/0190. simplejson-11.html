@@ -1,0 +1,29 @@
+---
+categories: python, simplejson
+date: 2005/12/31 15:42:08
+guid: http://bob.pythonmac.org/archives/2005/12/31/simplejson-11/
+permalink: http://bob.pythonmac.org/archives/2005/12/31/simplejson-11/
+tags: ''
+title: simplejson 1.1
+---
+.. -*- mode: rst -*-
+
+`simplejson`_ is a simple, fast, complete, correct and extensible `JSON`_ encoder/decoder for Python 2.3+.  It is pure Python code with no dependencies.  It's now the recommended module for Python use by `JSON.org`_ (replacing `json-py`_).
+
+`simplejson`_ was previously named simple_json, but was renamed to comply with `PEP 8`_ module naming guidelines.
+
+`simplejson`_ 1.1 has a much bigger test suite, a full set of `documentation`_ and a couple new features.
+
+- The encoder and decoder have been extended to understand NaN, Infinity, and -Infinity (but this can be turned off via ``allow_nan=False`` for strict JSON compliance)
+- The decoder's scanner has been fixed so that it no longer accepts invalid JSON documents
+- The decoder now reports line and column information as well as character numbers for easier debugging
+- The encoder now has a circular reference checker, which can be optionally disabled with ``check_circular=False``
+- dump, dumps, load, loads now accept an optional ``cls`` kwarg to use an alternate JSONEncoder or JSONDecoder class for convenience.
+- The read/write compatibility shim for `json-py`_ now have deprecation warnings
+
+.. _`documentation`: http://svn.red-bean.com/bob/simplejson/trunk/docs/index.html
+.. _`JSON`: http://json.org/
+.. _`JSON.org`: http://json.org/
+.. _`simplejson`: http://undefined.org/python/#simplejson
+.. _`json-py`: http://sourceforge.net/projects/json-py/
+.. _`PEP 8`: http://python.org/peps/pep-0008.html

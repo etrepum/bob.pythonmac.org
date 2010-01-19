@@ -1,0 +1,38 @@
+---
+categories: python, PyObjC, pygame, wxPython
+date: 2005/04/17 08:24:56
+guid: /?p=130
+permalink: http://bob.pythonmac.org/archives/2005/04/17/twisted-and-foreign-event-loops/
+tags: ''
+title: Twisted and foreign event loops
+---
+.. -*- mode: rst -*-
+
+There's a new reactor in `Twisted`_ svn: ``threadedselectreactor``.  This reactor blocks on ``select()`` in a worker thread, so that it is easy to integrate with a foreign event loop without having to completely separate your Twisted code into its own thread.  This is awesome, and mostly eliminates the need to have specific reactors for each useful foreign event loop (``cfreactor``, ``wxreactor``, etc.).  Especially when the existing integration reactor sucks -- ``wxreactor`` is more or less a worst-possible implementation, and the others aren't a whole lot better.
+
+In order to integrate with foreign event loops, ``threadedselectreactor`` sports an extension to the reactor interface: ``interleave(waker)``.  ``waker`` is a callable that takes a callable as an argument.  Its job is to call this callable from the thread of the main event loop.  So, whatever you're integrating with needs to be able to send messages from an arbitrary thread to the main thread.  All of the event loops worth the fairy dust their bits are encoded on are designed to do this easily.
+
+Other than that, the only other thing that needs to be considered is shutdown (if it matters to shut down cleanly).  To do that, you can simply replace your "quit" function with an implementation that:
+
+  - Sets up an "after shutdown" reactor system event that will call "quitRightNow" when the reactor is dead
+  - Calls ``reactor.stop()`` to commence the self destruct sequence
+
+`wxPython`_ already has ``wxCallAfter`` that works perfectly well as the ``waker`` argument for ``interleave``, so you can Twistify a `wxPython`_ application in about six lines.  Here's a full demo: `doc/examples/core/threadedselect/wxdemo.py`__.
+
+.. __: http://svn.twistedmatrix.com/cvs/*checkout*/trunk/doc/core/examples/threadedselect/wxdemo.py?root=Twisted
+
+`PyObjC`_ has a ``PyObjCTools.AppHelper.callAfter`` that also serves as a too-trivial-to-be-true ``waker`` (coincidence?  no -- I just added it).  You can check out the demo from: `doc/examples/core/threadedselect/Cocoa/SimpleWebClient/`_.  The examples in `PyObjC`_'s `Examples/Twisted/`_  have also been refactored to use this (instead of ``cfreactor``, which should be considered dead weight).
+
+.. _`doc/examples/core/threadedselect/Cocoa/SimpleWebClient/`: http://svn.twistedmatrix.com/cvs/trunk/doc/core/examples/threadedselect/Cocoa/SimpleWebClient/?root=Twisted
+.. _`Examples/Twisted/`: http://svn.red-bean.com/pyobjc/trunk/pyobjc/Examples/Twisted/
+
+`pygame`_ is more low-level and doesn't provide any conveniences beyond getting and posting events.  So your ``waker`` should be some function that posts a ``USEREVENT`` to `pygame`_, which you need to pick up and do something with.  A minimal example of this is here: `doc/examples/core/threadedselect/pygamedemo.py`__.
+
+.. __: http://svn.twistedmatrix.com/cvs/*checkout*/trunk/doc/core/examples/threadedselect/pygamedemo.py?root=Twisted
+
+This reactor should trivially integrate with just about any event loop, including PyQt, GTK, etc.  However, the margins of my blog aren't big enough to fit them all.
+
+.. _`pygame`: http://pygame.org/
+.. _`PyObjC`: http://pyobjc.sourceforge.net/
+.. _`Twisted`: http://twistedmatrix.com/
+.. _`wxPython`: http://wxpython.org/

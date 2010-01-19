@@ -1,0 +1,19 @@
+---
+categories: python, pil
+date: 2004/06/17 20:13:20
+guid: /?p=73
+permalink: http://bob.pythonmac.org/archives/2004/06/17/checking-the-current-directory-for-progressive-jpegs/
+tags: ''
+title: Checking the current directory for progressive JPEGs
+---
+.. -*- mode: rst -*-
+.. original id: P59
+
+This is a quick hack, you'll need `PIL`_ with JPEG support installed to use it.
+
+.. pycode::
+
+    import glob, Image
+    print 'n'.join([fn for fn in glob.glob('*.jpg') if Image.open(fn).info.get('progression')])
+
+.. _`PIL`: http://www.pythonware.com/products/pil/

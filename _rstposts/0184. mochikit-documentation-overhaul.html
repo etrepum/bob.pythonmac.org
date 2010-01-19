@@ -1,0 +1,22 @@
+---
+categories: python, docutils, javascript, MochiKit, AJAX
+date: 2005/11/11 22:40:57
+guid: http://bob.pythonmac.org/archives/2005/11/11/mochikit-documentation-overhaul/
+permalink: http://bob.pythonmac.org/archives/2005/11/11/mochikit-documentation-overhaul/
+tags: ''
+title: MochiKit documentation overhaul
+---
+.. -*- mode: rst -*-
+
+In preparation for `MochiKit`_'s 1.1 release, I've thrown together a pair of custom `docutils`_ `roles`_ for the `MochiKit documentation`_ so that I can throw named anchors on each function.
+
+For example:
+    http://mochikit.com/doc/html/MochiKit/Async.html#fn-deferred
+
+Now the documentation is cross-referenced rather nicely and it should be relatively easy to scrape out some metadata, perhaps for use by the `interpreter`_, making a function index, search, etc.
+
+.. _`roles`: http://svn.red-bean.com/mochikit/trunk/scripts/make_docs.py
+.. _`MochiKit`: http://mochikit.com/
+.. _`interpreter`: http://mochikit.com/examples/interpreter/index.html
+.. _`docutils`: http://docutils.sourceforge.net/
+.. _`MochiKit documentation`: http://mochikit.com/doc/html/MochiKit/index.html

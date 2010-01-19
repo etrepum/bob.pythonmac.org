@@ -13,8 +13,8 @@
         <div id="prose_block">
           ${next.body()}
         </div><!-- End Prose Block -->
-        ${self.sidebar()}
       </div><!-- End Main Block -->
+      ${self.sidebar()}
       <div id="footer">
         ${self.footer()}
       </div> <!-- End Footer -->
@@ -31,7 +31,5 @@
   <%include file="footer.mako" />
 </%def>
 <%def name="sidebar()">
-  <div class="right_sidebar">
-    <%include file="sidebar.mako"  args="posts=posts" />
-  </div>
+  <%include file="sidebar.mako"  args="posts=posts" />
 </%def>

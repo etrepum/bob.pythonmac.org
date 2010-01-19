@@ -1,0 +1,51 @@
+---
+categories: python, simplejson
+date: 2008/09/29 13:37:13
+guid: http://bob.pythonmac.org/?p=236
+permalink: http://bob.pythonmac.org/archives/2008/09/29/simplejson-201/
+tags: ''
+title: simplejson 2.0.1
+---
+.. -*- mode: rst -*-
+
+`simplejson`_ (`documentation`_) is a simple, fast, complete, correct and extensible `JSON`_ (`RFC 4627`_) encoder/decoder for Python 2.3+.  It is pure Python code with no dependencies, but features an optional C extension for speed-ups. 
+
+`simplejson`_ 2.0.1 is a minor update:
+
+* Fixes long encoding regression introduced in 2.0.0
+* Fixes MinGW build regression introduced in 2.0.0
+
+I didn't manage to do a `simplejson`_ 2.0.0 release notice here but that was a MAJOR update!
+
+* optimized Python encoding path
+* optimized Python decoding path
+* optimized C encoding path
+* optimized C decoding path
+* switched to sphinx docs (nearly the same as the json module in python 2.6)
+
+Even without the C speedups, it's several times faster. With the C
+speedups, it's WAY faster. I highly recommend that everyone update
+their frameworks to use the latest code.
+
+For the primary benchmark I was concerned with (some internal data
+structures that Mochi uses) encoding is about 4x faster than cPickle
+(!), and decoding is just a tiny bit slower.
+
+There's little excuse to use other libraries now. The fastest
+alternative I'm aware of is cjson 1.0.5, which is currently a little
+faster than simplejson 2.0.0 when decoding but is actually slower than
+simplejson 2.0.0 at encoding (the more important path for people
+vending web services). In both cases, simplejson provides more
+flexibility (e.g. the decoding object_hook), so a slight speed cost
+when decoding is probably to be expected.
+
+There aren't really any API breaking changes, but when decoding a str
+input it will return str objects instead of unicode if the str is all
+ASCII with no escaped characters. I'm not aware of any scenario other
+than doctests where this could be a problem.
+
+.. _`RFC 4627`: http://www.ietf.org/rfc/rfc4627.txt
+.. _`documentation`: http://simplejson.googlecode.com/svn/tags/simplejson-2.0.1/docs/index.html
+.. _`JSON`: http://json.org/
+.. _`JSON.org`: http://json.org/
+.. _`simplejson`: http://undefined.org/python/#simplejson

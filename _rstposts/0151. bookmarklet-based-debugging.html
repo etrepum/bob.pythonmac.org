@@ -1,0 +1,40 @@
+---
+categories: debugging, javascript, MochiKit, AJAX
+date: 2005/07/03 15:04:08
+guid: /?p=151
+permalink: http://bob.pythonmac.org/archives/2005/07/03/bookmarklet-based-debugging/
+tags: ''
+title: Bookmarklet Based Debugging
+---
+.. -*- mode: rst -*-
+
+I haven't seen this discussed much, but one of the techniques I've found really useful for debugging JavaScript is what we've been calling BBD: Bookmarklet Based Debugging.  The reason we've settled on this is that it's entirely unobtrusive.  Our pages look exactly how they're supposed to look, with no extra "debugging" widgets or text sitting around on the page.  However, if I need more information, I just whack a bookmarklet and I get all of the information I need.  I'm aware that there are various bookmarklets out there that display various kinds of JavaScript information that might be useful for debugging, but not in such a way that you instrument your page for application specific BBD.  Also, most of the JavaScript debugging bookmarklets out there only work in Mozilla, and I do most of my development in Safari.
+
+.. image:: http://undefined.org/mochikit/img/mochikit_bbd_1.png
+
+The reason this works for us is because we use a common logging infrastructure across our whole web app:  MochiKit.Logging.  This, and the rest of `MochiKit`_, will be liberally licensed open source (likely MIT) in less than two weeks.  MochiKit.Logging is vaguely similar to Python's logging module or Apache's log4j, but without all of the headaches and mindless configuration sludge.
+
+Typical usage for our Logger object looks like this:
+
+.. pycode::
+
+    // these are global functions for convenience:
+    log("some", "objects", "here", "at", "the", "INFO", "level");
+    logDebug("some", "objects", "here", "at", "the", "DEBUG", "level");
+    // or more generally:
+    logger.baseLog(logLevel, objects...);
+
+When one of these log methods are called, two things happen:
+
+1. Any attached listeners to the logger are notified (which may or may not do something interesting with the log message)
+2. The global logger stuffs the log message away in a log buffer (of configurable size, by default it's infinite) for easy retrieval
+
+Listeners are really just for future enhancements (i.e. "real-time" log window by bookmarklet), but our current bookmarklet simply formats the last 40 messages or so as an alert message and spits it to the browser.
+
+Currently, the bookmarklet URL for MochiKit.Logging's brain dump is simply: ``javascript:logger.debuggingBookmarklet()``, which allows for future improvements (i.e. something better than ``alert(...)``) without "upgrading" the bookmarkets in everyone's browser.
+
+UPDATE:
+    `MochiKit`_ is now available.  Check it out at `mochikit.com`_!
+
+.. _`mochikit.com`: http://mochikit.com/
+.. _`MochiKit`: http://mochikit.com/

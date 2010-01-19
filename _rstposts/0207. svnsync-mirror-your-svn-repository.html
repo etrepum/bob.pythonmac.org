@@ -1,0 +1,33 @@
+---
+categories: subversion, macosx, universal binaries, FreeBSD
+date: 2006/09/14 12:15:24
+guid: http://bob.pythonmac.org/?p=207
+permalink: http://bob.pythonmac.org/archives/2006/09/14/svnsync-mirror-your-svn-repository/
+tags: ''
+title: 'svnsync: mirror your svn repository'
+---
+.. -*- mode: rst -*-
+
+Since the svnsync tool in `Subversion`_ 1.4 still lacks documentation, here's a quick example to get you started with it::
+
+        $ svnadmin create svn.mochikit.com
+        $ echo '#!/bin/sh' > svn.mochikit.com/hooks/pre-revprop-change
+        $ chmod +x svn.mochikit.com/hooks/pre-revprop-change
+        $ svnsync init file://$PWD/svn.mochikit.com http://svn.mochikit.com/
+        $ svnsync sync file://$PWD/svn.mochikit.com
+
+The example performs the following tasks:
+
+* Creates a new local repository named ``svn.mochikit.com``
+* Adds a trivial ``pre-revprop-change`` hook to the repository (required for svnsync)
+* Initializes the ``svn.mochikit.com`` repository to be a mirror of http://svn.mochikit.com/
+* Synchronizes the ``svn.mochikit.com`` repository with its initialized source
+
+Note that this is point-in-time synchronization. To keep an up to date mirror you'll have to run ``svnsync sync`` on a regular basis (e.g. by cron job or post-commit hook).
+
+If you're looking for an especially easy to install set of svn binaries for Mac OS X, I recommend `Martin Ott's`_ (of `SubEthaEdit`_ fame) build. I've been using it on all of my Macs for quite some time with no issues. Much less hassle than building it myself or using `MacPorts`_ (previously known as DarwinPorts).
+
+.. _`Subversion`: http://subversion.tigris.org/
+.. _`Martin Ott's`: http://www.codingmonkeys.de/mbo/
+.. _`SubEthaEdit`: http://www.codingmonkeys.de/subethaedit/
+.. _`MacPorts`: http://www.macports.org/

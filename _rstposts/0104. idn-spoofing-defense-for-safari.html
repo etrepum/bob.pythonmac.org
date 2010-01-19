@@ -1,0 +1,104 @@
+---
+categories: python, PyObjC, py2app, macosx, debugging
+date: 2005/02/07 17:51:20
+guid: /?p=104
+permalink: http://bob.pythonmac.org/archives/2005/02/07/idn-spoofing-defense-for-safari/
+tags: ''
+title: IDN Spoofing Defense for Safari
+---
+.. -*- mode: rst -*-
+
+UPDATE:
+    Apple has properly resolved this issue with Safari, see `About Safari International Domain Name Support`__.
+
+.. __: http://docs.info.apple.com/article.html?artnum=301116
+
+Soon after I got home from `ShmooCon`_, I saw that the `Shmoo Group`_ came up with a new `domain spoofing exploit`_ for which "no defense exists".  It's pretty amazing that browsers actually implement IDN without any kind of protection, so I decided to quickly hack up a defense for Safari on Mac OS X 10.3 (and probably later).
+
+.. image::
+    http://undefined.org/python/IDNSnitch_00.jpg
+
+Application:
+    `IDNSnitch.app.tgz`_ (335k)
+    USE AT YOUR OWN RISK.  This probably will cause instability in Safari.
+
+Source:
+    http://svn.red-bean.com/pyobjc/trunk/pyobjc/Examples/Inject/IDNSnitch
+
+The hack is implemented in two parts, an application and a plugin.
+
+**Application**
+
+`IDNSnitch.py`_ is a simple application that scans ``NSWorkspace`` for Safari
+instances, and registers for application launch notifications for new Safari
+instances.  When it sees an instance of Safari, it uses ``objc.inject`` to load
+the plugin into the target pid.
+
+**Plugin**
+
+`IDNSnitchPlugin.py`_ is where all the magic happens.  It
+`swizzles`_ ``NSURLRequest``'s designated initializer by creating a category
+after caching the original IMP.  This swizzled initializer calls into another method
+that checks the ``NSURL`` and has an opportunity to return a different one.
+The implemented checker that looks for the ACE (ASCII compatible encoding) prefix
+in the host of the given ``NSURL``.  If it sees an ACE prefix, it presents an alert panel to the
+user showing them the raw IDN URL, the "display" host name, and the unicode
+escaped host name.  The user can then decide whether to allow or deny requests
+from this host, and this decision is cached for the rest of their Safari session, but
+not persisted.  If they choose Deny, it simply returns ``about:blank`` rather than the
+original URL.
+
+**Discovery**
+
+In order to discover how to implement this hack, I attached `gdb`_ to Safari, like so::
+
+    % ps -auxwww|grep Safari
+    bob    21062   0.0  3.9   254720  40976  ??  S     5:23PM   0:57.19 /Applications/Safari.app/Contents/MacOS/Safari -psn_0_193331201
+    bob    21103   0.0  0.0    17052      8 std  R+    5:40PM   0:00.00 grep Safari
+    [meth:~] bob% gdb attach 21062
+    
+I then thought that I could easily pick out when Safari used URLs by putting a break point on ``NSURL``'s designated initializer::
+
+    (gdb) fb -[NSURL initWithString:relativeToURL:]
+    Breakpoint 1 at 0x90a2d51c
+    (gdb) c
+
+After going to a few URLs, I noticed that it would often have the URL cached somehow.  So then I looked at a ``NSURL`` backtrace and saw that ``NSURLRequest`` was probably used more often, so I put a break point on its designated initializer::
+
+    ^C
+    Program received signal SIGINT, Interrupt.
+    0x900074c8 in mach_msg_trap ()
+    (gdb) fb -[NSURLRequest initWithURL:cachePolicy:timeoutInterval:]
+    Breakpoint 2 at 0x90a0b0b8
+    (gdb) c
+
+``NSURLRequest`` is indeed used all the time, so I took a look at what a spoofed URL looks like::
+
+    Breakpoint 2, 0x90a0b0b8 in -[NSURLRequest initWithURL:cachePolicy:timeoutInterval:] ()
+    (gdb) po $r5
+    https://www.xn--pypal-4ve.com/
+
+At this point I had everything I needed to know, so I wrote the code.
+
+UPDATE:
+
+- Rewritten in pure Python (requires svn trunk of `PyObjC`_), hopefully fixed threading bugs.
+- Fixed some more bugs and made it smaller
+- An alternate implementation of this is available in `Saft`_ v7.5.1 and later (have not tried it myself)
+- One of the authors of the IDN standard writes about a `more balanced solution`_ to this issue.  I had actually considered doing it this way, but I simply didn't have the time or interest in creating the custom dialogs required.  This functionality should be in `unicodedata`_, but it's not, though `Blocks.txt`_ would be trivial to parse.
+- An up and coming Mozilla extension, `TrustBar`_, attempts to solve this and other issues for Mozilla and FireFox
+
+.. _`TrustBar`: http://TrustBar.MozDev.Org/
+.. _`Blocks.txt`: http://www.unicode.org/Public/UNIDATA/Blocks.txt
+.. _`unicodedata`: http://docs.python.org/lib/module-unicodedata.html
+.. _`more balanced solution`: http://lookit.proper.com/archives/000302.html
+.. _`Saft`: http://haoli.dnsalias.com/
+.. _`IDNSnitch.py`: http://svn.red-bean.com/pyobjc/trunk/pyobjc/Examples/Inject/IDNSnitch/IDNSnitch.py
+.. _`IDNSnitchPlugin.py`: http://svn.red-bean.com/pyobjc/trunk/pyobjc/Examples/Inject/IDNSnitch/IDNSnitchPlugin.py
+.. _`domain spoofing exploit`: http://www.shmoo.com/idn/
+.. _`gdb`: x-man-page://1/gdb
+.. _`swizzles`: http://www.cocoadev.com/index.pl?MethodSwizzling
+.. _`ShmooCon`: http://www.shmoocon.org/
+.. _`Shmoo Group`: http://www.shmoo.com/
+.. _`PyObjC`: http://pyobjc.sourceforge.net/
+.. _`IDNSnitch.app.tgz`: http://undefined.org/python/IDNSnitch.app.tgz

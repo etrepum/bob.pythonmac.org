@@ -1,0 +1,27 @@
+---
+categories: python, PyObjC, aeve
+date: 2003/12/30 13:25:52
+guid: /?p=27
+permalink: http://bob.pythonmac.org/archives/2003/12/30/im-back-darwin-bumped-to-720-music-management-software-notes/
+tags: ''
+title: I'm back, Darwin bumped to 7.2.0, music management software notes
+---
+.. -*- mode: rst -*-
+.. original id: P19
+
+I just got back yesterday morning from my ~2.5 week stint in Tokyo.  I didn't really do any coding (open source or otherwise) while I was away, but I'm pretty sure I still remember how ;)
+
+The Mac OS X 10.3.2 updater upgrades the Darwin kernel to 7.2.0 from 7.0.0.  This has some effect on my package repository (mostly an effect on the tools I use to build it), so I'll probably be sweeping through and doing package updates this week.  It did have a short lived effect on the official database, but Jack fixed the issue on Dec 26th.
+
+Here's my blog-relevant TODO for the next two weeks or so:
+ * Finish the next version of `aeve`_ (huge changes!)
+ * Update my `package repository`_
+ * Start writing a to-be-named (mac specific) music management software program that makes managing large collections of music possible.  It will be written in `PyObjC`_ and will be dependent on iTunes via `aeve`_ as a backend (at least at first, because it's a pretty good database that abstracts ID3 really well).  Kevin pointed me at `musicbrainz`_, which in theory could make this stuff a lot more useful and efficient so I hope to integrate that, possibly in the first version.  The big idea is to make it easy to write regexes to generate ID3 tag info from existing ID3 tag info and filenames, as well as bringing in metadata from other sources (like cddb, gracenote, musicbrainz, etc.) when the existing information is not complete.
+
+.. _`aeve`: http://pythonmac.org/wiki/aeve
+
+.. _`PyObjC`: http://pythonmac.org/wiki/PyObjC
+
+.. _`package repository`: http://undefined.org/python/pimp/
+
+.. _`musicbrainz`: http://musicbrainz.org/

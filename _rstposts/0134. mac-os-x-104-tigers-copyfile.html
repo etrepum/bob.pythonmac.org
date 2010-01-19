@@ -1,0 +1,18 @@
+---
+categories: macosx, c
+date: 2005/05/03 08:40:16
+guid: /?p=134
+permalink: http://bob.pythonmac.org/archives/2005/05/03/mac-os-x-104-tigers-copyfile/
+tags: ''
+title: Mac OS X 10.4 (Tiger)'s copyfile()
+---
+.. -*- mode: rst -*-
+
+All of the snazzy ACL-and-metadata-copying features in Darwin 8 / Tiger live in one function, ``copyfile()``.  Unfortunately, Apple forgot to include the header for it in the version of Xcode that ships with Mac OS X 10.4.
+
+It is defined in libSystem, so you can use it if you knew its prototype, and you can pick up the `copyfile.h`_ (may not be newest!) from the Libc package from `Darwin releases`_.
+
+.. _`copyfile.h`: http://www.opensource.apple.com/darwinsource/10.4/Libc-391/darwin/copyfile.h
+.. _`Darwin releases`: http://www.opensource.apple.com/darwinsource/
+
+Since this isn't a static library, and probably depends on New Stuff, using it in a backwards compatible way (i.e. to get resource-fork copying in Panther) probably isn't going to work.  Oh well.

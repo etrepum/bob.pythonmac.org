@@ -1,0 +1,53 @@
+---
+categories: erlang, mochiweb
+date: 2007/12/17 21:06:27
+guid: http://bob.pythonmac.org/?p=228
+permalink: http://bob.pythonmac.org/archives/2007/12/17/using-the-mochiweb-project-skeleton/
+tags: ''
+title: Using the mochiweb project skeleton
+---
+.. -*- mode: rst -*-
+
+A bit over a week ago we moved a slightly modified version of our project skeleton into the open source `mochiweb`_ repository, which gets you a start shell script, a skeleton application following (most of) the OTP paradigms, a Makefile, and a web server that serves static files out of ``priv/www``.
+
+The first thing you have to do is make sure `mochiweb`_ is built:
+
+::
+
+    $ cd ~/src/mochiweb
+    $ make
+    (cd src;make)
+    make[1]: Nothing to be done for `all'.
+    
+After that you just run ``./scripts/new_mochiweb.erl`` with the project name and destination (you can put a symlink of that script on your ``PATH`` somewhere).
+
+::
+
+    $ ./scripts/new_mochiweb.erl mochidemo ~/src
+    ...
+    
+Starting it is easy, just build with ``make`` and then run ``start.sh`` or ``start-dev.sh`` from ``~/src/mochidemo``. The only difference between the two at the moment is that ``start-dev.sh`` will poll for changes in ebin files and purge them automatically when they're updated. The default port is 8000 listening on all IPs and it's configured in ``src/PROJECT_sup.erl``.
+
+::
+
+    $ cd ~/src/mochidemo
+    $ make
+    ...
+    $ ./start-dev.sh
+    ...
+    =PROGRESS REPORT==== 17-Dec-2007::20:58:33 ===
+             application: mochidemo
+              started_at: nonode@nohost
+
+    1> http:request("http://127.0.0.1:8000/").
+    ...
+    {ok,{{"HTTP/1.1",200,"OK"},
+         [{"date","Tue, 18 Dec 2007 04:58:55 GMT"},
+          {"server","MochiWeb/1.0 (Any of you quaids got a smint?)"},
+          {"content-length","88"},
+          {"content-type","text/html"}],
+         "<html>\n<head>\n<title>It Worked</title>\n</head>\n<body>\nMochiWeb running.\n</body>\n</html>\n"}}
+
+As far as deployment goes, it's a convenience that `mochiweb`_ makes a symlink to itself as ``PROJECT/deps/mochiweb-src`` so that the start scripts can find it and put them in your code path. You'll probably want to put a full copy of `mochiweb`_ in its place, use a svn:external (which is what we do right now), or manage the `mochiweb`_ dependency by some other means.
+
+.. _`mochiweb`: http://mochiweb.com/

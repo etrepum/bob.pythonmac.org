@@ -1,0 +1,51 @@
+---
+categories: python
+date: 2004/08/30 05:23:44
+guid: /?p=82
+permalink: http://bob.pythonmac.org/archives/2004/08/30/using-the-compiler-module-to-help-internationalize-your-software/
+tags: ''
+title: Using the compiler module to help internationalize your software
+---
+.. -*- mode: rst -*-
+.. original id: P69
+
+While working on I18N for the `Talking Panda iLingo`_ installers I needed a reliable way to extract strings from Python code.  I decided to use the ``_(u'string')`` pattern, even though I'm not using `gettext`_.  This simple class uses the AST facilities in Python to extract such strings, as long as they are constants in the code.
+
+.. pycode::
+
+    from compiler import parseFile
+    from compiler.visitor import ASTVisitor
+    from compiler.ast import Name, Const
+    from sets import Set
+
+    class StringVisitor(object):
+        def __init__(self):
+            self.strings = Set()
+            self.visitor = ASTVisitor()
+
+        def findStrings(self, fn):
+            self.visitor.preorder(parseFile(fn), self)
+        
+        def visitCallFunc(self, node):
+            fn = node.node
+            if not (isinstance(fn, Name) and
+                    fn.name == '_' and
+                    len(node.args) == 1 and
+                    isinstance(node.args[0], Const)):
+                for child in node.getChildNodes():
+                    self.visit(child)
+                return
+            self.strings.add(node.args[0].value)
+
+    if __name__ == '__main__':
+        import sys
+        sv = StringVisitor()
+        for fn in sys.argv[1:]:
+            sv.findStrings(fn)
+        lst = list(sv.strings)
+        lst.sort()
+        for s in lst:
+            print s.encode('unicode_escape')
+
+.. _`Talking Panda iLingo`: http://talkingpanda.com/
+.. _`gettext`: http://docs.python.org/lib/module-gettext.html

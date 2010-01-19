@@ -1,0 +1,39 @@
+---
+categories: python, PyObjC, py2app, packman, pygame
+date: 2005/01/07 06:44:59
+guid: /?p=90
+permalink: http://bob.pythonmac.org/archives/2005/01/07/from-__future__-import-packman/
+tags: ''
+title: from __future__ import packman
+---
+.. -*- mode: rst -*-
+
+For quite some time I've been neglecting my packman repository.  I find it hard to make time and the infrastructure for maintainers and users alike are quite archaic.
+
+Ideally I would like to move everything over to using `Apple's installation tools`_ with ``.mpkg`` based distributions.  That, along with replacing some ugly distribution scripts in `PyObjC`_, were why I wrote `py2app`_'s ``bdist_mpkg`` command.  This opens up several doors and has a few immediate advantages:
+
+* Installer can authenticate.  packman can't.  Several packages need this, especially those requiring headers.  The current PackageManager UI requires the user to drop to shell and change permissions on these folders in a very obnoxious and unintuitive way.
+* Installer creates receipts.
+* Installer packages are standard.  Other things use them.  For example, `SDL`_, a dependency of `pygame`_, is already available in ``.pkg`` format from the source.  That means less maintenance and more accountability.
+* Installer (as of Mac OS X 10.3, anyway) can `safely detect certain kinds of dependencies`_, where packman runs arbitrary code (uh oh!).
+* Some people don't like the PackageManager UI.  These people could download the packages themselves and simply double-click to install (though they would have to manage dependencies themselves).
+* Installer can allow the user to customize an installation (to disable installation of scripts or documentation, for example).  ``bdist_mpkg`` already organizes packages in a manner suitable for this.
+* Installer will show important information such as the License and ReadMe before installation.
+* `installer`_ can alternatively be used (but this does require authentication) for a hassle-free installation, or when installing by command-line (think `ssh`_).
+* Installer is understood by Apple's tools.  Think `custom installation DVDs`_, `Mac OS X Server`_, `Apple Remote Desktop`_, Apple's internal build process, etc.
+* Installer may be improved in future versions of Mac OS X, which means that the packman infrastructure would get an upgrade for free (well, cheap).
+* Using ``bdist_mpkg``, packman could "record" (not perform) an installation so that it may be performed later or elsewhere.  For a given package, packman would download it and all of its dependencies and create a self-contained ``.mpkg`` for simple installation and transport.  People who have broadband at work or school and dial-up at home would probably be particularly fond of this feature.
+
+... Of course, even after this is developed, it's no promise that I'll have a long-term interest in maintaining my own repository.  However, with this kind of infrastructure and the right tools, I think that someone else (hopefully several others) will!
+
+.. _`safely detect certain kinds of dependencies`: http://developer.apple.com/documentation/DeveloperTools/Conceptual/SoftwareDistribution/Concepts/sd_spec_install_req.html
+.. _`Apple's installation tools`: http://developer.apple.com/documentation/DeveloperTools/Conceptual/SoftwareDistribution/index.html
+.. _`py2app`: http://undefined.org/python/#py2app
+.. _`PyObjC`: http://pyobjc.sf.net/
+.. _`custom installation DVDs`: http://www.versiontracker.com/dyn/moreinfo/macosx/24178&mode=info
+.. _`Mac OS X Server`: http://www.apple.com/server/macosx/
+.. _`installer`: x-man-page://8/installer
+.. _`ssh`: x-man-page://1/ssh
+.. _`Apple Remote Desktop`: http://www.apple.com/remotedesktop/
+.. _`pygame`: http://pygame.org/
+.. _`SDL`: http://libsdl.org/

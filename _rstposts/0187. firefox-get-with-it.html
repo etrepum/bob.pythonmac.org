@@ -1,0 +1,21 @@
+---
+categories: javascript, AJAX
+date: 2005/11/18 00:41:31
+guid: http://bob.pythonmac.org/archives/2005/11/18/firefox-get-with-it/
+permalink: http://bob.pythonmac.org/archives/2005/11/18/firefox-get-with-it/
+tags: ''
+title: Firefox, get with it.
+---
+.. -*- mode: rst -*-
+
+The JavaScript engine in Firefox has some really asinine warnings, here's the one that annoys me most:
+
+*deprecated with statement usage*::
+
+    with ({stuff: "here"}) { eval("alert(stuff)"); }
+
+Ok, now this is just lame.  ``with`` is clearly in the ECMA standard and all JavaScript implementations, is definitely useful, and it can't go away while still maintaining backwards compatibility.  It provides functionality that simply can't be offered any other way since you don't have access to the namespace objects from the script side of the interpreter.
+
+Now I can hypothesize the reasoning for wanting to deprecate this syntax, but it's not necessary.  I imagine that someone decided that ``with`` is slowing the whole language down since usage of it or ``eval`` basically requires a hash table (or equivalent) implementation of the function local namespace.  Sure, that's true, but *on a per-function basis*.
+
+If we assume that ``eval`` becomes a keyword at some point, they could simply mark functions that use either ``with`` or ``eval`` as needing a dynamic namespace.  Everything else could use an optimized locals implementation (like Python's).  The majority of JavaScript code can have a theoretically faster implementation, the rest stays the same speed, and nothing breaks.  While you're at it, let us introspect local namespaces like Python allows with ``locals()`` so we can put together our own debugger without hacking the interpreter; Venkman is obnoxious.

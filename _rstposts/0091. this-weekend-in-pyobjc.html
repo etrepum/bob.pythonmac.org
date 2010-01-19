@@ -1,0 +1,49 @@
+---
+categories: python, PyObjC, py2app
+date: 2005/01/18 06:48:37
+guid: /?p=91
+permalink: http://bob.pythonmac.org/archives/2005/01/18/this-weekend-in-pyobjc/
+tags: ''
+title: This weekend in PyObjC
+---
+.. -*- mode: rst -*-
+
+I've made several pretty cool enhancements to `PyObjC`_ and `py2app`_ this weekend:
+
+- There is now a fast path for the ``NSString``/``unicode``
+  bridge when ``Py_UNICODE_SIZE`` is 2.  This is the default
+  setting for Python.
+
+- The default selector signature will have a void return value
+  unless a "return" statement with an argument is used in the
+  bytecode.  In that case, it will default to an object return
+  value.
+
+This means that ``objc.accessor(...)`` isn't necessary for most setters!
+
+- ``__bundle_hack__`` is no longer necessary, py2app now sets
+  a different environment variable to the current plugin during
+  execution, and a hack is installed to ``NSBundle`` so that classes
+  may respond to requests for their bundle with the ``+bundleForClass``
+  method.  The class builder adds a default implementation of this to
+  Python classes if this environment variable is set.
+
+- Added ``objc.currentBundle()``, which is equivalent to
+  ``NSBundle.mainBundle()`` except after loading a plug-in.
+  Makes it easier to load nib files.
+
+- ``PyObjCTools.NibClassBuilder.extractClasses()`` now uses
+  ``objc.currentBundle()`` instead of ``NSBundle.mainBundle()``.  This
+  makes plugins less of a hassle to develop and allows identical code
+  to be used for application or plugin development.
+
+- ``objc.registerPlugin()`` and ``objc.pluginBundle()`` are now deprecated
+  as they are no longer useful.
+
+These all VASTLY improve support for plugins.  Additionally, I have made some changes to the `py2app`_ bootstrap to support these new features, and I've cleaned it up so that it loads plugins into their own modules rather than stuffing them into ``__main__``.
+
+I have also started work on a new ``RemotePyInterpreter`` example, which runs the interpreter in a subprocess and communicates with it asynchronously.  This will be useful for IDE work when it's done.  The IPC protocol it uses is a cute little repr-based hack, loosely based on `py.execnet`_.  I'll also use this to implement out-of-process debugging (think ``pdb attach``) and other fun things, hopefully in the near future.
+
+.. _`py2app`: http://undefined.org/python/#py2app
+.. _`PyObjC`: http://pyobjc.sf.net/
+.. _`py.execnet`: http://codespeak.net/py/current/doc/execnet.html

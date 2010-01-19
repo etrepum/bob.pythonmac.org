@@ -1,0 +1,44 @@
+---
+categories: python, macosx
+date: 2005/10/08 10:30:32
+guid: http://bob.pythonmac.org/archives/2005/10/08/xattr-python-extended-filesystem-attributes/
+permalink: http://bob.pythonmac.org/archives/2005/10/08/xattr-python-extended-filesystem-attributes/
+tags: ''
+title: xattr - Python extended filesystem attributes
+---
+.. -*- mode: rst -*-
+
+`xattr`_ is a Python wrapper for the extended attributes APIs available in Darwin 8.0+ (Mac OS X 10.4) and Linux 2.6+.  0.2 added Linux compatibility, and API compatibility with the GPL `pyxattr`_ module.  Unlike `pyxattr`_, `xattr`_ supports both Darwin and Linux, has a ``dict``-like API, and it is MIT licensed.
+
+Usage looks like this:
+
+.. pycode::
+
+    >>> import xattr
+    >>> x = xattr.xattr('tiger_8a428_userdvd.dmg')
+    >>> x
+    <xattr file='tiger_8a428_userdvd.dmg'>
+    >>> x.keys()
+    [u'com.apple.diskimages.recentcksum']
+    >>> dict(x)
+    {u'com.apple.diskimages.recentcksum': 'i:969254 ...more stuff'}
+    >>> x['com.apple.diskimages.recentcksum']
+    'i:969254 ...more stuff'
+    >>> x['com.apple.adc'] = 'select'
+    >>> dict(x)
+    {u'com.apple.adc': 'select',
+     u'com.apple.diskimages.recentcksum': 'i:969254 ...more stuff'}
+    >>> del x['com.apple.adc']
+    >>> dict(x)
+    {u'com.apple.diskimages.recentcksum': 'i:969254 ...more stuff'}    
+
+You can download xattr 0.2 from http://pythonmac.org/packages/ for Tiger's Python 2.3.5 or Python 2.4.1 (installed on Tiger).
+
+svn trunk:
+    http://svn.red-bean.com/bob/xattr/trunk/
+
+0.2 source:
+    http://svn.red-bean.com/bob/xattr/releases/xattr-0.2/
+
+.. _`xattr`: http://undefined.org/python/#xattr
+.. _`pyxattr`: http://pyxattr.sourceforge.net/

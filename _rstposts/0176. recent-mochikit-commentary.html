@@ -1,0 +1,43 @@
+---
+categories: javascript, MochiKit, AJAX
+date: 2005/09/08 11:34:04
+guid: http://bob.pythonmac.org/?p=176
+permalink: http://bob.pythonmac.org/archives/2005/09/08/recent-mochikit-commentary/
+tags: ''
+title: Recent MochiKit commentary
+---
+.. -*- mode: rst -*-
+
+For those not watching the entire blogosphere, here's two pretty good articles/posts about `MochiKit`_ that have come up recently:
+
+.. _`MochiKit`: http://mochikit.com/
+
+----
+
+`Andy`_ has put together `part 1`_ of a series of MochiKit tutorials for building a blog application, almost entirely client-side:
+http://argv0.net/static/mochitut/1/
+
+.. _`part 1`: http://argv0.net/static/mochitut/1/
+.. _`Andy`: http://argv0.net/
+
+For a little more commentary on that post, you might look towards the `Ajaxian blog coverage`_.
+
+.. _`Ajaxian blog coverage`: http://www.ajaxian.com/archives/2005/09/simple_ajax_wit.html
+
+----
+
+`Jeff Shell`_ put out a little head-to-head between `MochiKit and Prototype`_ from a Zope user's perspective:
+http://griddlenoise.blogspot.com/2005/09/prototypejs-and-mochikit.html
+
+.. _`MochiKit and Prototype`: http://griddlenoise.blogspot.com/2005/09/prototypejs-and-mochikit.html
+.. _`Jeff Shell`: http://griddlenoise.blogspot.com/
+
+What Jeff doesn't seem to mention in his article is that his AJAX example actually shows Prototype and MochiKit living in harmony (using ``Element.show`` and ``Element.fade`` from Prototype, with MochiKit's AJAX support).  That actually *does* work.  Personally, I'd have demonstrated the AJAX stuff without the Fully.Qualified.Names in that scenario (to show MochiKit in its best light in comparison w/ Prototype), and used ``showElement`` instead of ``Element.show`` (saves a character, removes a Prototype dependency ;).
+
+MochiKit plays very nice with both the strictest (i.e. `Dojo`_) and the loosest JavaScript development styles (i.e. Prototype) around, because it's very defensively programmed and well exercised in those scenarios.  There's one or two places in MochiKit where you pay a price (performance, or extraneous data carried around) if you mucked up ``Object.prototype``, but it actually does let you do that.
+
+.. _`Dojo`: http://dojotoolkit.org/
+
+----
+
+Thanks guys!

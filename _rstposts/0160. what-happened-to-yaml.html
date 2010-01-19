@@ -1,0 +1,25 @@
+---
+categories: python, perl
+date: 2005/07/19 02:30:45
+guid: /?p=160
+permalink: http://bob.pythonmac.org/archives/2005/07/19/what-happened-to-yaml/
+tags: ''
+title: What happened to YAML?
+---
+.. -*- mode: rst -*-
+
+I remember hearing about `YAML`_ quite some time ago, but it seems to have completely disappeared from the Python radar.  However, it has become quite popular in Perl (where it's `used by Module::Build for metadata`_) and Ruby (it's a `standard feature`_, even).  What's up with that?
+
+I can't even find a complete `YAML`_ parser/serializer for Python.  The stuff on `python.yaml.org`_ looks `broken and old`_, and I haven't seen anything anywhere else.
+
+The only reason I really care is that the `JSAN distribution format`_ mirrors `CPAN`_ in many ways, ``META.yml`` included, and I have to drop down to Perl or Ruby if I want to generate it programmatically!  That's not right.  Wasn't the `progenitor of YAML`_ a Python guy?  I remember seeing him on the `Twisted`_ lists years ago.  What happened?
+
+.. _`CPAN`: http://cpan.org/
+.. _`python.yaml.org`: http://python.yaml.org/
+.. _`JSAN distribution format`: http://openjsan.org/documentation/dists.html
+.. _`progenitor of YAML`: http://www.clarkevans.com/
+.. _`YAML`: http://yaml.org/
+.. _`used by Module::Build for metadata`: http://module-build.sourceforge.net/META-spec.html
+.. _`standard feature`: http://www.ruby-doc.org/core/classes/YAML.html
+.. _`broken and old`: http://python.yaml.org/dist/
+.. _`Twisted`: http://twistedmatrix.com/
