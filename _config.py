@@ -68,7 +68,7 @@ blog_auto_permalink         = "/archives/:year/:month/:day/:title"
 ######################################################################
 #### Disqus.com comment integration ####
 disqus_enabled = True
-disqus_name    = "etrepum"
+disqus_name    = "fromfutureimport"
 
 #### Blog post syntax highlighting ####
 syntax_highlight_enabled = True

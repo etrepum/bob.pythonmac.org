@@ -7,10 +7,10 @@ try{
 } catch(err) {}
 
 $j(document).ready(function(){
-    $j("#blogofile_tweets").tweet({
+    $j("#etrepum_tweets").tweet({
         avatar_size: 32,
           count: 5,
-          query: "blogofile",
+          query: "etrepum",
           loading_text: "searching twitter..."
           });
   });
