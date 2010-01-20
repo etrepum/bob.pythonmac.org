@@ -17,7 +17,7 @@
   </ul>
  
     <div id="subscribe">
-        <p>Subscribe via <a href="/feed">RSS</a></p>
+        <p>Subscribe via <a href="/feed/">RSS</a></p>
         <div class="clear"></div>
     </div>
 
@@ -32,7 +32,7 @@
     <h3>Categories</h3>
     <ul>
 % for category, num_posts in bf.all_categories:
-     <li><a href="${category.path}">${category}</a><!-- (<a href="${category.path}/feed">rss</a>)--> (${num_posts})</li>
+     <li><a href="${category.path}">${category}</a><!-- (<a href="${category.path}/feed/">rss</a>)--> (${num_posts})</li>
 % endfor
     </ul>
   </div> 
