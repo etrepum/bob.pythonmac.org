@@ -1,6 +1,6 @@
 ---
 categories: python, math, hash
-date: 2010/03/23 22:45:00
+date: 2010/03/23 08:30:00
 permalink: http://bob.pythonmac.org/archives/2010/03/23/py3k-unified-numeric-hash
 title: "Py3k Unified Numeric Hash Proposal"
 ---
