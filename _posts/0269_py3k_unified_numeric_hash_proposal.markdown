@@ -331,7 +331,7 @@ binary digits as follows (k is log2(P+1)):
 
 I'm definitely not Tim Peters or even a mathematician but I found this problem
 interesting enough to dive into, especially because Guido didn't find this
-obvious either[(Objects/longobject.c)][]. I think I've covered it in sufficient depth for me to believe
+obvious either [(Objects/longobject.c)][]. I think I've covered it in sufficient depth for me to believe
 that it works and the patch is good, but if I'm missing something please let
 me know!
 
