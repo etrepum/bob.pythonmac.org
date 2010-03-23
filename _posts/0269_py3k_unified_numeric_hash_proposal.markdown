@@ -326,7 +326,8 @@ binary digits as follows (k is log2(P+1)):
     # show multiply by 2 is a bit rotate left of k bits
     x * (2**1) mod P == (d[0] * 2**(1) + d[1] * 2**(2) + ... + d[k-1] * 2**(0))
     # generalize into n multiplications of 2
-    x * (2**n) mod P == (d[0] * 2**((0 + n) % k) + d[1] + 2**((1 + n) % k) + ... + d[k-1] * 2**((n - 1) % k))
+    x * (2**n) mod P == (d[0] * 2**((0 + n) % k) + d[1] + 2**((1 + n) % k) + ... + d[k-1] * 2**((k - 1 + n) % k))
+    x * (2**n) mod P == (d[0] * 2**((0 + n) % k) + d[1] + 2**((1 + n) % k) + ... + d[k-1] * 2**((-1 + n) % k))
 
 I'm definitely not Tim Peters or even a mathematician but I found this problem
 interesting enough to dive into, especially because Guido didn't find this
