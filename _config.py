@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 ######################################################################
 # This is the main Blogofile configuration file.
 # www.Blogofile.com
@@ -9,8 +11,6 @@
 #
 #  You really only _need_ to change the Basic Settings.
 ######################################################################
-import logging
-logger = logging.getLogger("blogofile.config")
 
 ######################################################################
 # Basic Settings
@@ -70,6 +70,13 @@ blog_auto_permalink         = "/archives/:year/:month/:day/:title"
 disqus_enabled = True
 disqus_name    = "fromfutureimport"
 
+#### Emacs Integration ####
+emacs_orgmode_enabled = False
+# emacs binary (orgmode must be installed)
+emacs_binary    = "/usr/bin/emacs"               # emacs 22 or 23 is recommended
+emacs_preload_elisp = "_emacs/setup.el"          # preloaded elisp file
+emacs_orgmode_preamble = r"#+OPTIONS: H:3 num:nil toc:nil \n:nil"   # added in preamble
+
 #### Blog post syntax highlighting ####
 syntax_highlight_enabled = True
 # You can change the style to any builtin Pygments style
@@ -112,6 +119,9 @@ blog_category_dir = "archives/category"
 # This is relative to site_url
 site_css_dir = "/css"
 
+#### Post encoding ####
+blog_post_encoding = "utf-8"
+
 ######################################################################
 # Advanced Settings
 ######################################################################
@@ -120,24 +130,24 @@ site_css_dir = "/css"
 # These can be strings or compiled patterns.
 # Strings are assumed to be case insensitive.
 file_ignore_patterns = [
-    r".*([\/]|[\\])_.*",   #All files that start with an underscore
-    r".*([\/]|[\\])#.*",   #Emacs temporary files
-    r".*([\/]|[\\])\.#.*", #Emacs temporary files
-    r".*~$]",              #Emacs temporary files
-    r".*([\/]|[\\])\.git", #Git VCS dir
-    r".*([\/]|[\\])\.hg",  #Mercurial VCS dir
-    r".*([\/]|[\\])\.bzr", #Bazaar VCS dir
-    r".*([\/]|[\\])\.svn", #Subversion VCS dir
-    r".*([\/]|[\\])CVS"    #CVS dir
+    r".*([\/]|[\\])_.*",    #All files that start with an underscore
+    r".*([\/]|[\\])#.*",    #Emacs temporary files
+    r".*~$",                #Emacs temporary files
+    r".*([\/]|[\\])\.git$", #Git VCS dir
+    r".*([\/]|[\\])\.hg$",  #Mercurial VCS dir
+    r".*([\/]|[\\])\.bzr$", #Bazaar VCS dir
+    r".*([\/]|[\\])\.svn$", #Subversion VCS dir
+    r".*([\/]|[\\])CVS$"    #CVS dir
     ]
 
 #### Default post filters ####
 # If a post does not specify a filter chain, use the
 # following defaults based on the post file extension:
 blog_post_default_filters = {
-    "markdown": "markdown, syntax_highlight",
-    "textile": "textile, syntax_highlight",
-    "org": "org, syntax_highlight"
+    "markdown": "syntax_highlight, markdown",
+    "textile": "syntax_highlight, textile",
+    "org": "syntax_highlight, org",
+    "rst": "syntax_highlight, rst",
 }
 
 ### Pre/Post build hooks:
