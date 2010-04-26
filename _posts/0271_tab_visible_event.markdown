@@ -7,9 +7,9 @@ title: Browser Tab Visible Event
 ---
 
 Sadly there's no web standard that I could find to determine when a tab
-becomes visible for the first time. My use case was to
-delay loading of Flash content until the tab is visible for the first time.
-Safari seems to do this by default, but none of the other browsers do.
+becomes visible. My use case was to delay loading of Flash content until
+the tab is visible for the first time. Safari seems to do this by default,
+but none of the other browsers do.
 
 Chrome is the absolute worst offender here, it does not fire
 window.onmouseover until the mouse has been moved over the page and it
