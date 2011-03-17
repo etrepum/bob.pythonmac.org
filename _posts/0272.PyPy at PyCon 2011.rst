@@ -46,6 +46,7 @@ team and their implementation goals):
   of multiple cores)
 * PyPy could simultaneously support Python 2.x and 3.x code in the
   same process, making it practical to actually make the transition
+  (note: this is a crazy idea that would be terribly difficult)
 
 .. _`cpyext`: http://pypy.org/compat.html
 
@@ -87,7 +88,7 @@ Clone virtualenv-pypy, jitviewer, and pypy::
     (cd ~/src; hg clone https://bitbucket.org/pypy/jitviewer)
 
     # Clone PyPy source, this will take a while
-    (cd ~/src; https://bitbucket.org/pypy/pypy)
+    (cd ~/src; hg clone https://bitbucket.org/pypy/pypy)
 
 Installing from binary
 ----------------------
