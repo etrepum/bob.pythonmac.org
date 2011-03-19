@@ -73,16 +73,18 @@ Install `Mercurial`_ 1.7 or newer.
 
 Install Xcode 3.2.x (gcc-4.0 is currently required for building PyPy).
 
-Clone virtualenv-pypy, jitviewer, and pypy::
+
+Download virtualenv 1.5.2 (or later)::
+
+    mkdir -p ~/src
+    (cd ~/src; curl -s http://pypi.python.org/packages/source/v/virtualenv/virtualenv-1.5.2.tar.gz | tar zxf -)
+
+
+Clone jitviewer and pypy::
 
 
     # Make a ~/src to store all of these clones
     mkdir -p ~/src
-
-    # Get a PyPy compatible version of virtualenv (install to
-    # ~/src/virtualenv-pypy)
-
-    (cd ~/src; hg clone https://bitbucket.org/pypy/virtualenv-pypy)
 
     # Get the PyPy jitviewer application (install to ~/src/jitviewer)
     (cd ~/src; hg clone https://bitbucket.org/pypy/jitviewer)
@@ -112,7 +114,7 @@ This will install PyPy to ``~/opt`` and create a virtualenv::
     PYPY=~/opt/$PKG/bin/pypy
 
     # install virtualenv
-    (cd ~/src/virtualenv-pypy; rm -rf build; $PYPY setup.py install)
+    (cd ~/src/virtualenv-1.5.2; $PYPY setup.py install)
 
     # create virtualenv
     mkdir -p ~/virtualenv
@@ -180,6 +182,10 @@ this runs a lot faster if you use PyPy.
 These commands will build PyPy, create a release based on the hg revision,
 update ``~/virtualenv/pypy-env``, etc.::
 
+    # Translate PyPy (expect this a while, at least an hour for me)
+    (cd pypy/translator/goal; pypy translate.py -Ojit)
+
+    # Build the release
     BRANCH=$(hg branch)
     PKG=pypy-$(hg branches|grep "^$BRANCH " | cut -d: -f2)-osx64
     mkdir -p ~/opt
@@ -189,7 +195,7 @@ update ``~/virtualenv/pypy-env``, etc.::
 
     # install virtualenv
     PYPY=~/opt/$PKG/bin/pypy
-    (cd ~/src/virtualenv-pypy; rm -rf build; $PYPY setup.py install)
+    (cd ~/src/virtualenv-1.5.2; $PYPY setup.py install)
 
     # create virtualenv
     mkdir -p ~/virtualenv
