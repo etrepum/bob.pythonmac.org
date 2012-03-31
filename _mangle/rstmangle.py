@@ -5,13 +5,13 @@ import glob
 from cStringIO import StringIO
 from subprocess import Popen, PIPE
 CMD = 'rst2html.py --no-toc-backlinks --no-doc-title --no-generator --no-source-link --no-footnote-backlinks --initial-header-level=2'.split()
-INGLOB = '../_rstposts/*.html'
+INGLOB = '../_rstposts/*.rst'
 OUTDIR = '../_posts'
 
 
 def rst2html(fn, outfn):
     s = open(fn, 'rb').read()
-    end_prefix = s.index('.. -*- mode: rst -*-')
+    end_prefix = s.index('\n\n')
     pre, post = s[:end_prefix], s[end_prefix:]
     p = Popen(CMD, stdin=PIPE, stdout=PIPE)
     code_post = post.replace(
@@ -28,7 +28,7 @@ def rst2html(fn, outfn):
 
 def main():
     for fn in glob.glob(INGLOB):
-        outfn = os.path.join(OUTDIR, os.path.basename(fn))
+        outfn = os.path.join(OUTDIR, os.path.basename(fn)).replace('.rst', '.html')
         rst2html(fn, outfn)
 
 
